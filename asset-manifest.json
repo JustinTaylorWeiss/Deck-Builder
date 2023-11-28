@@ -1,33 +1,23 @@
 {
   "files": {
     "main.css": "/magic-schoolbus/static/css/main.9271e3ee.css",
-    "main.js": "/magic-schoolbus/static/js/main.111c89c9.js",
+    "main.js": "/magic-schoolbus/static/js/main.a45e906a.js",
     "static/media/W.svg": "/magic-schoolbus/static/media/W.99c7fe1b9600148fbeed55dc7729eb2e.svg",
     "static/media/R.svg": "/magic-schoolbus/static/media/R.b8e69eab9136b4e4a401c7295bdc8f4f.svg",
     "static/media/G.svg": "/magic-schoolbus/static/media/G.1e9be629cc98068fb2681d6bcfa716b7.svg",
     "static/media/B.svg": "/magic-schoolbus/static/media/B.7f78a23faaceb72cf1d01f86dedabf9e.svg",
     "static/media/addToDeck.svg": "/magic-schoolbus/static/media/addToDeck.815eee77473174f72499fe77aa1cd89e.svg",
-    "static/media/8.svg": "/magic-schoolbus/static/media/8.0d2addf074e7a0b15c09168994c1bb5f.svg",
-    "static/media/3.svg": "/magic-schoolbus/static/media/3.2c536e0c3070798225ed071abab28865.svg",
-    "static/media/6.svg": "/magic-schoolbus/static/media/6.991b0b6da52c00b284a32e10f82801f7.svg",
-    "static/media/9.svg": "/magic-schoolbus/static/media/9.65a3fa245cce89bbce4587d1ae464346.svg",
     "static/media/plus.svg": "/magic-schoolbus/static/media/plus.8d908611fa76c4e3fe7a51135c792f75.svg",
     "static/media/U.svg": "/magic-schoolbus/static/media/U.8fcc549bb705b8de6da416da518b604f.svg",
-    "static/media/2.svg": "/magic-schoolbus/static/media/2.cec13c5a466fa7f0d54be49bf49d66bf.svg",
-    "static/media/5.svg": "/magic-schoolbus/static/media/5.04a5d3dc9385fc81d6be52532b222a70.svg",
     "index.html": "/magic-schoolbus/index.html",
-    "static/media/0.svg": "/magic-schoolbus/static/media/0.4a771f5916ff837036c73445283d82e3.svg",
-    "static/media/7.svg": "/magic-schoolbus/static/media/7.1446d1a4c5231584da6c4a40704f82db.svg",
-    "static/media/4.svg": "/magic-schoolbus/static/media/4.fd4aa6b62d4aee699ccbf4b429968e4f.svg",
-    "static/media/1.svg": "/magic-schoolbus/static/media/1.af50ed618a59c4f23d0509a970d8d50d.svg",
     "static/media/C.svg": "/magic-schoolbus/static/media/C.4af949b50d04a437b836705f24f1039f.svg",
     "static/media/checkmark.svg": "/magic-schoolbus/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
     "static/media/minus.svg": "/magic-schoolbus/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
     "main.9271e3ee.css.map": "/magic-schoolbus/static/css/main.9271e3ee.css.map",
-    "main.111c89c9.js.map": "/magic-schoolbus/static/js/main.111c89c9.js.map"
+    "main.a45e906a.js.map": "/magic-schoolbus/static/js/main.a45e906a.js.map"
   },
   "entrypoints": [
     "static/css/main.9271e3ee.css",
-    "static/js/main.111c89c9.js"
+    "static/js/main.a45e906a.js"
   ]
 }
