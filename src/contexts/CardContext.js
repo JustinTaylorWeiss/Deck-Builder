@@ -116,6 +116,7 @@ export const CardProvider = ({ children }) => {
                         setDb(resJson);
                     }
                     else { 
+                        setDb(false);
                         setLoading(false);
                         throw new Error("Responce not 2xx");
                     }
