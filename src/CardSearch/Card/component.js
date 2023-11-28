@@ -10,6 +10,7 @@ import addToDeck from "./icons/addToDeck.svg"
 const Img = styled.img`
     width: 100%;
 `;
+
 const FlipIcon = styled.img``;
 
 const CardWrap = styled.div`
@@ -17,8 +18,8 @@ const CardWrap = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width: 18%;
-    margin: 0 10px 0 10px;
+    height: 100%;
+    margin: 0;
 `;
 
 const AddToDeckButton = styled.button`
@@ -80,7 +81,6 @@ const CardQuantityWrap = styled.div`
     font-size: 3rem;
     background-color: rgba(255, 255, 255, 0.6);
     border-radius: 6px;
-    
 `;
 
 const CardQuantity = styled.div`

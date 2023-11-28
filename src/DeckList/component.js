@@ -13,6 +13,11 @@ const ListWrap = styled.div`
 const Title = styled.h2`
     margin: 10px 0 0 0;
     font-size: 2.5rem;
+    @media (max-width: 2000px) {
+        font-size: 1.5rem;
+    }
+    @media (max-width: 1500px) {
+    }
 `;
 
 const H3 = styled.h3`
@@ -20,6 +25,9 @@ const H3 = styled.h3`
     margin: 10px;
     font-weight: normal;
     font-size: 1.2rem;
+    @media (max-width: 2000px) {
+        font-size: 1rem;
+    }
 `;
 
 const ListBlock = styled.pre`
@@ -27,7 +35,7 @@ const ListBlock = styled.pre`
     padding: 20px;
     width: 85%;
     min-height: 50%;
-    font-size: 1.2rem;
+    font-size: 1rem;
 `
 const ListItem = styled.span`
     display: inline-block;
@@ -93,8 +101,8 @@ export const DeckListWrapper = () => {
         <Button onClick={copyButton}>
             {
                 clipboarded 
-                ? <Img height={24} src={checkmark}/>
-                : "Click to Copy"
+                    ? <Img height={24} src={checkmark}/>
+                    : "Click to Copy"
             }
         </Button>
         <ListBlock>

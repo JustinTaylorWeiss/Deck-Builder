@@ -24,6 +24,10 @@ const SelectColorType = styled.select`
 
 const Label = styled.label`
     margin-right: 10px;
+    font-size: 1rem;
+    @media (max-width: 1500px) {
+        font-size: 0.7rem;
+    }
 `;
 
 const CheckBox = styled.input`

@@ -13,6 +13,9 @@ const ListWrap = styled.div`
 const Title = styled.h2`
     margin: 10px 0 0 0;
     font-size: 2.5rem;
+    @media (max-width: 2000px) {
+        font-size: 1.5rem;
+    }
 `;
 
 const H3 = styled.h3`
@@ -20,6 +23,9 @@ const H3 = styled.h3`
     margin: 10px;
     font-weight: normal;
     font-size: 1.2rem;
+    @media (max-width: 2000px) {
+        font-size: 1rem;
+    }
 `;
 
 const ListBlock = styled.pre`
@@ -27,7 +33,7 @@ const ListBlock = styled.pre`
     padding: 12px;
     width: 85%;
     min-height: 50%;
-    font-size: 1.2rem;
+    font-size: 1rem;
 `
 const ListItem = styled.span`
     display: inline-block;

@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useEffect, useState, useMemo, useCallback } from 'react';
-
+import { useMediaQuery } from 'react-responsive'
 const CardContext = createContext();
 
 export const useCards = () => useContext(CardContext);
@@ -23,12 +23,18 @@ export const CardProvider = ({ children }) => {
     );
     const [loading, setLoading] = useState(false);
     const [numOfCopies, setNumOfCopies] = useState(1);
-    const [cmcFilterType, setCmcFilterType] = useState('=');
-    const [cmcFilter, setCmcFilter] = useState('');
+    const [cmcFilterType, setCmcFilterType] = useState('');
+    const [cmcFilter, setCmcFilter] = useState(0);
+    const [customSearch, setCustomSearch] = useState('');
     const [cardSearch, setCardSearch] = useState('');
     const [catagorySearch, setCatagorySearch] = useState('');
     const [showBannedCards, setShowBannedCards] = useState(false);
     const [deckList, setDeckList] = useState([]);
+
+    const isBig = useMediaQuery({query: '(min-width: 2000px)'})
+    const isMid = useMediaQuery({query: '(min-width: 1500px)'})
+    const isSmall = useMediaQuery({query: '(min-width: 1000px)'})
+    const isMidToSmallest = useMediaQuery({query: '(max-width: 1500px)'})
     
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState("")
@@ -47,21 +53,30 @@ export const CardProvider = ({ children }) => {
     )
 
     const colorFilterToUriText = useCallback((colorFilter) => (
-        "+" + 
         (
-            colorFilter.filterType === "colorIdentity"
-                ? "id<%3D"
-                : "c>%3D"
-        ) + (
-            colorFilter.colorless
-            ? "C"
-            : "" + 
-            (colorFilter.white ? "W" : "") +
-            (colorFilter.blue  ? "U" : "") +
-            (colorFilter.black ? "B" : "") + 
-            (colorFilter.red   ? "R" : "") +
-            (colorFilter.green ? "G" : "")
-        )
+            colorFilter.white ||
+            colorFilter.blue  ||
+            colorFilter.black ||
+            colorFilter.red   ||
+            colorFilter.green ||
+            colorFilter.colorless)
+                ? ("+" + 
+                    (
+                        colorFilter.filterType === "colorIdentity"
+                            ? "id<%3D"
+                            : "c%3D"
+                    ) + (
+                        colorFilter.colorless
+                        ? "C"
+                        : "" + 
+                        (colorFilter.white ? "W" : "") +
+                        (colorFilter.blue  ? "U" : "") +
+                        (colorFilter.black ? "B" : "") + 
+                        (colorFilter.red   ? "R" : "") +
+                        (colorFilter.green ? "G" : "")
+                    )
+                )
+                : ""
     ),[]);
 
     const addCardToDeckList = (cardName, quantity) => {
@@ -69,16 +84,21 @@ export const CardProvider = ({ children }) => {
             setDeckList((prev) => [...prev, quantity + "x " + cardName])
     };
 
-    const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter) => (
+    const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter, customSearch) => (
         rootUri + 
         "search?order=cmc&q=" + 
-        cardSearch + 
-        (cmcFilter !== ""
-            ? ("+mv" + cmcFilterType + cmcFilter)
-            : "") + 
-        catagorySearch +
-        (showBannedCards ? "" : "+f%3Acommander") + 
-        colorFilterToUriText(colorFilter)
+        (customSearch 
+            ? encodeURI(cardSearch)
+            : (
+                cardSearch + 
+                (cmcFilterType !== ""
+                    ? ("+mv" + cmcFilterType + cmcFilter)
+                    : "") + 
+                catagorySearch +
+                (showBannedCards ? "" : "+f%3Acommander") + 
+                colorFilterToUriText(colorFilter)
+            )
+        )
     ),[colorFilterToUriText])
 
     useEffect(() => {
@@ -179,6 +199,8 @@ export const CardProvider = ({ children }) => {
         fdb,
         db,
         colorFilter,
+        isBig, isMid, isSmall,
+        isMidToSmallest,
         selected, setSelected, 
         loading, setLoading, 
         deckList, setDeckList,
@@ -186,6 +208,7 @@ export const CardProvider = ({ children }) => {
         cardSearch, setCardSearch,
         cmcFilterType, setCmcFilterType,
         cmcFilter, setCmcFilter,
+        customSearch, setCustomSearch,
         showBannedCards, setShowBannedCards,
         catagorySearch, setCatagorySearch,
         addRemoveList, setAddRemoveList,
