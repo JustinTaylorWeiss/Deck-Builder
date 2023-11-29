@@ -27,7 +27,7 @@ export const CardProvider = ({ children }) => {
     const [cmcFilter, setCmcFilter] = useState(0);
     const [customSearch, setCustomSearch] = useState('');
     const [cardSearch, setCardSearch] = useState('');
-    const [catagorySearch, setCatagorySearch] = useState('');
+    const [categorySearch, setCategorySearch] = useState('');
     const [showBannedCards, setShowBannedCards] = useState(false);
     const [deckList, setDeckList] = useState([]);
 
@@ -103,11 +103,11 @@ export const CardProvider = ({ children }) => {
 
     useEffect(() => {
         console.log(colorFilterToUriText(colorFilter))
-        if(cardSearch !== "" || catagorySearch !== "")
+        if(cardSearch !== "" || categorySearch !== "")
             (async () => {
                 setLoading(true);
                 try {
-                    const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter);
+                    const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, showBannedCards, colorFilter);
                     console.log("uri: " + uri)
                     const res = await fetch(uri);
                     if(res.ok) {
@@ -126,7 +126,7 @@ export const CardProvider = ({ children }) => {
             })()
         else
             setDb(false);
-    }, [cardSearch, setDb, colorFilterToUriText, colorFilter, cmcFilter, cmcFilterType, showBannedCards, catagorySearch, buildUri]);
+    }, [cardSearch, setDb, colorFilterToUriText, colorFilter, cmcFilter, cmcFilterType, showBannedCards, categorySearch, buildUri]);
     
     const colorlessTrueFilter = (filterType) => ({
         filterType: filterType,
@@ -211,7 +211,7 @@ export const CardProvider = ({ children }) => {
         cmcFilter, setCmcFilter,
         customSearch, setCustomSearch,
         showBannedCards, setShowBannedCards,
-        catagorySearch, setCatagorySearch,
+        categorySearch, setCategorySearch,
         addRemoveList, setAddRemoveList,
         changePage, setColorOnColorFilter, 
         setFilterType, adjustDbToAddRemovedCard,

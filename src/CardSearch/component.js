@@ -1,11 +1,7 @@
-import { useEffect } from "react";
-import { catagoryOptions } from "./catagoryOptions";
 import styled from "styled-components";
 import { useCards } from "../contexts/CardContext";
-import Select from 'react-select';
 import { ColorFilters } from "./ColorFilters";
 import { CmcFilter } from "./CmcFilter";
-import { Card } from "./Card";
 import { SearchCluster } from "./SearchCluster";
 import { CardStackCluster } from "./CardStackCluster";
 

@@ -1,18 +1,11 @@
 import styled from "styled-components";
 import { CardProvider } from "./contexts/CardContext";
-import { AltSearchCluster } from "./CardSearch/SearchCluster/alt";
-import { AltColorFilters } from "./CardSearch/ColorFilters/alt";
-import { AltCmcFilter } from "./CardSearch/CmcFilter/alt";
-import { AltCardStackCluster } from "./CardSearch/CardStackCluster/alt";
 import { SideList } from "./SideList";
 
-//import { DeckList } from "./DeckList";
-//import { CardSearch } from "./CardSearch";
-//import { SearchList } from "./SearchList";
-//import { SearchCluster } from "./CardSearch/SearchCluster";
-//import { ColorFilters } from "./CardSearch/ColorFilters";
-//import { CmcFilter } from "./CardSearch/CmcFilter";
-//import { CardStackCluster } from "./CardSearch/CardStackCluster";
+import { SearchCluster } from "./CardSearch/SearchCluster";
+import { ColorFilters } from "./CardSearch/ColorFilters";
+import { CmcFilter } from "./CardSearch/CmcFilter";
+import { CardStackCluster } from "./CardSearch/CardStackCluster";
 
 
 const MiniApp = styled.div`
@@ -32,10 +25,10 @@ const Column = styled.div`
 const App = () => <CardProvider>
     <MiniApp>
         <Column>
-            <AltColorFilters/>
-            <AltCmcFilter/>
-            <AltSearchCluster/>
-            <AltCardStackCluster/>
+            <ColorFilters/>
+            <CmcFilter/>
+            <SearchCluster/>
+            <CardStackCluster/>
         </Column>
         <SideList/>
     </MiniApp>

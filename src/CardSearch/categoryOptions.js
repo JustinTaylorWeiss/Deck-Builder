@@ -1,4 +1,4 @@
-export const catagoryOptions = [
+export const categoryOptions = [
     { value: '',    label: 'None'    },
     //Card Types
     { value: '+-t%3Aland',         label: 'Non-Land'       },
@@ -6,7 +6,7 @@ export const catagoryOptions = [
     { value: '+t%3Acreature',      label: 'Creatures'      },
     { value: '+t%3Aenchantment',   label: 'Enchantments'   },
     { value: '+t%3Aland',          label: 'Lands'          },
-    { value: '+t%3Aplainswalker',  label: 'Plainswalkers'  },
+    { value: '+t%3Aplaneswalker',  label: 'Planeswalkers'  },
     { value: '+t%3Abattle',        label: 'Battles'        },
     //Land Types
     { value: '+is%3Afetchland',    label: 'Fetch Lands'    },

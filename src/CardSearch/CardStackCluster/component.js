@@ -1,25 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Select from "react-select";
 import { useCards } from "../../contexts/CardContext";
 import { Card } from "../Card";
 
 const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 100%;
-    align-items: center;
-`
-
-const Row = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    width: 100%;
-    margin: 30px 0 20px 0;
-    @media (max-width: 1500){
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
+    grid-template-columns: repeat(${props => props.$columns} , 5fr);
+    grid-template-rows: repeat(3, 7fr);
+    grid-gap: 20px;
+    margin-top: 30px;
 `;
 
 const Label = styled.label`
@@ -27,33 +16,38 @@ const Label = styled.label`
 `;
 
 const LoadMoreButton = styled.button`
-    margin-top: 20px;
+    margin: 20px 0;
     height: 3vh;
-    width: 10vw;
+    width: 20vw;
     font-size: 1.2rem;
 `;
 
-const toArrayOfIntervals = (array, interval) => (
-    Array(Math.ceil(array.length / interval)).fill(0).map(
-        (_, i) => array.slice(i * interval, i * interval + interval)
-    )
-);
-
 export const CardStackClusterWrapper = () => {
 
-    const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch } = useCards();
+    const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall } = useCards();
+    const [numOfColumns, setNumOfColumns] = useState(3);
+    //const [numOfRows, setNumOfRows] = useState();
     useEffect(() => { resetAddRemoveList() },[cardSearch, resetAddRemoveList])
 
-    return <Column>
+    useEffect(() => {
+        setNumOfColumns(
+            isBig
+                ? 5
+                : isMid
+                    ? 4
+                    : isSmall
+                        ? 3
+                        : 2
+        )
+     },[isBig, isMid, isSmall, setNumOfColumns])
+
+    return <>
         { loading && <Label>Loading...</Label> }
-        { (db?.data ?? false) && toArrayOfIntervals(db.data, (window.matchMedia("(max-width: 2000px)").matches ? 5 : 5)).map((section, x) => (
-            <Row key={`row${x}`}>
-                { section.map(
-                    (card, y) => 
-                    <Card key={`card${x},${y}`} card={card} x={x} y={y}/>
-                )}
-            </Row>)
-        )}
+        <Column $columns={numOfColumns}>
+            {(db?.data ?? false) && db.data.map((card, i) => (
+                    <Card key={`card${i}`} card={card} i={i}/>
+            ))}
+        </Column>
         { db && db.has_more && <LoadMoreButton onClick={loadMoreCards}>{loading ? "Loading..." : "Load More Results"}</LoadMoreButton> }
-    </Column>
+    </>
 }

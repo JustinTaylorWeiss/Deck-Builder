@@ -1,18 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useCards } from "../../contexts/CardContext";
-import Zero from "./icons/genericManaSymbols/0.svg";
-import One from "./icons/genericManaSymbols/1.svg";
-import Two from "./icons/genericManaSymbols/2.svg";
-import Three from "./icons/genericManaSymbols/3.svg";
-import Four from "./icons/genericManaSymbols/4.svg";
-import Five from "./icons/genericManaSymbols/5.svg";
-import Six from "./icons/genericManaSymbols/6.svg";
-import Seven from "./icons/genericManaSymbols/7.svg";
-import Eight from "./icons/genericManaSymbols/8.svg";
-import Nine from "./icons/genericManaSymbols/9.svg";
 
-const Img = styled.img``;
 const Option = styled.option``;
 
 const SelectColorType = styled.select`
@@ -24,9 +13,9 @@ const SelectColorType = styled.select`
 
 const Label = styled.label`
     margin-right: 10px;
-    font-size: 1rem;
+    font-size: 1.5rem;
     @media (max-width: 1500px) {
-        font-size: 0.7rem;
+        font-size: 1rem;
     }
 `;
 
@@ -37,7 +26,6 @@ const CheckBox = styled.input`
 `;
 
 const Wrapper = styled.div`
-    margin-top: 20px;
     font-size: 2rem;
     display: inline-flex;
     flex-direction: row;
@@ -45,43 +33,47 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const Row = styled.div`
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+const CmcText = styled.input`
+    height: 30px;
+    width: 70px;
+    font-size: 1.5rem;
 `;
 
-const NumberCheckBox  = ({numberInfo: [num, image]}) => {
-    
-    const { setCmcFilter, cmcFilter } = useCards();
-
-    return <>
-        <CheckBox checked={cmcFilter === num} name={num} type="checkbox" onChange={() => setCmcFilter(cmcFilter === num ? "" : num)}/>
-        <Img width="36" src={image} alt={num}/>
-    </>
-};
+const SmallLabel = styled.label`
+    margin-left: 20px;
+    width: 50px;
+    text-align: center;
+    font-size: 0.9rem;
+`;
 
 export const CmcFilterWrapper = () => {
 
-    const { cmcFilterType, setCmcFilterType } = useCards();
+    const { cmcFilterType, setCmcFilter, customSearch, setCustomSearch, setCmcFilterType, numOfCopies, setAddRemoveList, setNumOfCopies, showBannedCards, setShowBannedCards } = useCards();
 
     return <Wrapper>
         <Label htmlFor="colorFilter"> CMC </Label>
         <SelectColorType name="colorFilter" value={cmcFilterType} onChange={(e) => setCmcFilterType(e.target.value)}>
-            <Option value="=">  {"="}  </Option>
-            <Option value="!="> {"!="} </Option>
-            <Option value=">">  {">"}  </Option>
-            <Option value="<">  {"<"}  </Option>
-            <Option value=">="> {">="} </Option>
-            <Option value="<="> {"<="} </Option>
+            <Option value="">       {"All"}</Option>
+            <Option value="%3D">    {"="}  </Option>
+            <Option value="%21%3D"> {"!="} </Option>
+            <Option value="%3E">    {">"}  </Option>
+            <Option value="%3C">    {"<"}  </Option>
+            <Option value="%3E%3D"> {">="} </Option>
+            <Option value="%3C%3D"> {"<="} </Option>
         </SelectColorType>
-        <Row>
-            { [[0, Zero], [1, One], [2, Two], [3, Three], [4, Four], [5, Five], [6, Six], [7, Seven], [8, Eight], [9, Nine]].map((numberInfo, i) => 
-                <Fragment key={`fragment${i}`}>
-                    <NumberCheckBox key={`numberCheckBox${i}`} numberInfo={numberInfo}/>
-                </Fragment >
-            )}
-        </Row>
+        <CmcText type="number" placeholder="0" onChange={(e) => setCmcFilter(Math.max(e.target.value, 0))}/>
+        <SmallLabel htmlFor="numberOfCopies"> Copies </SmallLabel>
+        <SelectColorType name="numberOfCopies" value={numOfCopies} onChange={(e) => {
+            setAddRemoveList({});
+            setNumOfCopies(Number(e.target.value))
+        }}>
+            <Option value={0}> 0 </Option>
+            <Option value={1}> 1 </Option>
+            <Option value={4}> 4 </Option>
+        </SelectColorType>
+        <SmallLabel htmlFor="showBannedCards"> Show Banned </SmallLabel>
+        <CheckBox checked={showBannedCards} name="showBannedCards" type="checkbox" onChange={(e) => setShowBannedCards(prev => !prev)}/>
+        <SmallLabel htmlFor="customSearch"> Custom Search </SmallLabel>
+        <CheckBox checked={customSearch} name="customSearch" type="checkbox" onChange={(e) => setCustomSearch(prev => !prev)}/>
     </Wrapper>
 }
