@@ -79,16 +79,6 @@ const ListItem = styled.span`
 const Img = styled.img`
     transform: translate(0, 5%);
 `
-const ListBorder = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    border: 2px solid black;
-    border-radius: 5px;
-`;
 
 const TitleButton = styled.button`
     font-size: 1.2rem;
@@ -224,7 +214,10 @@ export const SideListWrapper = () => {
                         ))
                         :(fdb?.data ?? false) && deckList && deckList.map((cardName, i) => (
                             <Fragment key={`listFrag${i}`}>
-                                <ListItem>{cardName}</ListItem>
+                                { (i !== deckList.length-1)
+                                    ? <ListItem>{cardName}</ListItem>
+                                    : <ListItem style={{color: "#217ab5"}}>{cardName}</ListItem>
+                                }
                                 <br />
                             </Fragment>
                         ))
