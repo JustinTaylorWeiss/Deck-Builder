@@ -9,6 +9,7 @@ import addToDeck from "./icons/addToDeck.svg"
 
 const Img = styled.img`
     width: 100%;
+    border-radius: 20px;
 `;
 
 const FlipIcon = styled.img``;
@@ -46,7 +47,7 @@ const AddToDeckIcon = styled.img`
 
 const Spacer = styled.div`
     display: inline-block;
-    height: 70px;
+    height: 42px;
     border-radius: 10px;
     flex: 3;
 `

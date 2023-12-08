@@ -39,17 +39,31 @@ export const CardProvider = ({ children }) => {
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState("")
     // Fetch Card Databse From API
-    
-    const adjustDbToAddRemovedCard = (fdb, delim) => (
+
+    useEffect(() => {
+        const localDeckList = JSON.parse(localStorage.getItem("deckList"));
+        if(localDeckList) 
+            setDeckList(localDeckList);
+    },[setDeckList])
+
+    useEffect(() => {
+        if(deckList.length > 0)
+            localStorage.setItem("deckList", JSON.stringify(deckList));
+    },[deckList])
+
+    const adjustDbToAddRemovedCard = (fdb) => (
         fdb.data.reduce((acc, card) => {
-            const cardName = (card?.card_faces ?? false)
-                ? card.card_faces[0].name + " // " + card.card_faces[1].name
-                : card.name
+            //const cardName = (card?.card_faces ?? false)
+                //? card.card_faces[0].name + " // " + card.card_faces[1].name
+                //: card.name
             const numOfCard = (addRemoveList?.[card.oracle_id] ?? numOfCopies)
-            return numOfCard < 1
-                ? acc
-                : acc + numOfCard + "x " + cardName + delim
-        },"")
+            return (numOfCard > 0)
+                ? [...acc, {quantity: numOfCard, card: card}]
+                : acc
+            //return numOfCard < 1
+                //? acc
+                //: acc + numOfCard + "x " + cardName + delim
+        },[])
     )
 
     const colorFilterToUriText = useCallback((colorFilter) => (
@@ -79,10 +93,20 @@ export const CardProvider = ({ children }) => {
                 : ""
     ),[]);
 
-    const addCardToDeckList = (cardName, quantity) => {
+    const addCardToDeckList = (card, quantity) => {
         if(quantity > 0)
-            setDeckList((prev) => [...prev, quantity + "x " + cardName])
+            setDeckList((prev) => [...prev, quantity + "x " + card])
     };
+
+    const cardObjArrToListString = (cardObjArr) => (
+        cardObjArr.map((cardObj) => (
+            "" + cardObj.quantity + "x " + 
+            ((cardObj?.card?.card_faces ?? false)
+                ? cardObj.card.card_faces[0].name + " // " + cardObj.card.card_faces[1].name
+                : cardObj.card.name
+            )
+        ))
+    );
 
     const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter, customSearch) => (
         rootUri + 
@@ -162,7 +186,7 @@ export const CardProvider = ({ children }) => {
         if (fdb?.data ?? false)
         setDeckList((prev) => [
             ...prev,
-            ...adjustDbToAddRemovedCard(fdb, "^").split("^"),
+            ...cardObjArrToListString(adjustDbToAddRemovedCard(fdb)),
         ])
     }
 
@@ -178,6 +202,7 @@ export const CardProvider = ({ children }) => {
     }
 
     const resetDeckList = useCallback(() => {
+        localStorage.setItem("deckList", "[]");
         setDeckList([]);
     }, [setDeckList]);
 
@@ -217,7 +242,7 @@ export const CardProvider = ({ children }) => {
         setFilterType, adjustDbToAddRemovedCard,
         pushSeachListToDeck, resetDeckList,
         resetAddRemoveList, addCardToDeckList,
-        loadMoreCards,
+        loadMoreCards, cardObjArrToListString,
     };
 
     return <CardContext.Provider value={value}>{children}</CardContext.Provider>

@@ -35,23 +35,3 @@ const App = () => <CardProvider>
 </CardProvider>;
 
 export default App;
-
-/*
-const AppWrap = styled.div`
-    width: 100vw;
-    display: grid;
-    grid-gap: 5%;
-    grid-template-columns: 1fr 4fr 1fr;
-    @media (max-width: 2000px) {
-        grid-gap: 0;
-    }
-`
-*/
-
-/*
-<AppWrap>
-    <DeckList/>
-    <CardSearch/>
-    <SearchList/>
-</AppWrap>
-*/

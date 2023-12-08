@@ -28,7 +28,7 @@ const Row = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: 10px 0 10px 0;
+    padding: 10px 0 10px 0;
 `;
 
 const SmallRow = styled.div`

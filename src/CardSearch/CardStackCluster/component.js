@@ -6,7 +6,7 @@ import { Card } from "../Card";
 const Column = styled.div`
     display: grid;
     grid-template-columns: repeat(${props => props.$columns} , 5fr);
-    grid-template-rows: repeat(3, 7fr);
+    grid-template-rows: repeat(1, 7fr);
     grid-gap: 20px;
     margin-top: 30px;
 `;
@@ -20,6 +20,11 @@ const LoadMoreButton = styled.button`
     height: 3vh;
     width: 20vw;
     font-size: 1.2rem;
+`;
+
+const Spacer = styled.div`
+    height: 20px;
+    width: 100%;
 `;
 
 export const CardStackClusterWrapper = () => {
@@ -39,7 +44,8 @@ export const CardStackClusterWrapper = () => {
                         ? 3
                         : 2
         )
-     },[isBig, isMid, isSmall, setNumOfColumns])
+    },[isBig, isMid, isSmall, setNumOfColumns])
+
 
     return <>
         { loading && <Label>Loading...</Label> }
@@ -49,5 +55,6 @@ export const CardStackClusterWrapper = () => {
             ))}
         </Column>
         { db && db.has_more && <LoadMoreButton onClick={loadMoreCards}>{loading ? "Loading..." : "Load More Results"}</LoadMoreButton> }
+        <Spacer/>
     </>
 }
