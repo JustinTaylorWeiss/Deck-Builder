@@ -51,8 +51,8 @@ export const CardProvider = ({ children }) => {
             localStorage.setItem("deckList", JSON.stringify(deckList));
     },[deckList])
 
-    const adjustDbToAddRemovedCard = (fdb) => (
-        fdb.data.reduce((acc, card) => {
+    const adjustDbToAddRemovedCard = (db) => (
+        db.data.reduce((acc, card) => {
             const numOfCard = (addRemoveList?.[card.oracle_id] ?? numOfCopies)
             return (numOfCard > 0)
                 ? [...acc, {quantity: numOfCard, card: card}]

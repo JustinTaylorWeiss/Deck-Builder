@@ -28,7 +28,7 @@ const Row = styled.div`
 
 const H3 = styled.h3`
     padding: 0;
-    margin: 0px auto 10px auto;
+    margin: 0px auto 0px auto;
     text-align: center;
     font-weight: normal;
     font-size: 1.5rem;
@@ -73,9 +73,26 @@ const LIWrap = styled.div`
     border-radius: 2px;
 `
 
+const PlaceholderItem = styled.span`
+    font-size: 1rem;
+    text-align: center;
+    padding-top: 5px;
+    width: 100%;
+    color: gray;
+    @media (min-width: 2000px) {
+        font-size: 1.5rem;
+    }
+    @media (max-width: 1500px) {
+        font-size: 0.7rem;
+    }
+    @media (max-width: 1000px) {
+        font-size: 0.5rem;
+    }
+`;
 
 const ListItem = styled.span`
     display: block;
+    cursor: ${props => props.$dfc ? "pointer" : "auto"};
     flex-direction: column;
     justify-content: flex-start;
     font-size: 1rem;
@@ -86,7 +103,7 @@ const ListItem = styled.span`
     padding: 5px 0;
     padding-left: 2em;
     text-indent: -1.6em;
-    color: ${props => props.lastItem ? "#217ab5" : "white"};
+    color: "white";
     &:hover {
         color: green;
     }
@@ -156,6 +173,11 @@ const TitleButton = styled.button`
     }
 `
 
+const TypeText = styled.h3`
+    text-align: center;
+    width: 100%;
+`;
+
 const Button = styled.button`
     font-size: 1.2rem;
     padding: 3px;
@@ -186,11 +208,12 @@ export const SideListWrapper = () => {
     const [activeTab, setActiveTab] = useState("search");
     const [confirmClear, setConfirmClear] = useState(false);
     const [hoverCard, setHoverCard] = useState("");
+    const [backFaces, setBackFaces] = useState([]);
     const { db, cardSearch, combineDuplicates, removeCardFromDeck, getNameFromCard, cardObjArrToListString, addRemoveList, pushSeachListToDeck, numOfCopies, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
     
     const findImage = (card) => (
         (!card?.image_uris ?? false) 
-        ? card.card_faces[0].image_uris.normal
+        ? card.card_faces[((backFaces[card.oracle_id] ?? false) ? 1 : 0)].image_uris.normal
         : card.image_uris.normal
     )
 
@@ -202,6 +225,7 @@ export const SideListWrapper = () => {
             resetDeckList();
             setConfirmClear(false);
         }
+        setTimeout(() => {setConfirmClear(false)}, 2000)
     }
 
     const copyButton = () => {
@@ -215,12 +239,47 @@ export const SideListWrapper = () => {
                     : combineDuplicates(deckList).map((card, i) => ((i !== 0) ? "\n" : "") + getNameFromCard(card.card))
             );
         setClipboarded(db)
-        setTimeout(() => setClipboarded(false), 1000)
+        setTimeout(() => {setClipboarded(false)}, 1000)
     }
 
     useEffect(() => {
         setClipboarded(false);
-    }, [cardSearch, activeTab, setClipboarded])
+        setConfirmClear(false);
+    }, [cardSearch, activeTab, setClipboarded, setConfirmClear])
+
+    const cardTypes = [
+        "Battle",
+        "Enchantment",
+        "Artifact",
+        "Land",
+        "Creature",
+        "Planeswalker",
+        "Instant",
+        "Sorcery",
+    ]
+
+    const onListCardClick = (cardWrap) => {
+        if(cardWrap?.card?.card_faces ?? false)
+            setBackFaces((prev) => ({ ...prev, [cardWrap.card.oracle_id]: (!prev[cardWrap.card.oracle_id] ?? false)}))
+    }
+
+    const processList = (list) => (
+        Object.entries(
+            Object.groupBy(
+                (activeTab === "search" 
+                    ? adjustDbToAddRemovedCard(list)
+                    : combineDuplicates(list)
+                ), ({card}) => 
+                    cardTypes.filter((type) => 
+                        card.type_line.includes(type)
+                    ).reduce((acc, type, i) => acc + ((i > 0) ? " - " : " ") + type, "")
+            )
+        )
+    )
+
+    const activeList = activeTab === "search" 
+        ? db 
+        : deckList
 
     return <>
         <ListWrap>
@@ -234,10 +293,9 @@ export const SideListWrapper = () => {
                         {activeTab === "search" 
                             ?<Button onClick={pushSeachListToDeck}>{(isMidToSmallest) ? "Deck" : "To Deck" }</Button>
                             :<Button onClick={clearButton}>
-                                {
-                                    confirmClear
-                                        ? "Confirm?"
-                                        : "Clear"
+                                {confirmClear
+                                    ? "Confirm?"
+                                    : "Clear"
                                 }
                             </Button>
                         }
@@ -249,45 +307,43 @@ export const SideListWrapper = () => {
                             }
                         </Button>
                     </Row>
-                    <H3>{
-                        ((db?.data ?? false) || activeTab !== "search") && "Total Cards: " + ((activeTab === "search")
-                            ? adjustDbToAddRemovedCard(db).length
-                            : deckList.length
-                        )
+                    <H3>{`Total Cards: ${
+                        (activeTab === "search")
+                            ? (db?.data ?? false)
+                                ? adjustDbToAddRemovedCard(db).reduce((acc, {quantity}) => acc + quantity, 0)
+                                : 0
+                            : (deckList.length > 0)
+                                ? deckList.reduce((acc, {quantity}) => acc + quantity, 0)
+                                : 0
+                    }`
                     }</H3>
-                    {
-                        !db && activeTab === "search" && <ListItem $lastItem={true}>
-                            Search Cards to get List
-                        </ListItem>
-                    }
-                    {
-                        (deckList.length < 1) && activeTab !== "search" && <ListItem $lastItem={true}>
-                            Add Cards From Search List
-                        </ListItem>
-                    }
+                    {!db && activeTab === "search" && <PlaceholderItem $lastItem={true}>
+                        Search Cards to get List
+                    </PlaceholderItem>}
+                    {(deckList.length < 1) && activeTab !== "search" && <PlaceholderItem $lastItem={true}>
+                        Add Cards From Search List
+                    </PlaceholderItem>}
                     {  
-                        activeTab === "search"
-                            ?(db?.data ?? false) && cardObjArrToListString(
-                                adjustDbToAddRemovedCard(db)
-                            ).map((cardName, i) => (
-                                <LIWrap key={`listFrag${i}`}>
-                                    <ListItem 
-                                        onMouseOver={() => setHoverCard(adjustDbToAddRemovedCard(db)[i])}
-                                        onMouseOut={() => setHoverCard("")}
-                                    >{cardName}</ListItem>
-                                    <br/>
-                                </LIWrap>
-                            ))
-                            : deckList && combineDuplicates(deckList).map((cardWrap, i) => (
-                                <LIWrap key={`listFrag${i}`}>
-                                    <ListItem
-                                        $lastItem={(i !== deckList.length-1)}
-                                        onMouseOver={() => setHoverCard(cardWrap)}
-                                        onMouseOut={() => setHoverCard("")}
-                                    >{`${cardWrap.quantity}x ${getNameFromCard(cardWrap.card)}`}</ListItem>
-                                    <TrashImg src={trash} onClick={() => removeCardFromDeck(cardWrap)}/>
-                                </LIWrap>
-                            ))
+                        activeList && 
+                        (activeTab !== "search" || (db?.data ?? false)) && 
+                        processList(activeList).map(([type, typeGroup], i) => (
+                            <Fragment key={`typeGroup${i}`}>
+                                <TypeText>{`${type} (${typeGroup.reduce((acc, {quantity}) => acc + quantity, 0)})`}</TypeText>
+                                {
+                                    typeGroup.map((cardWrap, i) => (
+                                        <LIWrap key={`listFrag${i}`}>
+                                            <ListItem
+                                                $dfc={(cardWrap?.card?.card_faces ?? false)}
+                                                onClick={() => onListCardClick(cardWrap)}
+                                                onMouseOver={() => setHoverCard(cardWrap)}
+                                                onMouseOut={() => setHoverCard("")}
+                                            >{`${cardWrap.quantity}x ${getNameFromCard(cardWrap.card)}`}</ListItem>
+                                            { activeTab !== "search" && <TrashImg src={trash} onClick={() => removeCardFromDeck(cardWrap)}/>}
+                                        </LIWrap>
+                                    ))
+                                }
+                            </Fragment>
+                        ))
                     }
                 </ListBlock>
         </ListWrap>
