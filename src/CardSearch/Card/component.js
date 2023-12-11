@@ -9,7 +9,7 @@ import addToDeck from "./icons/addToDeck.svg"
 
 const Img = styled.img`
     width: 100%;
-    border-radius: 20px;
+    border-radius: 4.2%;
 `;
 
 const FlipIcon = styled.img``;
@@ -166,7 +166,7 @@ export const CardWrapper = ({card, x, y}) => {
             <AddRemoveButton onClick={(e) => cardQuantityClick(e, -1)}><AddRemoveIcon draggable="false" height={36} src={minus} alt="-"/></AddRemoveButton>
             <CardQuantity $num={numOfCard}>{numOfCard}</CardQuantity>
             <AddRemoveButton onClick={(e) => cardQuantityClick(e, +1)}><AddRemoveIcon draggable="false" height={36} src={plus} alt="+"/></AddRemoveButton>
-            <AddToDeckButton data-tooltip-id="addToDeckTT" onClick={() => addCardToDeckList(cardName, numOfCard)}><AddToDeckIcon height={36} src={addToDeck} alt="Add to deck"/></AddToDeckButton>
+            <AddToDeckButton data-tooltip-id="addToDeckTT" onClick={() => addCardToDeckList({quantity: numOfCard, card: card})}><AddToDeckIcon height={36} src={addToDeck} alt="Add to deck"/></AddToDeckButton>
             <Tooltip id="addToDeckTT" place="top" content="Add to Deck" style={{fontSize: "1rem"}} opacity={1}/>
         </CardQuantityWrap>
     </CardWrap>

@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useCards } from "../contexts/CardContext";
 import styled from "styled-components";
 import checkmark from "./icons/checkmark.svg";
+import trash from "./icons/trash.svg";
 
 const ListWrap = styled.div`
     position: sticky;
@@ -59,6 +60,20 @@ const ListBlock = styled.pre`
     border-radius: 5px;
     margin-bottom: 20px;
 `
+
+const LIWrap = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    margin-left: 5%;
+    margin: 0 auto;
+    
+    border: solid white 1px;
+    border-radius: 2px;
+`
+
+
 const ListItem = styled.span`
     display: block;
     flex-direction: column;
@@ -71,8 +86,7 @@ const ListItem = styled.span`
     padding: 5px 0;
     padding-left: 2em;
     text-indent: -1.6em;
-    border: solid white 1px;
-    border-radius: 2px;
+    color: ${props => props.lastItem ? "#217ab5" : "white"};
     &:hover {
         color: green;
     }
@@ -87,6 +101,25 @@ const ListItem = styled.span`
     }
 `;
 
+const TrashImg = styled.img`
+    height: 15px;
+    padding: 3px;
+    margin: 2px 8px;
+    border-radius: 3px;
+    &:hover {
+        background-color: #ff000066;
+    }
+    &:active {
+        background-color: #ff0000;
+    }
+    @media (min-width: 2000px) {
+        font-size: 45rem;
+    }
+    @media (max-width: 1000px) {
+        font-size: 30rem;
+    }
+`;
+
 const Img = styled.img`
     transform: translate(0, 5%);
 `
@@ -97,8 +130,8 @@ const CardImg = styled.img`
     transform: translate(0, -50%);
     right: 20%;
     width: 20%;
-    border-radius: calc(24px + 1rem);
-    border: solid black 1rem;
+    border-radius: calc(4.2% + 5px);
+    border: solid #121010 5px;
     margin: 20px 0 0 20px;
 `;
 
@@ -111,6 +144,7 @@ const TitleButton = styled.button`
     border: ${props => props.$isActive ? "none" : "2px solid #121010"};
     color: ${props => props.$isActive ? "white" : "black"};
     background-color: ${props => props.$isActive ? "#121010" : "transparent"};
+    margin-top: 20px;
     &:hover {
         background-color: ${props => props.$isActive ? "#121010" : "#aaaaaa"};
     }
@@ -152,13 +186,14 @@ export const SideListWrapper = () => {
     const [activeTab, setActiveTab] = useState("search");
     const [confirmClear, setConfirmClear] = useState(false);
     const [hoverCard, setHoverCard] = useState("");
-    const { db, cardSearch, cardObjArrToListString, addRemoveList, pushSeachListToDeck, numOfCopies, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
+    const { db, cardSearch, combineDuplicates, removeCardFromDeck, getNameFromCard, cardObjArrToListString, addRemoveList, pushSeachListToDeck, numOfCopies, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
     
     const findImage = (card) => (
         (!card?.image_uris ?? false) 
         ? card.card_faces[0].image_uris.normal
         : card.image_uris.normal
     )
+
 
     const clearButton = () => {
         if(!confirmClear)
@@ -177,7 +212,7 @@ export const SideListWrapper = () => {
                         adjustDbToAddRemovedCard(db)
                     ).reduce(
                         (acc, nameText) => acc + nameText + "\n","")
-                    : deckList.map((card, i) => ((i !== 0) ? "\n" : "") + card)
+                    : combineDuplicates(deckList).map((card, i) => ((i !== 0) ? "\n" : "") + getNameFromCard(card.card))
             );
         setClipboarded(db)
         setTimeout(() => setClipboarded(false), 1000)
@@ -221,12 +256,12 @@ export const SideListWrapper = () => {
                         )
                     }</H3>
                     {
-                        !db && activeTab === "search" && <ListItem>
+                        !db && activeTab === "search" && <ListItem $lastItem={true}>
                             Search Cards to get List
                         </ListItem>
                     }
                     {
-                        (deckList.length < 1) && activeTab !== "search" && <ListItem>
+                        (deckList.length < 1) && activeTab !== "search" && <ListItem $lastItem={true}>
                             Add Cards From Search List
                         </ListItem>
                     }
@@ -235,25 +270,23 @@ export const SideListWrapper = () => {
                             ?(db?.data ?? false) && cardObjArrToListString(
                                 adjustDbToAddRemovedCard(db)
                             ).map((cardName, i) => (
-                                <Fragment key={`listFrag${i}`}>
+                                <LIWrap key={`listFrag${i}`}>
                                     <ListItem 
                                         onMouseOver={() => setHoverCard(adjustDbToAddRemovedCard(db)[i])}
                                         onMouseOut={() => setHoverCard("")}
                                     >{cardName}</ListItem>
                                     <br/>
-                                </Fragment>
+                                </LIWrap>
                             ))
-                            : deckList && deckList.map((cardName, i) => (
-                                <Fragment key={`listFrag${i}`}>
-                                    { (i !== deckList.length-1)
-                                        ? <ListItem
-                                        //onMouseOver={() => setHoverCard(cardName)}
-                                        //onMouseOut={() => setHoverCard("")}
-                                        >{cardName}</ListItem>
-                                        : <ListItem style={{color: "#217ab5"}}>{cardName}</ListItem>
-                                    }
-                                    <br />
-                                </Fragment>
+                            : deckList && combineDuplicates(deckList).map((cardWrap, i) => (
+                                <LIWrap key={`listFrag${i}`}>
+                                    <ListItem
+                                        $lastItem={(i !== deckList.length-1)}
+                                        onMouseOver={() => setHoverCard(cardWrap)}
+                                        onMouseOut={() => setHoverCard("")}
+                                    >{`${cardWrap.quantity}x ${getNameFromCard(cardWrap.card)}`}</ListItem>
+                                    <TrashImg src={trash} onClick={() => removeCardFromDeck(cardWrap)}/>
+                                </LIWrap>
                             ))
                     }
                 </ListBlock>

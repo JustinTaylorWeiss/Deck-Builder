@@ -53,16 +53,10 @@ export const CardProvider = ({ children }) => {
 
     const adjustDbToAddRemovedCard = (fdb) => (
         fdb.data.reduce((acc, card) => {
-            //const cardName = (card?.card_faces ?? false)
-                //? card.card_faces[0].name + " // " + card.card_faces[1].name
-                //: card.name
             const numOfCard = (addRemoveList?.[card.oracle_id] ?? numOfCopies)
             return (numOfCard > 0)
                 ? [...acc, {quantity: numOfCard, card: card}]
                 : acc
-            //return numOfCard < 1
-                //? acc
-                //: acc + numOfCard + "x " + cardName + delim
         },[])
     )
 
@@ -93,9 +87,10 @@ export const CardProvider = ({ children }) => {
                 : ""
     ),[]);
 
-    const addCardToDeckList = (card, quantity) => {
-        if(quantity > 0)
-            setDeckList((prev) => [...prev, quantity + "x " + card])
+    const addCardToDeckList = (cardWrapper) => {
+        console.log(cardWrapper);
+        if(cardWrapper.quantity > 0)
+            setDeckList((prev) => [...prev, cardWrapper])
     };
 
     const cardObjArrToListString = (cardObjArr) => (
@@ -106,6 +101,12 @@ export const CardProvider = ({ children }) => {
                 : cardObj.card.name
             )
         ))
+    );
+
+    const getNameFromCard = (card) => (
+        (card?.card_faces ?? false)
+            ? card.card_faces[0].name + " // " + card.card_faces[1].name
+            : card.name
     );
 
     const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter, customSearch) => (
@@ -182,11 +183,25 @@ export const CardProvider = ({ children }) => {
         )
     );
 
+    const removeCardFromDeck = (card) => {
+        setDeckList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
+    }
+
+    const combineDuplicates = (cardList) => {
+        const uniqueCardGroups = Object.values(Object.groupBy(cardList, ({card}) => card.oracle_id))
+        console.log(uniqueCardGroups);
+        return uniqueCardGroups.flatMap((cardGroup) => 
+            cardGroup.length > 1
+                ? [{quantity: cardGroup.reduce((acc, cardWrapper) => acc + cardWrapper.quantity, 0), card: cardGroup[0].card}]
+                : cardGroup
+        );
+    }
+
     const pushSeachListToDeck = () => {
         if (fdb?.data ?? false)
         setDeckList((prev) => [
             ...prev,
-            ...cardObjArrToListString(adjustDbToAddRemovedCard(fdb)),
+            ...adjustDbToAddRemovedCard(fdb),
         ])
     }
 
@@ -243,6 +258,8 @@ export const CardProvider = ({ children }) => {
         pushSeachListToDeck, resetDeckList,
         resetAddRemoveList, addCardToDeckList,
         loadMoreCards, cardObjArrToListString,
+        getNameFromCard, removeCardFromDeck,
+        combineDuplicates,
     };
 
     return <CardContext.Provider value={value}>{children}</CardContext.Provider>
