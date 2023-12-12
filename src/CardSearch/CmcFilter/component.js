@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import QuestonMark from './icons/questionMark.svg';
 import { useCards } from "../../contexts/CardContext";
-import { Tooltip } from 'react-tooltip';
 
 const Option = styled.option``;
 
@@ -11,26 +9,6 @@ const SelectColorType = styled.select`
     padding: 5px 10px;
     margin: 10px;
     color: black;
-`;
-
-const Img = styled.img`
-    &:hover{
-        padding: 3px;
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 3px;
-    }
-    &:active {
-        background-color: rgba(255, 255, 255, 0.6);
-    }
-`;
-
-const Link = styled.a`
-    width: 40px;
-    height: 40px;
-    margin-left: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 `;
 
 const Label = styled.label`
@@ -63,7 +41,7 @@ const CmcText = styled.input`
 
 const SmallLabel = styled.label`
     margin-left: 20px;
-    width: 60px;
+    width: 50px;
     text-align: center;
     font-size: 0.9rem;
 `;
@@ -77,7 +55,7 @@ const MidLabel = styled.label`
 
 export const CmcFilterWrapper = () => {
 
-    const { cmcFilterType, setCmcFilter, setCmcFilterType, setAddRemoveList, searchToMaybeBoard, setSearchToMaybeBoard, showBannedCards, setShowBannedCards } = useCards();
+    const { cmcFilterType, showQuery, setShowQuery, setCmcFilter, setCmcFilterType, setAddRemoveList, searchToMaybeBoard, setSearchToMaybeBoard, showBannedCards, setShowBannedCards } = useCards();
 
     return <Wrapper>
         <Label htmlFor="colorFilter"> CMC </Label>
@@ -98,7 +76,7 @@ export const CmcFilterWrapper = () => {
             setAddRemoveList({});
             setSearchToMaybeBoard((prev) => !prev)
         }}/>
-        <Link data-tooltip-id="scryfallHelp" href="https://scryfall.com/docs/syntax" target="_blank"><Img height={40} src={QuestonMark}/></Link>
-        <Tooltip id="scryfallHelp" place="top" content="Scryfall Syntax Help" style={{fontSize: "1rem"}} opacity={1}/>
+        <SmallLabel style={{marginLeft: "10px"}} htmlFor="showQuery"> Show Query </SmallLabel>
+        <CheckBox checked={showQuery} name="showQuery" type="checkbox" onChange={(e) => setShowQuery(prev => !prev)}/>
     </Wrapper>
 }

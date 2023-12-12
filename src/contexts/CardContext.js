@@ -27,6 +27,8 @@ export const CardProvider = ({ children }) => {
     const [cmcFilter, setCmcFilter] = useState(0);
     const [customSearch, setCustomSearch] = useState('');
     const [cardSearch, setCardSearch] = useState('');
+    const [currentUri, setCurrentUri] = useState('');
+    const [showQuery, setShowQuery] = useState(false);
     const [categorySearch, setCategorySearch] = useState('');
     const [showBannedCards, setShowBannedCards] = useState(false);
     const [deckList, setDeckList] = useState([]);
@@ -117,8 +119,21 @@ export const CardProvider = ({ children }) => {
                         ? ("+mv" + cmcFilterType + cmcFilter)
                         : "") + 
                     (showBannedCards ? "" : "+f%3Acommander") + 
-                colorFilterToUriText(colorFilter)
+                ((colorFilterToUriText(colorFilter) !== "+id<%3DWUBRG") ? colorFilterToUriText(colorFilter) : "")
     ),[colorFilterToUriText])
+
+    const decode = (uri) => (
+        uri.
+        replaceAll("%3A", ":").
+        replaceAll("%3D", "=").
+        replaceAll("%2B", "+").
+        replaceAll("%3C", "<").
+        replaceAll("%3E", ">").
+        replaceAll("%2D", ">").
+        replaceAll("%7E", "~").
+        replaceAll("%7B", "{").
+        replaceAll("%7D", "}")
+    )
 
     useEffect(() => {
         if(cardSearch !== "" || categorySearch !== "")
@@ -126,7 +141,7 @@ export const CardProvider = ({ children }) => {
                 setLoading(true);
                 try {
                     const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, showBannedCards, colorFilter);
-                    console.log("uri: " + uri)
+                    setCurrentUri(decode(uri));
                     const res = await fetch(uri);
                     if(res.ok) {
                         const resJson = await res.json();
@@ -234,6 +249,7 @@ export const CardProvider = ({ children }) => {
         colorFilter,
         isBig, isMid, isSmall,
         isMidToSmallest,
+        currentUri,
         selected, setSelected, 
         loading, setLoading, 
         deckList, setDeckList,
@@ -245,6 +261,7 @@ export const CardProvider = ({ children }) => {
         categorySearch, setCategorySearch,
         addRemoveList, setAddRemoveList,
         searchToMaybeBoard, setSearchToMaybeBoard,
+        showQuery, setShowQuery,
         changePage, setColorOnColorFilter, 
         setFilterType, adjustDbToAddRemovedCard,
         pushSeachListToDeck, resetDeckList,

@@ -8,13 +8,15 @@ import R from "./colorIcons/R.svg";
 import G from "./colorIcons/G.svg";
 import C from "./colorIcons/C.svg";
 
-const Img = styled.img``;
+const Img = styled.img`
+    margin: 2px;
+`;
 const Option = styled.option``;
 
 const SelectColorType = styled.select`
     font-size: 1.35rem;
     padding: 5px 10px;
-    margin: 10px;
+    margin: 10px 15px 10px 10px;
     color: black;
 `;
 
@@ -67,7 +69,7 @@ const ColorCheckBox  = ({colorInfo: [name, image]}) => {
     const { setColorOnColorFilter, colorFilter } = useCards();
 
     return <Column>
-        <Img width="36" src={image} alt={name}/>
+        <Img width="40" src={image} alt={name}/>
         <CheckBox checked={colorFilter[name]} name={name} type="checkbox" onChange={(e) => setColorOnColorFilter(name, e.target.checked)}/>
     </Column>
 };
