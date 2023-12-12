@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/magic-schoolbus/static/css/main.9271e3ee.css",
-    "main.js": "/magic-schoolbus/static/js/main.2b1a3189.js",
+    "main.js": "/magic-schoolbus/static/js/main.cee01488.js",
     "static/media/W.svg": "/magic-schoolbus/static/media/W.99c7fe1b9600148fbeed55dc7729eb2e.svg",
     "static/media/R.svg": "/magic-schoolbus/static/media/R.b8e69eab9136b4e4a401c7295bdc8f4f.svg",
     "static/media/G.svg": "/magic-schoolbus/static/media/G.1e9be629cc98068fb2681d6bcfa716b7.svg",
@@ -16,10 +16,10 @@
     "static/media/checkmark.svg": "/magic-schoolbus/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
     "static/media/minus.svg": "/magic-schoolbus/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
     "main.9271e3ee.css.map": "/magic-schoolbus/static/css/main.9271e3ee.css.map",
-    "main.2b1a3189.js.map": "/magic-schoolbus/static/js/main.2b1a3189.js.map"
+    "main.cee01488.js.map": "/magic-schoolbus/static/js/main.cee01488.js.map"
   },
   "entrypoints": [
     "static/css/main.9271e3ee.css",
-    "static/js/main.2b1a3189.js"
+    "static/js/main.cee01488.js"
   ]
 }
