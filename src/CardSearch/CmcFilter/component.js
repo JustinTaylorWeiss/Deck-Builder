@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import QuestonMark from './icons/questionMark.svg';
 import { useCards } from "../../contexts/CardContext";
+import { Tooltip } from 'react-tooltip';
 
 const Option = styled.option``;
 
@@ -12,7 +13,16 @@ const SelectColorType = styled.select`
     color: black;
 `;
 
-const Img = styled.img``;
+const Img = styled.img`
+    &:hover{
+        padding: 3px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+    }
+    &:active {
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+`;
 
 const Link = styled.a`
     width: 40px;
@@ -47,20 +57,27 @@ const Wrapper = styled.div`
 
 const CmcText = styled.input`
     height: 30px;
-    width: 70px;
+    width: 50px;
     font-size: 1.5rem;
 `;
 
 const SmallLabel = styled.label`
     margin-left: 20px;
-    width: 50px;
+    width: 60px;
+    text-align: center;
+    font-size: 0.9rem;
+`;
+
+const MidLabel = styled.label`
+    margin-left: 10px;
+    width: 150px;
     text-align: center;
     font-size: 0.9rem;
 `;
 
 export const CmcFilterWrapper = () => {
 
-    const { cmcFilterType, setCmcFilter, customSearch, setCustomSearch, setCmcFilterType, numOfCopies, setAddRemoveList, setNumOfCopies, showBannedCards, setShowBannedCards } = useCards();
+    const { cmcFilterType, setCmcFilter, setCmcFilterType, setAddRemoveList, searchToMaybeBoard, setSearchToMaybeBoard, showBannedCards, setShowBannedCards } = useCards();
 
     return <Wrapper>
         <Label htmlFor="colorFilter"> CMC </Label>
@@ -74,18 +91,14 @@ export const CmcFilterWrapper = () => {
             <Option value="%3C%3D"> {"<="} </Option>
         </SelectColorType>
         <CmcText type="number" placeholder="0" onChange={(e) => setCmcFilter(Math.max(e.target.value, 0))}/>
-        <SmallLabel htmlFor="numberOfCopies"> Copies </SmallLabel>
-        <SelectColorType name="numberOfCopies" value={numOfCopies} onChange={(e) => {
-            setAddRemoveList({});
-            setNumOfCopies(Number(e.target.value))
-        }}>
-            <Option value={0}> 0 </Option>
-            <Option value={1}> 1 </Option>
-            <Option value={4}> 4 </Option>
-        </SelectColorType>
         <SmallLabel htmlFor="showBannedCards"> Show Banned </SmallLabel>
         <CheckBox checked={showBannedCards} name="showBannedCards" type="checkbox" onChange={(e) => setShowBannedCards(prev => !prev)}/>
-        <SmallLabel> Scryfall Syntax </SmallLabel>
-        <Link href="https://scryfall.com/docs/syntax" target="_blank"><Img height={40} src={QuestonMark}/></Link>
+        <MidLabel htmlFor="searchToMaybeBoard"> Add Search to Maybe Board by Default </MidLabel>
+        <CheckBox name="searchToMaybeBoard" checked={searchToMaybeBoard} type="checkbox" onChange={(e) => {
+            setAddRemoveList({});
+            setSearchToMaybeBoard((prev) => !prev)
+        }}/>
+        <Link data-tooltip-id="scryfallHelp" href="https://scryfall.com/docs/syntax" target="_blank"><Img height={40} src={QuestonMark}/></Link>
+        <Tooltip id="scryfallHelp" place="top" content="Scryfall Syntax Help" style={{fontSize: "1rem"}} opacity={1}/>
     </Wrapper>
 }

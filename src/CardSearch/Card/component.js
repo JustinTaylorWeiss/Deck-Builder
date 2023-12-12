@@ -130,7 +130,7 @@ const CardName = styled.div`
 
 export const CardWrapper = ({card, x, y}) => {
 
-    const { addRemoveList, setAddRemoveList, addCardToDeckList, numOfCopies } = useCards();
+    const { addRemoveList, setAddRemoveList, addCardToDeckList, searchToMaybeBoard } = useCards();
     const [backFace, setBackFace] = useState(false);
 
     const findImage = () => (
@@ -143,11 +143,11 @@ export const CardWrapper = ({card, x, y}) => {
         e.preventDefault();
         setAddRemoveList((prev) => ({
             ...prev,
-            [card.oracle_id]:(Math.max((prev[card.oracle_id] ?? numOfCopies) + change, 0))
+            [card.oracle_id]:(Math.max((prev[card.oracle_id] ?? (searchToMaybeBoard ? 1 : 0)) + change, 0))
         }))
     }
 
-    const numOfCard = (addRemoveList[card.oracle_id] ?? numOfCopies)
+    const numOfCard = (addRemoveList[card.oracle_id] ?? (searchToMaybeBoard ? 1 : 0))
     const cardName = (card?.card_faces ?? false)
         ? card.card_faces[0].name + " // " + card.card_faces[1].name
         : card?.name

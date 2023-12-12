@@ -22,7 +22,7 @@ export const CardProvider = ({ children }) => {
         }
     );
     const [loading, setLoading] = useState(false);
-    const [numOfCopies, setNumOfCopies] = useState(1);
+    const [searchToMaybeBoard, setSearchToMaybeBoard] = useState(true);
     const [cmcFilterType, setCmcFilterType] = useState('');
     const [cmcFilter, setCmcFilter] = useState(0);
     const [customSearch, setCustomSearch] = useState('');
@@ -53,7 +53,7 @@ export const CardProvider = ({ children }) => {
 
     const adjustDbToAddRemovedCard = (db) => (
         db.data.reduce((acc, card) => {
-            const numOfCard = (addRemoveList?.[card.oracle_id] ?? numOfCopies)
+            const numOfCard = (addRemoveList?.[card.oracle_id] ?? (searchToMaybeBoard ? 1 : 0))
             return (numOfCard > 0)
                 ? [...acc, {quantity: numOfCard, card: card}]
                 : acc
@@ -88,7 +88,6 @@ export const CardProvider = ({ children }) => {
     ),[]);
 
     const addCardToDeckList = (cardWrapper) => {
-        console.log(cardWrapper);
         if(cardWrapper.quantity > 0)
             setDeckList((prev) => [...prev, cardWrapper])
     };
@@ -112,7 +111,7 @@ export const CardProvider = ({ children }) => {
     const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter, customSearch) => (
         rootUri + 
         "search?order=cmc&q=" + 
-            encodeURI(cardSearch) + 
+                encodeURI(cardSearch) + 
                 catagorySearch +
                     (cmcFilterType !== ""
                         ? ("+mv" + cmcFilterType + cmcFilter)
@@ -122,7 +121,6 @@ export const CardProvider = ({ children }) => {
     ),[colorFilterToUriText])
 
     useEffect(() => {
-        console.log(colorFilterToUriText(colorFilter))
         if(cardSearch !== "" || categorySearch !== "")
             (async () => {
                 setLoading(true);
@@ -183,8 +181,7 @@ export const CardProvider = ({ children }) => {
     }
 
     const combineDuplicates = (cardList) => {
-        const uniqueCardGroups = Object.values(Object.groupBy(cardList, ({card}) => card.oracle_id))
-        console.log(uniqueCardGroups);
+        const uniqueCardGroups = Object.values(Object.groupBy(cardList, ({card}) => card.oracle_id));
         return uniqueCardGroups.flatMap((cardGroup) => 
             cardGroup.length > 1
                 ? [{quantity: cardGroup.reduce((acc, cardWrapper) => acc + cardWrapper.quantity, 0), card: cardGroup[0].card}]
@@ -240,7 +237,6 @@ export const CardProvider = ({ children }) => {
         selected, setSelected, 
         loading, setLoading, 
         deckList, setDeckList,
-        numOfCopies, setNumOfCopies,
         cardSearch, setCardSearch,
         cmcFilterType, setCmcFilterType,
         cmcFilter, setCmcFilter,
@@ -248,6 +244,7 @@ export const CardProvider = ({ children }) => {
         showBannedCards, setShowBannedCards,
         categorySearch, setCategorySearch,
         addRemoveList, setAddRemoveList,
+        searchToMaybeBoard, setSearchToMaybeBoard,
         changePage, setColorOnColorFilter, 
         setFilterType, adjustDbToAddRemovedCard,
         pushSeachListToDeck, resetDeckList,

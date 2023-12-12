@@ -12,7 +12,7 @@ const Form = styled.form`
 
 const CategorySearch = styled(Select)`
     width: 200px;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: black;
 `;
 
@@ -73,9 +73,9 @@ export const SearchClusterWrapper = () => {
     return <Row>
         <SmallLabel>{(db?.data?.length ?? 0) + " / " + (db?.total_cards ?? 0)}</SmallLabel>
         <Form onSubmit={searchSubmit}> 
-            <Search $custom={false} placeholder="Card Name or Custom Querey" ref={searchRef}/>
+            <Search $custom={false} placeholder="Card Name or Custom Query" ref={searchRef}/>
             <SubmitButton type="submit" value="Search"/>
         </Form>
-        <CategorySearch placeholder="Category" onChange={(e) => setCategorySearch(e.value)} options={categoryOptions} />
+        <CategorySearch placeholder="Search for Category" onChange={(e) => setCategorySearch(e.value)} options={categoryOptions} />
     </Row>
 }
