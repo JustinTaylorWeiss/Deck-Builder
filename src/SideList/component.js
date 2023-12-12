@@ -97,11 +97,11 @@ const ListItem = styled.span`
     justify-content: flex-start;
     font-size: 1rem;
     align-items: center;
-    width: 80%;
+    width: 100%;
     margin: 0 0 0 5%;
     white-space: normal;
     padding: 5px 0;
-    padding-left: 2em;
+    padding-left: 1.4em;
     text-indent: -1.6em;
     color: "white";
     &:hover {
@@ -176,6 +176,15 @@ const TitleButton = styled.button`
 const TypeText = styled.h3`
     text-align: center;
     width: 100%;
+    @media (min-width: 2000px) {
+        font-size: 1.5rem;
+    }
+    @media (max-width: 1500px) {
+        font-size: 0.7rem;
+    }
+    @media (max-width: 1000px) {
+        font-size: 0.5rem;
+    }
 `;
 
 const Button = styled.button`

@@ -112,18 +112,13 @@ export const CardProvider = ({ children }) => {
     const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter, customSearch) => (
         rootUri + 
         "search?order=cmc&q=" + 
-        (customSearch 
-            ? encodeURI(cardSearch)
-            : (
-                cardSearch + 
-                (cmcFilterType !== ""
-                    ? ("+mv" + cmcFilterType + cmcFilter)
-                    : "") + 
+            encodeURI(cardSearch) + 
                 catagorySearch +
-                (showBannedCards ? "" : "+f%3Acommander") + 
+                    (cmcFilterType !== ""
+                        ? ("+mv" + cmcFilterType + cmcFilter)
+                        : "") + 
+                    (showBannedCards ? "" : "+f%3Acommander") + 
                 colorFilterToUriText(colorFilter)
-            )
-        )
     ),[colorFilterToUriText])
 
     useEffect(() => {

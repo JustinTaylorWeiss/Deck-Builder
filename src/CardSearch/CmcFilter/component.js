@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import QuestonMark from './icons/questionMark.svg';
 import { useCards } from "../../contexts/CardContext";
 
 const Option = styled.option``;
@@ -9,6 +10,17 @@ const SelectColorType = styled.select`
     padding: 5px 10px;
     margin: 10px;
     color: black;
+`;
+
+const Img = styled.img``;
+
+const Link = styled.a`
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const Label = styled.label`
@@ -73,7 +85,7 @@ export const CmcFilterWrapper = () => {
         </SelectColorType>
         <SmallLabel htmlFor="showBannedCards"> Show Banned </SmallLabel>
         <CheckBox checked={showBannedCards} name="showBannedCards" type="checkbox" onChange={(e) => setShowBannedCards(prev => !prev)}/>
-        <SmallLabel htmlFor="customSearch"> Custom Search </SmallLabel>
-        <CheckBox checked={customSearch} name="customSearch" type="checkbox" onChange={(e) => setCustomSearch(prev => !prev)}/>
+        <SmallLabel> Scryfall Syntax </SmallLabel>
+        <Link href="https://scryfall.com/docs/syntax" target="_blank"><Img height={40} src={QuestonMark}/></Link>
     </Wrapper>
 }
