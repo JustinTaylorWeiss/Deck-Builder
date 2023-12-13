@@ -30,8 +30,8 @@ export const CardProvider = ({ children }) => {
     const [currentUri, setCurrentUri] = useState('');
     const [showQuery, setShowQuery] = useState(false);
     const [categorySearch, setCategorySearch] = useState('');
-    const [showBannedCards, setShowBannedCards] = useState(false);
     const [deckList, setDeckList] = useState([]);
+    const [searchFormat, setSearchFormat] = useState('');
 
     const isBig = useMediaQuery({query: '(min-width: 2000px)'})
     const isMid = useMediaQuery({query: '(min-width: 1500px)'})
@@ -110,7 +110,7 @@ export const CardProvider = ({ children }) => {
             : card.name
     );
 
-    const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, showBannedCards, colorFilter, customSearch) => (
+    const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, colorFilter, searchFormat) => (
         rootUri + 
         "search?order=cmc&q=" + 
                 encodeURI(cardSearch) + 
@@ -118,7 +118,7 @@ export const CardProvider = ({ children }) => {
                     (cmcFilterType !== ""
                         ? ("+mv" + cmcFilterType + cmcFilter)
                         : "") + 
-                    (showBannedCards ? "" : "+f%3Acommander") + 
+                    ((searchFormat && searchFormat !== "all") ? `+f%3A${searchFormat}` : "") + 
                 ((colorFilterToUriText(colorFilter) !== "+id<%3DWUBRG") ? colorFilterToUriText(colorFilter) : "")
     ),[colorFilterToUriText])
 
@@ -132,7 +132,8 @@ export const CardProvider = ({ children }) => {
         replaceAll("%2D", ">").
         replaceAll("%7E", "~").
         replaceAll("%7B", "{").
-        replaceAll("%7D", "}")
+        replaceAll("%7D", "}").
+        replaceAll("%21", "!")
     )
 
     useEffect(() => {
@@ -140,7 +141,7 @@ export const CardProvider = ({ children }) => {
             (async () => {
                 setLoading(true);
                 try {
-                    const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, showBannedCards, colorFilter);
+                    const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, colorFilter, searchFormat,);
                     setCurrentUri(decode(uri));
                     const res = await fetch(uri);
                     if(res.ok) {
@@ -159,7 +160,7 @@ export const CardProvider = ({ children }) => {
             })()
         else
             setDb(false);
-    }, [cardSearch, setDb, colorFilterToUriText, colorFilter, cmcFilter, cmcFilterType, showBannedCards, categorySearch, buildUri]);
+    }, [cardSearch, setDb, colorFilterToUriText, colorFilter, cmcFilter, cmcFilterType, searchFormat, categorySearch, buildUri]);
     
     const colorlessTrueFilter = (filterType) => ({
         filterType: filterType,
@@ -257,7 +258,7 @@ export const CardProvider = ({ children }) => {
         cmcFilterType, setCmcFilterType,
         cmcFilter, setCmcFilter,
         customSearch, setCustomSearch,
-        showBannedCards, setShowBannedCards,
+        searchFormat, setSearchFormat,
         categorySearch, setCategorySearch,
         addRemoveList, setAddRemoveList,
         searchToMaybeBoard, setSearchToMaybeBoard,

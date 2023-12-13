@@ -95,7 +95,7 @@ const Pre = styled.pre`
 
 export const SearchClusterWrapper = () => {
 
-    const { db, setCategorySearch, setCardSearch, currentUri, showQuery } = useCards();
+    const { db, setCategorySearch, cardSearch, setCardSearch, currentUri, showQuery } = useCards();
     const searchRef = useRef();
 
     const searchSubmit = (e) => {
@@ -112,8 +112,12 @@ export const SearchClusterWrapper = () => {
             </Form>
             <CategorySearch placeholder="Search for Category" onChange={(e) => setCategorySearch(e.value)} options={categoryOptions} />
         </Row>
-        {currentUri && showQuery && <Row>
-            <Pre><H3>{currentUri.substr(currentUri.indexOf("q=")+2)}</H3></Pre>
+        {showQuery && <Row>
+            <Pre><H3>{
+                (currentUri)
+                    ? currentUri.substr(currentUri.indexOf("q=")+2)
+                    : "Use filters to generate a query"
+            }</H3></Pre>
             <Link data-tooltip-id="scryfallHelp" href="https://scryfall.com/docs/syntax" target="_blank"><Img height={40} src={QuestonMark}/></Link>
             <Tooltip id="scryfallHelp" place="top" content="Scryfall Syntax Help" style={{fontSize: "1rem"}} opacity={1}/>
         </Row>}

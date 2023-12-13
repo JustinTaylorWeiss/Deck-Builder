@@ -31,7 +31,6 @@ export const CardStackClusterWrapper = () => {
 
     const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall } = useCards();
     const [numOfColumns, setNumOfColumns] = useState(3);
-    //const [numOfRows, setNumOfRows] = useState();
     useEffect(() => { resetAddRemoveList() },[cardSearch, resetAddRemoveList])
 
     useEffect(() => {
@@ -49,12 +48,17 @@ export const CardStackClusterWrapper = () => {
 
     return <>
         { loading && <Label>Loading...</Label> }
-        <Column $columns={numOfColumns}>
-            {(db?.data ?? false) && db.data.map((card, i) => (
-                    <Card key={`card${i}`} card={card} i={i}/>
-            ))}
-        </Column>
-        { db && db.has_more && <LoadMoreButton onClick={loadMoreCards}>{loading ? "Loading..." : "Load More Results"}</LoadMoreButton> }
-        <Spacer/>
+        {(db?.data?.length ?? 0) < 1
+            ? <Label>No Cards Found</Label>
+            : <>
+                <Column $columns={numOfColumns}>
+                    {(db?.data ?? false) && db.data.map((card, i) => (
+                            <Card key={`card${i}`} card={card} i={i}/>
+                    ))}
+                </Column>
+                { db && db.has_more && <LoadMoreButton onClick={loadMoreCards}>{loading ? "Loading..." : "Load More Results"}</LoadMoreButton> }
+                <Spacer/>
+            </>
+        }
     </>
 }
