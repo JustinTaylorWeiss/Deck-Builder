@@ -25,6 +25,7 @@ export const CardProvider = ({ children }) => {
     const [searchToMaybeBoard, setSearchToMaybeBoard] = useState(true);
     const [cmcFilterType, setCmcFilterType] = useState('');
     const [cmcFilter, setCmcFilter] = useState(0);
+    const [firstLoad, setFirstLoad] = useState(true);
     const [customSearch, setCustomSearch] = useState('');
     const [cardSearch, setCardSearch] = useState('');
     const [currentUri, setCurrentUri] = useState('');
@@ -143,6 +144,7 @@ export const CardProvider = ({ children }) => {
                 try {
                     const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, colorFilter, searchFormat,);
                     setCurrentUri(decode(uri));
+                    setFirstLoad(false);
                     const res = await fetch(uri);
                     if(res.ok) {
                         const resJson = await res.json();
@@ -251,6 +253,7 @@ export const CardProvider = ({ children }) => {
         isBig, isMid, isSmall,
         isMidToSmallest,
         currentUri,
+        firstLoad,
         selected, setSelected, 
         loading, setLoading, 
         deckList, setDeckList,

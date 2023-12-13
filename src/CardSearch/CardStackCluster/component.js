@@ -15,6 +15,12 @@ const Label = styled.label`
     font-size: 3rem;
 `;
 
+const SmallLabel = styled.label`
+    margin-top: 10px;
+    font-size: 2rem;
+`;
+
+
 const LoadMoreButton = styled.button`
     margin: 20px 0;
     height: 3vh;
@@ -29,7 +35,7 @@ const Spacer = styled.div`
 
 export const CardStackClusterWrapper = () => {
 
-    const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall } = useCards();
+    const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall, firstLoad } = useCards();
     const [numOfColumns, setNumOfColumns] = useState(3);
     useEffect(() => { resetAddRemoveList() },[cardSearch, resetAddRemoveList])
 
@@ -49,7 +55,7 @@ export const CardStackClusterWrapper = () => {
     return <>
         { loading && <Label>Loading...</Label> }
         {(db?.data?.length ?? 0) < 1
-            ? <Label>No Cards Found</Label>
+            ? <SmallLabel>{firstLoad ? "Use filters to find cards" : "No Cards Found"}</SmallLabel>
             : <>
                 <Column $columns={numOfColumns}>
                     {(db?.data ?? false) && db.data.map((card, i) => (
