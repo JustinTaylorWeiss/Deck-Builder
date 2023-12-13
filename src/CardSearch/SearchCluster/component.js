@@ -34,7 +34,7 @@ const Link = styled.a`
 
 
 const CategorySearch = styled(Select)`
-    width: 220px;
+    width: 180px;
     font-size: 1rem;
     color: black;
 `;
@@ -57,7 +57,7 @@ const SmallLabel = styled.label`
 
 const Search = styled.input`
     margin: 0 0 0 20px;
-    width: calc(290px - calc(81px + 0.5rem));
+    width: calc(330px - calc(81px + 0.5rem));
     height: 36px;
     padding-left: 0.5rem;
     padding-right: calc(81px + 0.5rem);
@@ -90,6 +90,7 @@ const Pre = styled.pre`
     border-radius: 5px;
     padding: 5px 10px;
     margin: 0;
+    overflow-x: scroll;
 `;
 
 

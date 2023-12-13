@@ -42,8 +42,7 @@ export const categoryOptions = [
     { value: '+t%3Aphenomenon',    label: 'Phenomenons'    },
     { value: '+f%3Apauper',        label: 'Pauper Legal'   },
     { value: '+is%3Acommander',    label: 'Commanders'     },
-    { value: '+otag%3Ablink',      label: 'Blink'          },
-    { value: '+otag%3Ablink',      label: 'Flicker'        },
+    { value: '+otag%3Ablink',      label: 'Blink / Flicker'},
     { value: '+o%3Acycling',       label: 'Cycling'        },
     { value: '+o%3Acycle',         label: 'Cycling Synergy'},
     { value: '+o%3Ainfect',        label: 'Infect'         },
@@ -104,6 +103,8 @@ export const categoryOptions = [
     { value: '+otag%3Apillowfort', label: 'Pillow Fort'    },
 
     // Long Text Catagories 
+    { value: '+(o%3Adestroy or o%3Aexile) +((o%3Atarget and o%3Apermanent) or +o%3A"permanents")', label: 'Permanent Destruction / Permanent Removal'},
+    { value: '+((o%3Adestroy +(o%3A"target land" or +o%3A"lands")) or otag%3Aremoval-land-destroy)', label: 'Land Destruction / Land Removal'},
     { value: '+(o%3A{t} and o%3Adeal and o%3Adamage and -o%3A"damage to you")', label: 'Pingers' },
     { value: '+otag%3Abounce', label: 'Bounce / Return to Hand' },
     { value: '+(o%3Adraw and (o%3Acard or o%3Acards))', label: 'Card Draw' },

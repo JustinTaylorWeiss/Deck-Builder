@@ -134,7 +134,8 @@ export const CardProvider = ({ children }) => {
         replaceAll("%7E", "~").
         replaceAll("%7B", "{").
         replaceAll("%7D", "}").
-        replaceAll("%21", "!")
+        replaceAll("%21", "!").
+        replaceAll("%22", "\"")
     )
 
     useEffect(() => {
