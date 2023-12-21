@@ -246,7 +246,7 @@ export const SideListWrapper = () => {
                         adjustDbToAddRemovedCard(db)
                     ).reduce(
                         (acc, nameText) => acc + nameText + "\n","")
-                    : combineDuplicates(deckList).map((card, i) => ((i !== 0) ? "\n" : "") + getNameFromCard(card.card))
+                    : combineDuplicates(deckList).reduce((acc, card, i) => acc + ((i !== 0) ? "\n" : "") + card.quantity + "x " + getNameFromCard(card.card), "")
             );
         setClipboarded(db)
         setTimeout(() => {setClipboarded(false)}, 1000)
