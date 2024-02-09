@@ -3,6 +3,7 @@ import { useCards } from "../contexts/CardContext";
 import styled from "styled-components";
 import checkmark from "./icons/checkmark.svg";
 import trash from "./icons/trash.svg";
+import 'groupby-polyfill/lib/polyfill.js'
 
 const ListWrap = styled.div`
     position: sticky;

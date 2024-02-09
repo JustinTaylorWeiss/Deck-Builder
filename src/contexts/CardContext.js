@@ -1,5 +1,6 @@
 import React, { useContext, createContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { useMediaQuery } from 'react-responsive'
+import 'groupby-polyfill/lib/polyfill.js'
 const CardContext = createContext();
 
 export const useCards = () => useContext(CardContext);
