@@ -39,6 +39,8 @@
 
 /*! css-mediaquery */
 
+/*! groupby-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
+
 /*! hyphenate-style-name */
 
 /*! matchmediaquery */

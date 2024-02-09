@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Deck-Builder/static/css/main.9271e3ee.css",
-    "main.js": "/Deck-Builder/static/js/main.35f5f45e.js",
+    "main.js": "/Deck-Builder/static/js/main.eaaa2da6.js",
     "static/media/W.svg": "/Deck-Builder/static/media/W.99c7fe1b9600148fbeed55dc7729eb2e.svg",
     "static/media/R.svg": "/Deck-Builder/static/media/R.b8e69eab9136b4e4a401c7295bdc8f4f.svg",
     "static/media/G.svg": "/Deck-Builder/static/media/G.1e9be629cc98068fb2681d6bcfa716b7.svg",
@@ -16,10 +16,10 @@
     "static/media/checkmark.svg": "/Deck-Builder/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
     "static/media/minus.svg": "/Deck-Builder/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
     "main.9271e3ee.css.map": "/Deck-Builder/static/css/main.9271e3ee.css.map",
-    "main.35f5f45e.js.map": "/Deck-Builder/static/js/main.35f5f45e.js.map"
+    "main.eaaa2da6.js.map": "/Deck-Builder/static/js/main.eaaa2da6.js.map"
   },
   "entrypoints": [
     "static/css/main.9271e3ee.css",
-    "static/js/main.35f5f45e.js"
+    "static/js/main.eaaa2da6.js"
   ]
 }
