@@ -349,7 +349,7 @@ export const SideListWrapper = () => {
                         (activeTab !== "maybe" || (db?.data ?? false)) && 
                         processList(activeList).map(([type, typeGroup], i) => (
                             <Fragment key={`typeGroup${i}`}>
-                                <TypeText>{`${type} (${typeGroup.reduce((acc, {quantity}) => acc + quantity, 0)})`}</TypeText>
+                                <TypeText>{`${type === "" ? "Typeless" : type} (${typeGroup.reduce((acc, {quantity}) => acc + quantity, 0)})`}</TypeText>
                                 {
                                     typeGroup.map((cardWrap, i) => (
                                         <LIWrap key={`listFrag${i}`}>

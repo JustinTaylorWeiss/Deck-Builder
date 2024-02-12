@@ -115,7 +115,7 @@ export const CardProvider = ({ children }) => {
     const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, colorFilter, searchFormat) => (
         rootUri + 
         "search?order=cmc&q=" + 
-                encodeURI(cardSearch) + 
+                encodeURIComponent(cardSearch) + 
                 catagorySearch +
                     (cmcFilterType !== ""
                         ? ("+mv" + cmcFilterType + cmcFilter)
@@ -126,17 +126,34 @@ export const CardProvider = ({ children }) => {
 
     const decode = (uri) => (
         uri.
+        replaceAll("%2A", "*").
         replaceAll("%3A", ":").
-        replaceAll("%3D", "=").
         replaceAll("%2B", "+").
+        replaceAll("%3B", ";").
+        replaceAll("%3D", "=").
+        replaceAll("%3F", "?").
+        replaceAll("%40", "@").
+        replaceAll("%5B", "[").
+        replaceAll("%5D", "]").
+        replaceAll("%5C", "\\").
+        replaceAll("%2F", "/").
         replaceAll("%3C", "<").
         replaceAll("%3E", ">").
         replaceAll("%2D", ">").
         replaceAll("%7E", "~").
         replaceAll("%7B", "{").
         replaceAll("%7D", "}").
+        replaceAll("%5F", "_").
+        replaceAll("%20", " ").
         replaceAll("%21", "!").
-        replaceAll("%22", "\"")
+        replaceAll("%22", "\"").
+        replaceAll("%23", "#").
+        replaceAll("%24", "$").
+        replaceAll("%25", "%").
+        replaceAll("%26", "&").
+        replaceAll("%27", "'").
+        replaceAll("%28", "(").
+        replaceAll("%29", ")")
     )
 
     useEffect(() => {
@@ -145,6 +162,7 @@ export const CardProvider = ({ children }) => {
                 setLoading(true);
                 try {
                     const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, colorFilter, searchFormat,);
+                    console.log(uri);
                     setCurrentUri(decode(uri));
                     setFirstLoad(false);
                     const res = await fetch(uri);
