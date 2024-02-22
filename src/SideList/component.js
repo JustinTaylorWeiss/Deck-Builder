@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useCards } from "../contexts/CardContext";
+import donateIMG from "./icons/donate.png";
+import donateScribble from "./icons/donateScribble.gif";
 import styled from "styled-components";
 import checkmark from "./icons/checkmark.svg";
 import trash from "./icons/trash.svg";
@@ -59,7 +61,6 @@ const ListBlock = styled.pre`
     overflow-y: scroll;
     padding-bottom: 20px;
     border-radius: 5px;
-    margin-bottom: 20px;
 `
 
 const LIWrap = styled.div`
@@ -213,6 +214,29 @@ const Button = styled.button`
     }
 `
 
+const Donate = styled.button`
+    margin-bottom: 20px;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    width: 100%;
+    height: 40px;
+    border-radius: 0;
+    border-radius: 5px;
+    background-color: #13C3FF;
+    &:hover {
+        cursor: pointer;
+    };
+`;
+
+const DonateIMG = styled.img`
+    margin: 0;
+    height: 40px;
+    max-width: 100%;
+    padding: 0;
+    border-radius: 5px;
+`;
+
 export const SideListWrapper = () => {
 
     const [clipboarded, setClipboarded] = useState(false);
@@ -220,6 +244,7 @@ export const SideListWrapper = () => {
     const [confirmClear, setConfirmClear] = useState(false);
     const [hoverCard, setHoverCard] = useState("");
     const [backFaces, setBackFaces] = useState([]);
+    const [donateHover, setDonateHover] = useState(false);
     const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
     
     const findImage = (card) => (
@@ -367,6 +392,9 @@ export const SideListWrapper = () => {
                         ))
                     }
                 </ListBlock>
+                <Donate onMouseOver={()=> {setDonateHover(true)}} onMouseOut={()=> {setDonateHover(false)}} onClick={() => window.open("https://ko-fi.com/justintaylorweiss", "_blank") }>
+                    <DonateIMG src={donateHover ? donateScribble : donateIMG}/>
+                </Donate>
         </ListWrap>
     </>
 }
