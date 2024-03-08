@@ -1,4 +1,5 @@
-# Infinity Lumber
-## infinitylumber.com
-Heavy Construction Lumber In Brooklyn. NY
+# MTG Deck Builder
+## Build a deck while using scryfalls queries
+
+
 
