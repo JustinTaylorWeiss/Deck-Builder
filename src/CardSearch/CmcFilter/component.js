@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useCards } from "../../contexts/CardContext";
 import { Tooltip } from 'react-tooltip';
@@ -78,24 +78,42 @@ const MidLabel = styled.label`
 
 export const CmcFilterWrapper = () => {
 
-    const { cmcFilterType, showQuery, setShowQuery, setCmcFilter, setCmcFilterType, setAddRemoveList, searchToMaybeBoard, setSearchToMaybeBoard, searchFormat, setSearchFormat} = useCards();
+    const { setCmcFilter, formatFilter, setFormatFilter } = useCards();
+
+    const [cmcNum, setCmcNum] = useState(0);
+    const [cmcType, setCmcType] = useState(">=");
+    const [format, setFormat] = useState("Commander");
+
+    useEffect(() => {
+        setCmcFilter(`mv${cmcType}${cmcNum}+`);
+    },[setCmcFilter, cmcType, cmcNum])
+
+    useEffect(() => {
+        setFormatFilter(
+            format !== "all"
+            ? `f:${format}+`
+            : ""
+        );
+    },[setFormatFilter, format])
+
+
+
 
     return <Wrapper>
-        <Label htmlFor="colorFilter"> CMC </Label>
-        <SelectCmcType name="colorFilter" value={cmcFilterType} onChange={(e) => setCmcFilterType(e.target.value)}>
-            <Option value="">       {"All"}</Option>
+        <Label htmlFor="colorFilter"> Mana Value </Label>
+        <SelectCmcType name="colorFilter" value={cmcType} onChange={(e) => setCmcType(e.target.value)}>
+            <Option value="%3E%3D"> {">="} </Option>
             <Option value="%3D">    {"="}  </Option>
             <Option value="%21%3D"> {"!="} </Option>
+            <Option value="%3C%3D"> {"<="} </Option>
             <Option value="%3E">    {">"}  </Option>
             <Option value="%3C">    {"<"}  </Option>
-            <Option value="%3E%3D"> {">="} </Option>
-            <Option value="%3C%3D"> {"<="} </Option>
         </SelectCmcType>
-        <CmcText type="number" placeholder="0" onChange={(e) => setCmcFilter(Math.max(e.target.value, 0))}/>
+        <CmcText type="number" value={cmcNum} onChange={(e) => setCmcNum(Math.max(e.target.value, 0))}/>
         <FormatLabel htmlFor="format"> Format </FormatLabel>
-        <SelectFormat name="format" value={searchFormat} onChange={(e) => setSearchFormat(e.target.value)}>
-            <Option value="all"> All </Option>
+        <SelectFormat name="format" value={format} onChange={(e) => setFormat(e.target.value)}>
             <Option value="commander"> Commander </Option>
+            <Option value="all"> All </Option>
             <Option value="standard"> Standard </Option>
             <Option value="historic"> Historic </Option>
             <Option value="pioneer"> Pioneer </Option>
@@ -105,13 +123,10 @@ export const CmcFilterWrapper = () => {
             <Option value="penny"> Penny Dreadful </Option>
             <Option value="brawl"> Brawl </Option>
         </SelectFormat>
-        <SearchToMaybeLabel data-tooltip-id="searchToMaybeLabel" htmlFor="searchToMaybeBoard"> Search to Maybe </SearchToMaybeLabel>
-        <Tooltip id="searchToMaybeLabel" place="top" content="Automatically puts search results into the maybe board" style={{fontSize: "1rem"}} opacity={1}/>
-        <CheckBox name="searchToMaybeBoard" checked={searchToMaybeBoard} type="checkbox" onChange={(e) => {
-            setAddRemoveList({});
-            setSearchToMaybeBoard((prev) => !prev)
-        }}/>
-        <SmallLabel style={{marginLeft: "10px"}} htmlFor="showQuery"> Show Query </SmallLabel>
-        <CheckBox checked={showQuery} name="showQuery" type="checkbox" onChange={(e) => setShowQuery(prev => !prev)}/>
     </Wrapper>
 }
+
+/*
+<SmallLabel style={{marginLeft: "10px"}} htmlFor="showQuery"> Show Query </SmallLabel>
+<CheckBox checked={showQuery} name="showQuery" type="checkbox" onChange={(e) => setShowQuery(prev => !prev)}/>
+*/

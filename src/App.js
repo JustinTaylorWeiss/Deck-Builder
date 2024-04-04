@@ -1,18 +1,24 @@
 import styled from "styled-components";
 import { CardProvider } from "./contexts/CardContext";
 import { SideList } from "./SideList";
+import { SideListProvider } from "./contexts/SideListContext";
 
 import { SearchCluster } from "./CardSearch/SearchCluster";
 import { ColorFilters } from "./CardSearch/ColorFilters";
 import { CmcFilter } from "./CardSearch/CmcFilter";
 import { CardStackCluster } from "./CardSearch/CardStackCluster";
+import { useState } from "react";
+import { TagList } from "./TagList/component";
 
 
 const MiniApp = styled.div`
     display: grid;
-    width: 98vw;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    width: 100vw;
     grid-gap: 5px;
-    grid-template-columns: 79vw 19vw;
+    grid-template-columns: ${props => props.$menuOpen ? "20vw 60vw 20vw" : "80vw 20vw"};
 `;
 
 const Column = styled.div`
@@ -22,16 +28,26 @@ const Column = styled.div`
     align-items: center;
 `
 
-const App = () => <CardProvider>
-    <MiniApp>
+const Spacer = styled.div``;
+
+const App = () => {
+
+    const tagMenuArr = useState(false);
+    const [tagMenu, setTagMenu] = tagMenuArr;
+
+return <CardProvider>
+    <MiniApp $menuOpen={tagMenu}>
+        {tagMenu && <Spacer/>}
         <Column>
             <ColorFilters/>
             <CmcFilter/>
-            <SearchCluster/>
+            <SearchCluster tagMenuArr={tagMenuArr}/>
             <CardStackCluster/>
         </Column>
-        <SideList/>
+        {tagMenu && <TagList/>}
+        <SideListProvider><SideList/></SideListProvider>
     </MiniApp>
-</CardProvider>;
+</CardProvider>
+};
 
 export default App;

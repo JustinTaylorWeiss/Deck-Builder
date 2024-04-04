@@ -147,7 +147,7 @@ export const CardWrapper = ({card, x, y}) => {
         }))
     }
 
-    const numOfCard = (addRemoveList[card.oracle_id] ?? (searchToMaybeBoard ? 1 : 0))
+    const numOfCard = (addRemoveList[card.oracle_id] ?? 1)
     const cardName = (card?.card_faces ?? false)
         ? card.card_faces[0].name + " // " + card.card_faces[1].name
         : card?.name

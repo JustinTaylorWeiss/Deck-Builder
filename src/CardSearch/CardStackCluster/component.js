@@ -9,6 +9,7 @@ const Column = styled.div`
     grid-template-rows: repeat(1, 7fr);
     grid-gap: 20px;
     margin-top: 20px;
+    margin: 20px;
 `;
 
 const Label = styled.label`

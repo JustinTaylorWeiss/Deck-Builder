@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useCards } from "../../contexts/CardContext";
 import W from "./colorIcons/W.svg";
@@ -64,31 +64,81 @@ const Row = styled.div`
     align-items: center;
 `;
 
-const ColorCheckBox  = ({colorInfo: [name, image]}) => {
-    
-    const { setColorOnColorFilter, colorFilter } = useCards();
+const colorFilterToUriText = (colorType, colorValues) => (
+    (
+        colorValues.white ||
+        colorValues.blue  ||
+        colorValues.black ||
+        colorValues.red   ||
+        colorValues.green ||
+        colorValues.colorless)
+            ? ( 
+                (
+                    colorType === "colorIdentity"
+                        ? "id<%3D"
+                        : "c%3D"
+                ) + (
+                    colorValues.colorless
+                    ? "C"
+                    : "" + 
+                    (colorValues.white ? "W" : "") +
+                    (colorValues.blue  ? "U" : "") +
+                    (colorValues.black ? "B" : "") + 
+                    (colorValues.red   ? "R" : "") +
+                    (colorValues.green ? "G" : "")
+                ) + "+"
+            )
+            : ""
+);
 
-    return <Column>
-        <Img width="40" src={image} alt={name}/>
-        <CheckBox checked={colorFilter[name]} name={name} type="checkbox" onChange={(e) => setColorOnColorFilter(name, e.target.checked)}/>
-    </Column>
+const colorlessValues = {
+    white: false,
+    blue: false,
+    black: false,
+    red: false,
+    green: false,
+    colorless: true, 
 };
 
 export const ColorFiltersWrapper = () => {
 
-    const { colorFilter,  setFilterType } = useCards();
+    const { setColorFilter } = useCards();
+
+    const [colorType, setColorType] = useState("colorIdentity");
+    const [colorValues, setColorValues] = useState({white: true, blue: true, black: true, red: true, green: true, colorless: false});
+
+    const toggleOneColor = (color) => () => {
+        if(color === "colorless")
+            setColorValues(prev => ({
+                ...colorlessValues,
+                [color]: !prev[color]
+            }))
+        else 
+            setColorValues(prev => ({
+                ...prev,
+                colorless: false,
+                [color]: !prev[color]
+            }))
+    }
+
+    useEffect(() => {
+        setColorFilter(colorFilterToUriText(colorType, colorValues))
+    },[setColorFilter, colorType, colorValues])
 
     return <Wrapper>
         <Label htmlFor="colorFilter"> Color </Label>
-        <SelectColorType name="colorFilter" value={colorFilter.colorFilter} onChange={(e) => setFilterType(e.target.value)}>
+        <SelectColorType name="colorFilter" value={colorType} onChange={(e) => setColorType(e.target.value)}>
             <Option value="colorIdentity"> Color Identity</Option>
             <Option value="color"> Color </Option>
         </SelectColorType>
         <Row>
-            { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G], ["colorless", C]].map((colorInfo, i) => 
+            { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G], ["colorless", C]].map(([name, image], i) => 
                 <Fragment key={`fragment${i}`}>
-                    { colorInfo[0] === "colorless" && <Vl/> }
-                    <ColorCheckBox key={`colorCheckBox${i}`} colorInfo={colorInfo}/>
+                    { name === "colorless" && <Vl/> }
+                    <Column>
+                        <Img width="40" src={image} alt={name}/>
+                        <CheckBox checked={colorValues[name]} name={name} type="checkbox" onChange={toggleOneColor(name)}/>
+                    </Column>
                 </Fragment >
             )}
         </Row>

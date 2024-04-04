@@ -1,23 +1,23 @@
 import { Fragment, useEffect, useState } from "react";
 import { useCards } from "../contexts/CardContext";
-import donateIMG from "./icons/donate.png";
-import donateScribble from "./icons/donateScribble.gif";
 import styled from "styled-components";
-import checkmark from "./icons/checkmark.svg";
-import trash from "./icons/trash.svg";
+import { Donate, Trash, CardList } from "./subElements";
+import checkmark from "./assets/checkmark.svg";
 import 'groupby-polyfill/lib/polyfill.js'
+import { useSideList } from "../contexts/SideListContext";
 
 const ListWrap = styled.div`
-    position: sticky;
+    position: fixed;
+    top: 20px;
+    right: 20px;
     display: flex;
-    top: 0;
-    right: 0;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    margin: 0 auto;
-    width: 95%;
-    height: 100vh;
+    width: calc(20% - 20px);
+    align-self: flex-start;
+    justify-self: flex-start;
+    height: calc(100vh - 40px);
 `;
 
 const Row = styled.div`
@@ -63,18 +63,6 @@ const ListBlock = styled.pre`
     border-radius: 5px;
 `
 
-const LIWrap = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    margin-left: 5%;
-    margin: 0 auto;
-    
-    border: solid white 1px;
-    border-radius: 2px;
-`
-
 const PlaceholderItem = styled.span`
     font-size: 1rem;
     text-align: center;
@@ -92,53 +80,6 @@ const PlaceholderItem = styled.span`
     }
 `;
 
-const ListItem = styled.span`
-    display: block;
-    cursor: ${props => props.$dfc ? "pointer" : "auto"};
-    flex-direction: column;
-    justify-content: flex-start;
-    font-size: 1rem;
-    align-items: center;
-    width: 100%;
-    margin: 0 0 0 5%;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    padding: 5px 0;
-    padding-left: 1.4em;
-    text-indent: -1.6em;
-    color: "white";
-    &:hover {
-        color: green;
-    }
-    @media (min-width: 2000px) {
-        font-size: 1.5rem;
-    }
-    @media (max-width: 1500px) {
-        font-size: 0.7rem;
-    }
-    @media (max-width: 1000px) {
-        font-size: 0.5rem;
-    }
-`;
-
-const TrashImg = styled.img`
-    height: 15px;
-    padding: 3px;
-    margin: 2px 8px;
-    border-radius: 3px;
-    &:hover {
-        background-color: #ff000066;
-    }
-    &:active {
-        background-color: #ff0000;
-    }
-    @media (min-width: 2000px) {
-        font-size: 45rem;
-    }
-    @media (max-width: 1000px) {
-        font-size: 30rem;
-    }
-`;
 
 const Img = styled.img`
     transform: translate(0, 5%);
@@ -164,7 +105,6 @@ const TitleButton = styled.button`
     border: ${props => props.$isActive ? "none" : "2px solid #121010"};
     color: ${props => props.$isActive ? "white" : "black"};
     background-color: ${props => props.$isActive ? "#121010" : "transparent"};
-    margin-top: 20px;
     &:hover {
         background-color: ${props => props.$isActive ? "#121010" : "#aaaaaa"};
     }
@@ -176,27 +116,13 @@ const TitleButton = styled.button`
     }
 `
 
-const TypeText = styled.h3`
-    text-align: center;
-    width: 100%;
-    @media (min-width: 2000px) {
-        font-size: 1.5rem;
-    }
-    @media (max-width: 1500px) {
-        font-size: 0.7rem;
-    }
-    @media (max-width: 1000px) {
-        font-size: 0.5rem;
-    }
-`;
-
 const Button = styled.button`
     font-size: 1.2rem;
     padding: 3px;
     height: 36px;
     width: 80%;
     z-index: 5;
-    margin: 10px 0;
+    margin: 0 auto;
     color: white;
     border-radius: 5px;
     border: 2px solid white;
@@ -212,41 +138,22 @@ const Button = styled.button`
     @media (max-width: 1000px) {
         font-size: 1rem;
     }
-`
-
-const Donate = styled.button`
-    margin-bottom: 20px;
-    background-color: transparent;
-    border: 0;
-    padding: 0;
-    width: 100%;
-    height: 40px;
-    border-radius: 0;
-    border-radius: 5px;
-    background-color: #13C3FF;
-    &:hover {
-        cursor: pointer;
-    };
 `;
 
-const DonateIMG = styled.img`
-    margin: 0;
-    height: 40px;
-    max-width: 100%;
-    padding: 0;
-    border-radius: 5px;
+const CommanderButton = styled(Button)`
+    margin: 5 auto 15px auto;
+    font-size: 1rem;
 `;
 
 export const SideListWrapper = () => {
 
-    const [clipboarded, setClipboarded] = useState(false);
-    const [activeTab, setActiveTab] = useState("maybe");
-    const [confirmClear, setConfirmClear] = useState(false);
-    const [hoverCard, setHoverCard] = useState("");
-    const [backFaces, setBackFaces] = useState([]);
-    const [donateHover, setDonateHover] = useState(false);
     const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
-    
+    const {
+        clipboarded, activeTab, confirmClear, hoverCard, backFaces,
+        setClipboarded, setActiveTab, setConfirmClear, setHoverCard, setBackFaces
+    } = useSideList();
+
+
     const findImage = (card) => (
         (!card?.image_uris ?? false) 
         ? card.card_faces[((backFaces[card.oracle_id] ?? false) ? 1 : 0)].image_uris.normal
@@ -283,46 +190,6 @@ export const SideListWrapper = () => {
         setConfirmClear(false);
     }, [cardSearch, activeTab, setClipboarded, setConfirmClear])
 
-    const cardTypes = [
-        "Battle",
-        "Enchantment",
-        "Artifact",
-        "Land",
-        "Creature",
-        "Planeswalker",
-        "Instant",
-        "Sorcery",
-    ]
-
-    const onListCardClick = (cardWrap) => {
-        if(cardWrap?.card?.card_faces ?? false)
-            setBackFaces((prev) => ({ ...prev, [cardWrap.card.oracle_id]: (!prev[cardWrap.card.oracle_id] ?? false)}))
-    }
-
-    const trashCanOnClick = (cardWrap) => {
-        if (activeTab !== "maybe")
-            removeCardFromDeck(cardWrap)
-        else 
-            setAddRemoveList((prev) => ({
-                ...prev,
-                [cardWrap.card.oracle_id]:0
-            }))
-    }
-
-    const processList = (list) => (
-        Object.entries(
-            Object.groupBy(
-                (activeTab === "maybe" 
-                    ? adjustDbToAddRemovedCard(list)
-                    : combineDuplicates(list)
-                ), ({card}) => 
-                    cardTypes.filter((type) => 
-                        card.type_line.includes(type)
-                    ).reduce((acc, type, i) => acc + ((i > 0) ? " - " : " ") + type, "")
-            )
-        ).sort(([key1, val1], [key2, val2]) => key1.replace("Land", "z").localeCompare(key2.replace("Land", "z")))
-    )
-    
     const activeList = activeTab === "maybe" 
         ? db 
         : deckList
@@ -331,8 +198,8 @@ export const SideListWrapper = () => {
         <ListWrap>
             { hoverCard && <CardImg src={findImage(hoverCard.card)}/> }
             <Row $width={"100%"}>
-                <TitleButton onClick={() => setActiveTab("maybe")} $isActive={activeTab === "maybe"}>{ (isMidToSmallest) ? "Maybe" : "Maybe Board"}</TitleButton>
                 <TitleButton onClick={() => setActiveTab("deck")} $isActive={activeTab === "deck"}>{ (isMidToSmallest) ? "Deck" : "Deck List"}</TitleButton>
+                <TitleButton onClick={() => setActiveTab("maybe")} $isActive={activeTab === "maybe"}>{ (isMidToSmallest) ? "Maybe" : "Maybe Board"}</TitleButton>
             </Row>
                 <ListBlock>
                     <Row $width={"90%"}>
@@ -353,6 +220,7 @@ export const SideListWrapper = () => {
                             }
                         </Button>
                     </Row>
+                    <CommanderButton>Choose Commander</CommanderButton>
                     <H3>{`Total Cards: ${
                         (activeTab === "maybe")
                             ? (db?.data ?? false)
@@ -372,29 +240,10 @@ export const SideListWrapper = () => {
                     {  
                         activeList && 
                         (activeTab !== "maybe" || (db?.data ?? false)) && 
-                        processList(activeList).map(([type, typeGroup], i) => (
-                            <Fragment key={`typeGroup${i}`}>
-                                <TypeText>{`${type === "" ? "Typeless" : type} (${typeGroup.reduce((acc, {quantity}) => acc + quantity, 0)})`}</TypeText>
-                                {
-                                    typeGroup.map((cardWrap, i) => (
-                                        <LIWrap key={`listFrag${i}`}>
-                                            <ListItem
-                                                $dfc={(cardWrap?.card?.card_faces ?? false)}
-                                                onClick={() => onListCardClick(cardWrap)}
-                                                onMouseOver={() => setHoverCard(cardWrap)}
-                                                onMouseOut={() => setHoverCard("")}
-                                            >{`${cardWrap.quantity}x ${getNameFromCard(cardWrap.card)}`}</ListItem>
-                                        <TrashImg src={trash} onClick={() => trashCanOnClick(cardWrap)}/>
-                                        </LIWrap>
-                                    ))
-                                }
-                            </Fragment>
-                        ))
+                        <CardList/>
                     }
                 </ListBlock>
-                <Donate onMouseOver={()=> {setDonateHover(true)}} onMouseOut={()=> {setDonateHover(false)}} onClick={() => window.open("https://ko-fi.com/justintaylorweiss", "_blank") }>
-                    <DonateIMG src={donateHover ? donateScribble : donateIMG}/>
-                </Donate>
+                <Donate/>
         </ListWrap>
     </>
 }

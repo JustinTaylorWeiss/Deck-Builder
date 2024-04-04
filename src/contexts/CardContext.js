@@ -1,5 +1,6 @@
 import React, { useContext, createContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { useMediaQuery } from 'react-responsive'
+import { decode } from '../global';
 import 'groupby-polyfill/lib/polyfill.js'
 const CardContext = createContext();
 
@@ -10,30 +11,20 @@ export const CardProvider = ({ children }) => {
 
     const [db, setDb] = useState(false);
     const [addRemoveList, setAddRemoveList] = useState({});
-
-    const [colorFilter, setColorFilter] = useState(
-        {
-            filterType: "colorIdentity",
-            white: true,
-            blue: true,
-            black: true,
-            red: true,
-            green: true,
-            colorless: false, 
-        }
-    );
     const [loading, setLoading] = useState(false);
-    const [searchToMaybeBoard, setSearchToMaybeBoard] = useState(true);
-    const [cmcFilterType, setCmcFilterType] = useState('');
-    const [cmcFilter, setCmcFilter] = useState(0);
     const [firstLoad, setFirstLoad] = useState(true);
-    const [customSearch, setCustomSearch] = useState('');
-    const [cardSearch, setCardSearch] = useState('');
-    const [currentUri, setCurrentUri] = useState('');
-    const [showQuery, setShowQuery] = useState(false);
-    const [categorySearch, setCategorySearch] = useState('');
+
+    // Filters
+    const [nameFilter, setNameFilter] = useState("")
+    const [oracleTextSearch, setOracleTextSearch] = useState("");
+    const [colorFilter, setColorFilter] = useState("");
+    const [cmcFilter, setCmcFilter] = useState("");
+    const [formatFilter, setFormatFilter] = useState("");
+    // TAG DATA
+    const [tagList, setTagList] = useState([]);
+
+    // MAYBE LIST DATA
     const [deckList, setDeckList] = useState([]);
-    const [searchFormat, setSearchFormat] = useState('');
 
     const isBig = useMediaQuery({query: '(min-width: 2000px)'})
     const isMid = useMediaQuery({query: '(min-width: 1500px)'})
@@ -57,39 +48,12 @@ export const CardProvider = ({ children }) => {
 
     const adjustDbToAddRemovedCard = (db) => (
         db.data.reduce((acc, card) => {
-            const numOfCard = (addRemoveList?.[card.oracle_id] ?? (searchToMaybeBoard ? 1 : 0))
+            const numOfCard = (addRemoveList?.[card.oracle_id] ?? 0)
             return (numOfCard > 0)
                 ? [...acc, {quantity: numOfCard, card: card}]
                 : acc
         },[])
     )
-
-    const colorFilterToUriText = useCallback((colorFilter) => (
-        (
-            colorFilter.white ||
-            colorFilter.blue  ||
-            colorFilter.black ||
-            colorFilter.red   ||
-            colorFilter.green ||
-            colorFilter.colorless)
-                ? ("+" + 
-                    (
-                        colorFilter.filterType === "colorIdentity"
-                            ? "id<%3D"
-                            : "c%3D"
-                    ) + (
-                        colorFilter.colorless
-                        ? "C"
-                        : "" + 
-                        (colorFilter.white ? "W" : "") +
-                        (colorFilter.blue  ? "U" : "") +
-                        (colorFilter.black ? "B" : "") + 
-                        (colorFilter.red   ? "R" : "") +
-                        (colorFilter.green ? "G" : "")
-                    )
-                )
-                : ""
-    ),[]);
 
     const addCardToDeckList = (cardWrapper) => {
         if(cardWrapper.quantity > 0)
@@ -112,59 +76,42 @@ export const CardProvider = ({ children }) => {
             : card.name
     );
 
-    const buildUri = useCallback((rootUri, cardSearch, cmcFilter, cmcFilterType, catagorySearch, colorFilter, searchFormat) => (
-        rootUri + 
-        "search?order=cmc&q=" + 
-                encodeURIComponent(cardSearch) + 
-                catagorySearch +
-                    (cmcFilterType !== ""
-                        ? ("+mv" + cmcFilterType + cmcFilter)
-                        : "") + 
-                    ((searchFormat && searchFormat !== "all") ? `+f%3A${searchFormat}` : "") + 
-                ((colorFilterToUriText(colorFilter) !== "+id<%3DWUBRG") ? colorFilterToUriText(colorFilter) : "")
-    ),[colorFilterToUriText])
-
-    const decode = (uri) => (
-        uri.
-        replaceAll("%2A", "*").
-        replaceAll("%3A", ":").
-        replaceAll("%2B", "+").
-        replaceAll("%3B", ";").
-        replaceAll("%3D", "=").
-        replaceAll("%3F", "?").
-        replaceAll("%40", "@").
-        replaceAll("%5B", "[").
-        replaceAll("%5D", "]").
-        replaceAll("%5C", "\\").
-        replaceAll("%2F", "/").
-        replaceAll("%3C", "<").
-        replaceAll("%3E", ">").
-        replaceAll("%2D", ">").
-        replaceAll("%7E", "~").
-        replaceAll("%7B", "{").
-        replaceAll("%7D", "}").
-        replaceAll("%5F", "_").
-        replaceAll("%20", " ").
-        replaceAll("%21", "!").
-        replaceAll("%22", "\"").
-        replaceAll("%23", "#").
-        replaceAll("%24", "$").
-        replaceAll("%25", "%").
-        replaceAll("%26", "&").
-        replaceAll("%27", "'").
-        replaceAll("%28", "(").
-        replaceAll("%29", ")").
-        replaceAll("%7C", "|")
+    const createFilter = (filterType, tagList) => (
+        tagList.flatMap((tag) => tag.filters).filter(
+            (filter) => filter.type === filterType
+        ).reduce((acc, filter) => (
+            acc + `${filter.not ? "-" : ""}${filterType}:${filter.value.toLowerCase()}+`
+        )
+        ,"")
     )
 
+    const expandFilter = useCallback((filterArr) => filterArr.reduce((acc, filter) => acc + filter, ""))
+
+    const buildUri = useCallback((rootUri, nameFilter, oracleTextSearch, colorFilter, cmcFilter, formatFilter, tagList) => {
+        console.log("Tag List: " + tagList)
+
+        const URI = (
+            rootUri + 
+            "search?order=cmc&q=" +
+            nameFilter +
+            oracleTextSearch +
+            colorFilter + 
+            cmcFilter +
+            formatFilter +
+            tagList.reduce((acc, tag) => acc + tag.filters.reduce((innderAcc, filter) => innderAcc + filter,""), "")
+        ).slice(0,-1) //Remove trailing +
+
+        console.log("URI: " + URI);
+        return URI;
+    }, [])
+
     useEffect(() => {
-        if(cardSearch !== "" || categorySearch !== "")
+        if(nameFilter !== "" || oracleTextSearch !== "" || tagList.length > 0)
             (async () => {
                 setLoading(true);
                 try {
-                    const uri = buildUri("https://api.scryfall.com/cards/", cardSearch, cmcFilter, cmcFilterType, categorySearch, colorFilter, searchFormat,);
+                    const uri = buildUri("https://api.scryfall.com/cards/", nameFilter, oracleTextSearch, colorFilter, cmcFilter, formatFilter, tagList);
                     console.log(uri);
-                    setCurrentUri(decode(uri));
                     setFirstLoad(false);
                     const res = await fetch(uri);
                     if(res.ok) {
@@ -178,42 +125,14 @@ export const CardProvider = ({ children }) => {
                         throw new Error("Responce not 2xx");
                     }
                 } catch (e) {
-                    console.log(`Card Not Found (Search: ${cardSearch})`);
+                    console.log(`Card Not Found (Search: ${nameFilter})`);
                 }
             })()
         else
             setDb(false);
-    }, [cardSearch, setDb, colorFilterToUriText, colorFilter, cmcFilter, cmcFilterType, searchFormat, categorySearch, buildUri]);
+    }, [nameFilter, oracleTextSearch, colorFilter, cmcFilter, tagList, setDb, buildUri]);
     
-    const colorlessTrueFilter = (filterType) => ({
-        filterType: filterType,
-        white: false,
-        blue: false,
-        black: false,
-        red: false,
-        green: false,
-        colorless: true, 
-    });
 
-    const setFilterType = (filterType) => {
-        if(["colorIdentity", "color"].includes(filterType))
-            setColorFilter((prevColorFilter) => ({
-                ...prevColorFilter,
-                filterType: filterType
-            }))
-    };
-
-    const setColorOnColorFilter = (color, value) => (
-        setColorFilter((prevColorFilter) => 
-            color === "colorless" && value
-                ? colorlessTrueFilter(prevColorFilter.filterType)
-                : ({
-                    ...prevColorFilter,
-                    [color]: value,
-                    colorless: false,
-                })
-        )
-    );
 
     const removeCardFromDeck = (card) => {
         setDeckList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
@@ -229,10 +148,10 @@ export const CardProvider = ({ children }) => {
     }
 
     const pushSeachListToDeck = () => {
-        if (fdb?.data ?? false)
+        if (db?.data ?? false)
         setDeckList((prev) => [
             ...prev,
-            ...adjustDbToAddRemovedCard(fdb),
+            ...adjustDbToAddRemovedCard(db),
         ])
     }
 
@@ -256,44 +175,54 @@ export const CardProvider = ({ children }) => {
         setAddRemoveList({});
     }, [setAddRemoveList]);
 
-    // Set FDB
-    const fdb = useMemo(() => (db), [db]);
+    const typeTags = [
+        "Legendary", "Snow", "Basic", "Creature", "Land", "Artifact", "Enchantment", "Planeswalker", "Battle", "Instant", "Sorcery", "Creatrue Type", "Custom Subtype"
+    ]
+
+    const addToTagList = (tag) => {
+        setTagList(prev => [
+            ...prev.filter((prevTag) => prevTag.name !== tag.name),
+            tag
+        ])
+    }
+
+    const removeFromTagList = (tagName) => {
+        setTagList(prev => prev.filter((tag) => tag.name !== tagName))
+    }
+
+    const tagArrayToTypeFilter = () => (
+        tagList.filter(
+            (tag) => typeTags.includes(tag.name)).map(
+                (typeTag) => (typeTag.not ? "-" : "+") + "type%3A" + typeTag.name.toLowerCase()).reduce(
+                    (acc, typeString) => acc + typeString
+                ,"")
+    )
 
     // Helper Functions
     const changePage = (delta) => {
         const newPage = page + delta;
-        if (newPage > Math.ceil((fdb?.length ?? 0) / 9.0) - 1 || newPage < 0) return;
+        if (newPage > Math.ceil((db?.length ?? 0) / 9.0) - 1 || newPage < 0) return;
         setPage(newPage);
     };
     
     const value = {
-        page,
-        fdb,
-        db,
+        page, db, isBig, isMid, isSmall, isMidToSmallest, firstLoad, loading, setLoading, 
         colorFilter,
-        isBig, isMid, isSmall,
-        isMidToSmallest,
-        currentUri,
-        firstLoad,
+
         selected, setSelected, 
-        loading, setLoading, 
         deckList, setDeckList,
-        cardSearch, setCardSearch,
-        cmcFilterType, setCmcFilterType,
-        cmcFilter, setCmcFilter,
-        customSearch, setCustomSearch,
-        searchFormat, setSearchFormat,
-        categorySearch, setCategorySearch,
         addRemoveList, setAddRemoveList,
-        searchToMaybeBoard, setSearchToMaybeBoard,
-        showQuery, setShowQuery,
-        changePage, setColorOnColorFilter, 
-        setFilterType, adjustDbToAddRemovedCard,
+        changePage, adjustDbToAddRemovedCard,
         pushSeachListToDeck, resetDeckList,
         resetAddRemoveList, addCardToDeckList,
         loadMoreCards, cardObjArrToListString,
         getNameFromCard, removeCardFromDeck,
         combineDuplicates,
+
+        setNameFilter, setOracleTextSearch, setColorFilter, setCmcFilter, formatFilter, setFormatFilter,
+
+
+        tagList, addToTagList, removeFromTagList,
     };
 
     return <CardContext.Provider value={value}>{children}</CardContext.Provider>

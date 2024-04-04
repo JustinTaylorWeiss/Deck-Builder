@@ -3,8 +3,9 @@ import { useCards } from "../../contexts/CardContext";
 import Select from 'react-select';
 import { categoryOptions } from "../categoryOptions";
 import QuestonMark from './icons/questionMark.svg';
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Tooltip } from 'react-tooltip';
+import { debounce } from 'lodash';
 
 const Form = styled.form`
     display: flex;
@@ -42,10 +43,15 @@ const CategorySearch = styled(Select)`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: safe center;
     align-items: center;
     width: 100%;
     padding: 10px 0 10px 0;
+`;
+
+const ScrollRow = styled(Row)`
+    overflow-x: scroll;
+    width: 70%;
 `;
 
 const SmallLabel = styled.label`
@@ -57,10 +63,10 @@ const SmallLabel = styled.label`
 
 const Search = styled.input`
     margin: 0 0 0 20px;
-    width: calc(330px - calc(81px + 0.5rem));
+    width: 150px;
     height: 36px;
     padding-left: 0.5rem;
-    padding-right: calc(81px + 0.5rem);
+    padding-right: 0.5rem;
     font-size: 1.2rem;
     &::placeholder{
         font-size: 1rem;
@@ -93,34 +99,59 @@ const Pre = styled.pre`
     overflow-x: scroll;
 `;
 
-
-export const SearchClusterWrapper = () => {
-
-    const { db, setCategorySearch, cardSearch, setCardSearch, currentUri, showQuery } = useCards();
-    const searchRef = useRef();
-
-    const searchSubmit = (e) => {
-        e.preventDefault();
-        setCardSearch(searchRef.current.value);
+const ToggleTags = styled.button`
+    background-color: ${props => props.$menuOpen ? "blue" : "transparent"};
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    margin-left: 20px;
+    padding: 10px 20px;
+    &:hover {
+        background-color: white;
+        color: black;
     }
+`;
+
+const ActiveTags = styled.button`
+    word-break: keep-all;
+    background-color: transparent;
+    border-radius: 5px;
+    color: white;
+    padding: 10px;
+    &:hover {
+        color: red;
+        border-color: red;
+    }
+`;
+
+
+export const SearchClusterWrapper = ({tagMenuArr}) => {
+
+    const { db, setNameFilter, setOracleTextSearch, tagList, removeFromTagList } = useCards();
+    const nameRef = useRef();
+    const oracleRef = useRef();
+
+    const nameSubmit = () => setNameFilter(`${nameRef.current.value}+`);
+    const debouncedName = debounce(nameSubmit, 1000);
+
+    const oracleSubmit = () => setOracleTextSearch(`o:\"${oracleRef.current.value}\"+`);
+    const debouncedOracle = debounce(oracleSubmit, 1000);
 
     return <>
+        <ScrollRow>
+            {
+                tagList.map((tag, i) => (
+                    <ActiveTags onClick={() => removeFromTagList(tag.name)} key={`ActiveTag-${i}`}>{((tag.not) ? "Non-" : "") + tag.name}</ActiveTags>
+                ))
+            }
+        </ScrollRow>
         <Row>
             <SmallLabel>{(db?.data?.length ?? 0) + " / " + (db?.total_cards ?? 0)}</SmallLabel>
-            <Form onSubmit={searchSubmit}> 
-                <Search $custom={false} placeholder="Card Name or Custom Query" ref={searchRef}/>
-                <SubmitButton type="submit" value="Search"/>
+            <Form onSubmit={(e) => {e.preventDefault()}}> 
+                <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
+                <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
             </Form>
-            <CategorySearch placeholder="Search for Category" onChange={(e) => setCategorySearch(e.value)} options={categoryOptions} />
+            <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>
         </Row>
-        {showQuery && <Row>
-            <Pre><H3>{
-                (currentUri)
-                    ? currentUri.substr(currentUri.indexOf("q=")+2)
-                    : "Use filters to generate a query"
-            }</H3></Pre>
-            <Link data-tooltip-id="scryfallHelp" href="https://scryfall.com/docs/syntax" target="_blank"><Img height={40} src={QuestonMark}/></Link>
-            <Tooltip id="scryfallHelp" place="top" content="Scryfall Syntax Help" style={{fontSize: "1rem"}} opacity={1}/>
-        </Row>}
     </>
 }
