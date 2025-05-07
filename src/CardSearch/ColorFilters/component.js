@@ -100,7 +100,7 @@ const colorlessValues = {
     colorless: true, 
 };
 
-export const ColorFiltersWrapper = () => {
+export const ColorFiltersWrapper = ({lands=false}) => {
 
     const { setColorFilter } = useCards();
 
@@ -126,11 +126,11 @@ export const ColorFiltersWrapper = () => {
     },[setColorFilter, colorType, colorValues])
 
     return <Wrapper>
-        <Label htmlFor="colorFilter"> Color </Label>
-        <SelectColorType name="colorFilter" value={colorType} onChange={(e) => setColorType(e.target.value)}>
+        <Label htmlFor="colorFilter"> {lands ? "Colors" : "Color"} </Label>
+        {!lands && <SelectColorType name="colorFilter" value={colorType} onChange={(e) => setColorType(e.target.value)}>
             <Option value="colorIdentity"> Color Identity</Option>
             <Option value="color"> Color </Option>
-        </SelectColorType>
+        </SelectColorType>}
         <Row>
             { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G], ["colorless", C]].map(([name, image], i) => 
                 <Fragment key={`fragment${i}`}>

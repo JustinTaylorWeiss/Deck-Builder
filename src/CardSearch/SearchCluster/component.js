@@ -125,7 +125,7 @@ const ActiveTags = styled.button`
 `;
 
 
-export const SearchClusterWrapper = ({tagMenuArr}) => {
+export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
 
     const { db, setNameFilter, setOracleTextSearch, tagList, removeFromTagList } = useCards();
     const nameRef = useRef();
@@ -151,7 +151,7 @@ export const SearchClusterWrapper = ({tagMenuArr}) => {
                 <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
                 <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
             </Form>
-            <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>
+            {!lands && <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>}
         </Row>
     </>
 }

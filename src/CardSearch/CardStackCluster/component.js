@@ -34,7 +34,7 @@ const Spacer = styled.div`
     width: 100%;
 `;
 
-export const CardStackClusterWrapper = () => {
+export const CardStackClusterWrapper = ({lands=false}) => {
 
     const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall, firstLoad } = useCards();
     const [numOfColumns, setNumOfColumns] = useState(3);
@@ -56,7 +56,13 @@ export const CardStackClusterWrapper = () => {
     return <>
         { loading && <Label>Loading...</Label> }
         {(db?.data?.length ?? 0) < 1
-            ? <SmallLabel>{firstLoad ? "Use filters to find cards" : "No Cards Found"}</SmallLabel>
+            ? <SmallLabel>{
+                lands 
+                    ? ""
+                    : firstLoad 
+                        ? "Use filters to find cards" 
+                        : "No Cards Found"
+            }</SmallLabel>
             : <>
                 <Column $columns={numOfColumns}>
                     {(db?.data ?? false) && db.data.map((card, i) => (

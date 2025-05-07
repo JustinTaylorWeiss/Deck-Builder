@@ -13,6 +13,7 @@ export const CardProvider = ({ children }) => {
     const [addRemoveList, setAddRemoveList] = useState({});
     const [loading, setLoading] = useState(false);
     const [firstLoad, setFirstLoad] = useState(true);
+    const [landBuilder, setLandBuilder] = useState(true); //Set up this toggle to have both work
 
     // Filters
     const [nameFilter, setNameFilter] = useState("")
@@ -90,10 +91,14 @@ export const CardProvider = ({ children }) => {
     const buildUri = useCallback((rootUri, nameFilter, oracleTextSearch, colorFilter, cmcFilter, formatFilter, tagList) => {
         console.log("Tag List: " + tagList)
 
+        const onlyLands = (landBuilder ? "t%3Aland " : "");
+        console.log(onlyLands);
+
         const URI = (
             rootUri + 
             "search?order=cmc&q=" +
             nameFilter +
+            onlyLands + 
             oracleTextSearch +
             colorFilter + 
             cmcFilter +
@@ -106,7 +111,7 @@ export const CardProvider = ({ children }) => {
     }, [])
 
     useEffect(() => {
-        if(nameFilter !== "" || oracleTextSearch !== "" || tagList.length > 0)
+        if(nameFilter !== "" || oracleTextSearch !== "" || (tagList.length > 0 && !landBuilder))
             (async () => {
                 setLoading(true);
                 try {
@@ -133,6 +138,46 @@ export const CardProvider = ({ children }) => {
     }, [nameFilter, oracleTextSearch, colorFilter, cmcFilter, tagList, setDb, buildUri]);
     
 
+    const getCardFromName = async(name) => {
+        try {
+            const uri = `https://api.scryfall.com/cards/search?q=${name}`;
+            const res = await fetch(uri);
+            if(res.ok) {
+                const resJson = await res.json();
+                setLoading(false);
+                return resJson;
+            }
+            else { 
+                throw new Error("Responce not 2xx");
+            }
+        } catch (e) {
+            console.log(`Card Not Found (Search: ${name})`);
+        }
+        return false;
+    }
+
+    const addToDeckFromQuery = async(query) => {
+        try {
+            const uri = `https://api.scryfall.com/cards/search?q=${query} ${colorFilter}`;
+            const res = await fetch(uri);
+            if(res.ok) {
+                const resJson = await res.json();
+                const data = await resJson.data;
+                const cardsWithQuantities = data.map((card)=>({quantity:1, card:card}))
+                setLoading(false);
+                setDeckList((prev) => [
+                    ...prev,
+                    ...cardsWithQuantities,
+                ])
+            }
+            else { 
+                throw new Error("Responce not 2xx");
+            }
+        } catch (e) {
+            console.log(`Card Not Found (Search: ${query})`);
+        }
+        return false;
+    }
 
     const removeCardFromDeck = (card) => {
         setDeckList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
@@ -212,15 +257,16 @@ export const CardProvider = ({ children }) => {
         selected, setSelected, 
         deckList, setDeckList,
         addRemoveList, setAddRemoveList,
+        colorFilter, setColorFilter,
         changePage, adjustDbToAddRemovedCard,
         pushSeachListToDeck, resetDeckList,
         resetAddRemoveList, addCardToDeckList,
         loadMoreCards, cardObjArrToListString,
         getNameFromCard, removeCardFromDeck,
-        combineDuplicates,
+        combineDuplicates, getCardFromName,
+        addToDeckFromQuery, setLandBuilder,
 
-        setNameFilter, setOracleTextSearch, setColorFilter, setCmcFilter, formatFilter, setFormatFilter,
-
+        setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 
         tagList, addToTagList, removeFromTagList,
     };
