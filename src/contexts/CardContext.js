@@ -34,7 +34,7 @@ export const CardProvider = ({ children }) => {
     
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState("")
-    // Fetch Card Databse From API
+    // Fetch Card Database From API
 
     useEffect(() => {
         const localDeckList = JSON.parse(localStorage.getItem("deckList"));
