@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useCards } from "../../contexts/CardContext";
 import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
@@ -70,13 +70,14 @@ const ListBlock = styled.pre`
 const TagButton = styled.button`
     background-color: ${props => props.$isActive ? "#6ecf5b" : "transparent"};
     color: white;
-    width: 80%;
-    margin: 0 auto;
+    width: 75%;
+    margin: 0;
     border: 2px solid white;
     border-radius: 5px;
     padding: 10px 20px;
     margin-bottom: 5px;
     &:hover {
+        cursor: pointer;
         background-color: white;
         color: black;
     }
@@ -103,10 +104,34 @@ const Search = styled.input`
     }
 `;
 
+const TagWrap = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+`;
+
+const TagSideTextWrap = styled.div`
+    margin-left: 5px;
+    width: 15%;
+    font-size: 15px;
+    &:hover{
+        cursor: pointer;
+    }
+`;
+
+const TagSideText = styled.div`
+    text-align: center;
+`;
+
+
 export const LandTagsWrapper = () => {
 
-    const { addToTagList, removeFromTagList, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery} = useCards();
+    const { addToTagList, removeFromTagList, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, allLands} = useCards();
     const [tags, setTags] = useState([]);
+    const [tagResults, setTagResults] = useState({});
 
     const tagSearchRef = useRef();
 
@@ -140,10 +165,22 @@ export const LandTagsWrapper = () => {
 
     }
 
+    const landNameTags = {
+        "Basic Land":[]
+    }
+
     const [filteredLandTags, setFilteredLandTags] = useState(Object.entries(landTags));
 
+    /*
     useEffect(()=>{
-        console.log(tags);
+        Object.values(landTags).forEach((q)=>{
+            addToDeckFromQuery(q + " f%3Acommander");
+        })
+    }, [])
+    */
+
+    /*
+    useEffect(()=>{
         resetDeckList();
         if(tags.length > 0) {
             tags.forEach((tagName)=>{
@@ -151,6 +188,7 @@ export const LandTagsWrapper = () => {
             })
         }
     }, [tags, colorFilter])
+    */
 
     const tagClick = (name) => (e) => {
         if(!tags.includes(name)) {
@@ -167,7 +205,11 @@ export const LandTagsWrapper = () => {
     }
 
     const filterTags = (search) => (
-        setFilteredLandTags(Object.entries(landTags).filter(([tag, query])=>tag.toLowerCase().includes(search.toLowerCase())))
+        setFilteredLandTags(
+            Object.entries(landTags).filter(
+                ([tag, query])=>tag.toLowerCase().includes(search.toLowerCase())
+            )
+        )
     )
 
     const tagSearch = () => filterTags(tagSearchRef.current.value);
@@ -183,8 +225,14 @@ export const LandTagsWrapper = () => {
                 </Form>
                 <ListBlock>
                     {
-                        filteredLandTags.map(([name, query], i) => (
-                            <TagButton key={`Lands-SubButton-${i}`} $isActive={tags.includes(name)} onClick={tagClick(name)}>{name}</TagButton>
+                        filteredLandTags.sort(([name1, querey1], [name2, querey2]) => name1.localeCompare(name2)).map(([name, query], i) => (
+                            <TagWrap key={`tag${i}`}>
+                                <TagButton key={`Lands-SubButton-${i}`} $isActive={tags.includes(name)} onClick={tagClick(name)}>{name}</TagButton>
+                                <TagSideTextWrap>
+                                    <TagSideText>5</TagSideText>
+                                    <TagSideText>cards</TagSideText>
+                                </TagSideTextWrap>
+                            </TagWrap>
                         ))
                     }
                 </ListBlock>

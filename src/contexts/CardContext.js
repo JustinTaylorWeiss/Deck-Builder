@@ -13,6 +13,7 @@ export const CardProvider = ({ children }) => {
     const [addRemoveList, setAddRemoveList] = useState({});
     const [loading, setLoading] = useState(false);
     const [firstLoad, setFirstLoad] = useState(true);
+    const [allLands, setAllLands] = useState([]);
     const [landBuilder, setLandBuilder] = useState(true); //Set up this toggle to have both work
 
     // Filters
@@ -35,6 +36,28 @@ export const CardProvider = ({ children }) => {
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState("")
     // Fetch Card Databse From API
+
+    //Get all the lands if land builder is active
+    useEffect(()=>{
+        if(landBuilder){
+            (async () => {
+                setLoading(true);
+                try {
+                    const uri = buildUri("https://api.scryfall.com/cards/search?order=cmc&q=t%3Aland");
+                    const res = await fetch(uri);
+                    if(res.ok) {
+                        const resJson = await res.json();
+                        setLoading(false);
+                        setAllLands(res.data)
+                    }
+                    else { 
+                        setLoading(false);
+                        throw new Error("Responce not 2xx");
+                    }
+                } catch (e) { console.log(`Card Not Found (Search: ${nameFilter})`); }
+            })();
+        }
+    }, [])
 
     useEffect(() => {
         const localDeckList = JSON.parse(localStorage.getItem("deckList"));
