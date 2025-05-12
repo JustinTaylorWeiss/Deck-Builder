@@ -2,9 +2,9 @@ import React, { Fragment, useEffect, useState } from "react";
 import { SideList } from "../SideList";
 import { SideListProvider } from "../contexts/SideListContext";
 
-import { SearchCluster } from "../CardSearch/SearchCluster";
-import { ColorFilters } from "../CardSearch/ColorFilters";
-import { CardStackCluster } from "../CardSearch/CardStackCluster";
+import { SearchCluster } from "./CardSearch/SearchCluster";
+import { ColorFilters } from "./CardSearch/ColorFilters";
+import { CardStackCluster } from "./CardSearch/CardStackCluster";
 import styled from "styled-components";
 import { LandbaseList } from "./LandbaseList";
 import { LandTags } from "./LandTags";

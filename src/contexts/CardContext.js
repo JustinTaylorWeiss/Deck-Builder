@@ -14,6 +14,7 @@ export const CardProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [firstLoad, setFirstLoad] = useState(true);
     const [allLands, setAllLands] = useState([]);
+    const [activeLBTag, setActiveLBTag] = useState("");
     const [landBuilder, setLandBuilder] = useState(true); //Set up this toggle to have both work
 
     // Filters
@@ -27,6 +28,7 @@ export const CardProvider = ({ children }) => {
 
     // MAYBE LIST DATA
     const [deckList, setDeckList] = useState([]);
+    const [landBaseList, setLandBaseList] = useState([]);
 
     const isBig = useMediaQuery({query: '(min-width: 2000px)'})
     const isMid = useMediaQuery({query: '(min-width: 1500px)'})
@@ -38,12 +40,13 @@ export const CardProvider = ({ children }) => {
     // Fetch Card Databse From API
 
     //Get all the lands if land builder is active
+    /*
     useEffect(()=>{
         if(landBuilder){
             (async () => {
                 setLoading(true);
                 try {
-                    const uri = buildUri("https://api.scryfall.com/cards/search?order=cmc&q=t%3Aland");
+                    const uri = buildUri("https://api.scryfall.com/cards/search?q=t%3Aland");
                     const res = await fetch(uri);
                     if(res.ok) {
                         const resJson = await res.json();
@@ -54,10 +57,11 @@ export const CardProvider = ({ children }) => {
                         setLoading(false);
                         throw new Error("Responce not 2xx");
                     }
-                } catch (e) { console.log(`Card Not Found (Search: ${nameFilter})`); }
+                } catch (e) { console.log(`Card Not Found (Search: All Lands)`); }
             })();
         }
     }, [])
+    */
 
     useEffect(() => {
         const localDeckList = JSON.parse(localStorage.getItem("deckList"));
@@ -78,6 +82,26 @@ export const CardProvider = ({ children }) => {
                 : acc
         },[])
     )
+
+    const setDBSearch = async(query) => {
+        setLoading(true);
+        try {
+            const uri = "https://api.scryfall.com/cards/search?order=cmc&q=" + query;
+            const res = await fetch(uri);
+            if(res.ok) {
+                const resJson = await res.json();
+                setLoading(false);
+                setDb(resJson);
+            }
+            else { 
+                setDb(false);
+                setLoading(false);
+                throw new Error("Responce not 2xx");
+            }
+        } catch (e) {
+            console.log(`Card Not Found (Search: ${query})`);
+        }
+    }
 
     const addCardToDeckList = (cardWrapper) => {
         if(cardWrapper.quantity > 0)
@@ -179,6 +203,29 @@ export const CardProvider = ({ children }) => {
         return false;
     }
 
+    const addToLandBaseFromQuery = async(query) => {
+        try {
+            const uri = `https://api.scryfall.com/cards/search?q=${query} ${colorFilter}`;
+            const res = await fetch(uri);
+            if(res.ok) {
+                const resJson = await res.json();
+                const data = await resJson.data;
+                const cardsWithQuantities = data.map((card)=>({quantity:1, card:card}))
+                setLoading(false);
+                setLandBaseList((prev) => [
+                    ...prev,
+                    ...cardsWithQuantities,
+                ])
+            }
+            else { 
+                throw new Error("Responce not 2xx");
+            }
+        } catch (e) {
+            console.log(`Card Not Found (Search: ${query})`);
+        }
+        return false;
+    }
+
     const addToDeckFromQuery = async(query) => {
         try {
             const uri = `https://api.scryfall.com/cards/search?q=${query} ${colorFilter}`;
@@ -204,6 +251,10 @@ export const CardProvider = ({ children }) => {
 
     const removeCardFromDeck = (card) => {
         setDeckList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
+    }
+    
+    const removeCardLandBaseList = (card) => {
+        setLandBaseList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
     }
 
     const combineDuplicates = (cardList) => {
@@ -233,6 +284,11 @@ export const CardProvider = ({ children }) => {
         });
         setLoading(false);
     }
+
+    const resetLandBaseList = useCallback(() => {
+        localStorage.setItem("landBaseList", "[]");
+        setLandBaseList([]);
+    }, [setLandBaseList]);
 
     const resetDeckList = useCallback(() => {
         localStorage.setItem("deckList", "[]");
@@ -281,6 +337,8 @@ export const CardProvider = ({ children }) => {
         deckList, setDeckList,
         addRemoveList, setAddRemoveList,
         colorFilter, setColorFilter,
+        activeLBTag, setActiveLBTag, 
+        landBaseList, setLandBaseList,
         changePage, adjustDbToAddRemovedCard,
         pushSeachListToDeck, resetDeckList,
         resetAddRemoveList, addCardToDeckList,
@@ -288,6 +346,8 @@ export const CardProvider = ({ children }) => {
         getNameFromCard, removeCardFromDeck,
         combineDuplicates, getCardFromName,
         addToDeckFromQuery, setLandBuilder,
+        setDBSearch, resetLandBaseList,
+        removeCardLandBaseList, addToLandBaseFromQuery,
 
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 

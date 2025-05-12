@@ -125,7 +125,7 @@ const Button = styled.button`
 
 export const LandbaseWrapper = () => {
 
-    const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
+    const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard, landBaseList, setLandBaseList, resetLandBaseList } = useCards();
     const {
         clipboarded, activeTab, confirmClear, hoverCard, backFaces,
         setClipboarded, setActiveTab, setConfirmClear, setHoverCard, setBackFaces
@@ -142,7 +142,7 @@ export const LandbaseWrapper = () => {
         if(!confirmClear)
             setConfirmClear(true);
         else {
-            resetDeckList();
+            resetLandBaseList();
             setConfirmClear(false);
         }
         setTimeout(() => {setConfirmClear(false)}, 2000)
@@ -150,7 +150,7 @@ export const LandbaseWrapper = () => {
 
     const copyButton = () => {
         navigator.clipboard.writeText(
-            combineDuplicates(deckList).reduce((acc, card, i) => acc + ((i !== 0) ? "\n" : "") + card.quantity + "x " + getNameFromCard(card.card), "")
+            combineDuplicates(landBaseList).reduce((acc, card, i) => acc + ((i !== 0) ? "\n" : "") + card.quantity + "x " + getNameFromCard(card.card), "")
         );
         setClipboarded(true)
         setTimeout(() => {setClipboarded(false)}, 1000)
@@ -189,8 +189,8 @@ export const LandbaseWrapper = () => {
                         </Button>
                     </Row>
                     <H3>{`Total Cards: ${
-                        (deckList.length > 0)
-                            ? deckList.reduce((acc, {quantity}) => acc + quantity, 0)
+                        (landBaseList.length > 0)
+                            ? landBaseList.reduce((acc, {quantity}) => acc + quantity, 0)
                             : 0
                     }`}</H3>
                     {  

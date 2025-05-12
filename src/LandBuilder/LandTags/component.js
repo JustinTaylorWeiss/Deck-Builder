@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useCards } from "../../contexts/CardContext";
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
+import { Tooltip } from "react-tooltip";
+import { add } from "lodash";
 
 const ListWrap = styled.div`
     position: fixed;
@@ -70,8 +73,9 @@ const ListBlock = styled.pre`
 const TagButton = styled.button`
     background-color: ${props => props.$isActive ? "#6ecf5b" : "transparent"};
     color: white;
-    width: 75%;
+    width: 80%;
     margin: 0;
+    text-align:left;
     border: 2px solid white;
     border-radius: 5px;
     padding: 10px 20px;
@@ -92,14 +96,14 @@ const Form = styled.form`
 `;
 
 const Search = styled.input`
-    margin: 0 0 0 20px;
-    width: 60%;
+    margin: 0;
+    width: 90%;
     height: 36px;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     font-size: 1.2rem;
     &::placeholder{
-        text-align: center;
+        text-align: left;
         font-size: 1rem;
     }
 `;
@@ -108,8 +112,8 @@ const TagWrap = styled.div`
     display: flex;
     flex-direction: row;
     width: 100%;
-    margin: 0 auto;
-    align-items: center;
+    height: 50px;
+    align-items: stretch;
     justify-content: center;
 `;
 
@@ -126,18 +130,44 @@ const TagSideText = styled.div`
     text-align: center;
 `;
 
+/*
+    background-color: #292029;
+    color: white;
+    text-align: center;
+    width: 20%;
+    margin: 0 0 auto 0;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 10px 0px;
+    margin-bottom: 5px;
+    &:hover {
+        cursor: pointer;
+        background-color: white;
+        color: black;
+    }
+`;
+*/
+
+
+const AddAllButton = styled(LibraryAddIcon)`
+    body & {
+        padding: 2px 3px 5px 5px;
+        display: block; 
+        height: initial;
+        width: initial;
+    }
+`;
+
 
 export const LandTagsWrapper = () => {
 
-    const { addToTagList, removeFromTagList, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, allLands} = useCards();
+    const { addToTagList, activeLBTag, setActiveLBTag, removeFromTagList, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, addToLandBaseFromQuery, allLands, setDBSearch, db} = useCards();
     const [tags, setTags] = useState([]);
-    const [tagResults, setTagResults] = useState({});
-
     const tagSearchRef = useRef();
 
     const landTags = {
-        "Basic Land":"t%3Abasic -t%3Asnow id>0",
-        "Snow Basic Land":"t%3Abasic t%3Asnow id>0",
+        "Basic Land":"t%3Abasic -t%3Asnow",
+        "Snow Basic Land":"t%3Abasic t%3Asnow",
         "Command Tower / Exotic Orchard":"command tower or exotic orchard or reflecting pool ",
         "Fetch Land":"is%3Afetchland",
         "Prismatic Vista / Fabled Passage":"prismatic vista or fabled passage ",
@@ -165,30 +195,22 @@ export const LandTagsWrapper = () => {
 
     }
 
-    const landNameTags = {
-        "Basic Land":[]
-    }
 
     const [filteredLandTags, setFilteredLandTags] = useState(Object.entries(landTags));
 
-    /*
     useEffect(()=>{
-        Object.values(landTags).forEach((q)=>{
-            addToDeckFromQuery(q + " f%3Acommander");
-        })
-    }, [])
-    */
+        console.log(colorFilter)
+        setDBSearch(landTags[activeLBTag] + " f%3Acommander " + colorFilter)
+    }, [activeLBTag, colorFilter])
 
-    /*
     useEffect(()=>{
         resetDeckList();
         if(tags.length > 0) {
             tags.forEach((tagName)=>{
-                addToDeckFromQuery(landTags[tagName] + " f%3Acommander");
+                addToLandBaseFromQuery(landTags[tagName] + " f%3Acommander");
             })
         }
     }, [tags, colorFilter])
-    */
 
     const tagClick = (name) => (e) => {
         if(!tags.includes(name)) {
@@ -202,6 +224,11 @@ export const LandTagsWrapper = () => {
                 prev.filter((tag)=>tag!==name)
             )
         }
+    }
+
+    const addAllClick = (tagName) => () => {
+        console.log(colorFilter);
+        addToLandBaseFromQuery(landTags[tagName] + " f%3Acommander");
     }
 
     const filterTags = (search) => (
@@ -227,11 +254,9 @@ export const LandTagsWrapper = () => {
                     {
                         filteredLandTags.sort(([name1, querey1], [name2, querey2]) => name1.localeCompare(name2)).map(([name, query], i) => (
                             <TagWrap key={`tag${i}`}>
-                                <TagButton key={`Lands-SubButton-${i}`} $isActive={tags.includes(name)} onClick={tagClick(name)}>{name}</TagButton>
-                                <TagSideTextWrap>
-                                    <TagSideText>5</TagSideText>
-                                    <TagSideText>cards</TagSideText>
-                                </TagSideTextWrap>
+                                <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                <Tooltip id={`AddAll${i}`} place="top" content="Add All" style={{fontSize: "1rem"}} opacity={1}/>
+                                <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
                             </TagWrap>
                         ))
                     }
@@ -240,3 +265,10 @@ export const LandTagsWrapper = () => {
         </ListWrap>
     </>
 }
+
+/*
+    <TagSideTextWrap onMouseEnter={()=>{setHoveredTag(name)}}>
+        <TagSideText>{`${numOfCards[name]}`}</TagSideText>
+        <TagSideText>cards</TagSideText>
+    </TagSideTextWrap>
+*/

@@ -3,6 +3,7 @@ import { useSideList } from "../../../contexts/SideListContext"
 import { Fragment, useEffect, useState } from "react";
 import { Trash } from "./TrashCan";
 import styled from "styled-components";
+import { LandbaseList } from "..";
 
 const LIWrap = styled.div`
     display: flex;
@@ -63,7 +64,7 @@ const ListItem = styled.span`
 export const CardListWrapper = () => {
     
 
-    const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard } = useCards();
+    const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard, landBaseList, removeCardLandBaseList } = useCards();
     const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setActiveTab, setConfirmClear, setHoverCard, setBackFaces } = useSideList();
 
     const onListCardClick = (cardWrap) => {
@@ -72,13 +73,7 @@ export const CardListWrapper = () => {
     }
 
     const trashCanOnClick = (cardWrap) => () => {
-        if (activeTab !== "maybe")
-            removeCardFromDeck(cardWrap)
-        else 
-            setAddRemoveList((prev) => ({
-                ...prev,
-                [cardWrap.card.oracle_id]:0
-            }))
+        removeCardLandBaseList(cardWrap)
     }
 
     const processList = (list) => (
@@ -107,7 +102,7 @@ export const CardListWrapper = () => {
     ];
 
     
-    const activeList = deckList;
+    const activeList = landBaseList;
 
     return processList(activeList).map(([type, typeGroup], i) => (
         <Fragment key={`typeGroup${i}`}>
