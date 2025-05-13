@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useCards } from "../../contexts/CardContext";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import { SubList } from "./SubList";
 import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
 import { Tooltip } from "react-tooltip";
@@ -79,7 +80,7 @@ const TagButton = styled.button`
     border: 2px solid white;
     border-radius: 5px;
     padding: 10px 20px;
-    margin-bottom: 5px;
+    margin: 3px 0;
     &:hover {
         cursor: pointer;
         background-color: white;
@@ -109,6 +110,7 @@ const Search = styled.input`
 `;
 
 const TagWrap = styled.div`
+    background-color: ${props => props.$added ? "#22519c" : "transparent"};
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -148,6 +150,9 @@ const TagSideText = styled.div`
 `;
 */
 
+const GroupText = styled.div`
+
+`;
 
 const AddAllButton = styled(LibraryAddIcon)`
     body & {
@@ -161,38 +166,52 @@ const AddAllButton = styled(LibraryAddIcon)`
 
 export const LandTagsWrapper = () => {
 
-    const { addToTagList, activeLBTag, setActiveLBTag, removeFromTagList, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, addToLandBaseFromQuery, allLands, setDBSearch, db} = useCards();
+    const { addToTagList, activeLBTag, setActiveLBTag, removeFromTagList, removeFromDeckWithQuery, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, addToLandBaseFromQuery, allLands, setDBSearch, db} = useCards();
     const [tags, setTags] = useState([]);
+    const [tagsAdded, setTagsAdded] = useState([]);
     const tagSearchRef = useRef();
 
+    /*
+    const utilityLandTags = {
+        "City of Brass / Mana Confluence":"mana confluence or city of brass",
+        "Command Tower / Exotic Orchard":"command tower or exotic orchard or reflecting pool ",
+        "Prismatic Vista / Fabled Passage":"prismatic vista or fabled passage ",
+    }
+        */
+
     const landTags = {
+        "Colorless Utlity Lands":    "otag%3Autility-land id=c t:land -o:\"any color\"",
+        "Any Color Utlity Lands":    "otag%3Autility-land id=c t:land o:\"any color\"",
+        "Mono Colored Utlity Lands": "otag%3Autility-land id=1 t:land",
+        "Two Colored Utlity Lands":  "otag%3Autility-land id=2 t:land",
+        "Three Colored Utlity Lands":"otag%3Autility-land id=3 t:land",
+//      "Four Colored Utlity Lands": "otag%3Autility-land id=4 t:land",
+        "Five Colored Utlity Lands": "otag%3Autility-land id=5 t:land",
+        //Popular Lands
         "Basic Land":"t%3Abasic -t%3Asnow",
         "Snow Basic Land":"t%3Abasic t%3Asnow",
-        "Command Tower / Exotic Orchard":"command tower or exotic orchard or reflecting pool ",
         "Fetch Land":"is%3Afetchland",
-        "Prismatic Vista / Fabled Passage":"prismatic vista or fabled passage ",
         "Shock Land":"is%3Ashockland", 
         "Bond Land":"is%3Abondland", 
         "Slow Land":"is%3Aslowland", 
-        "Fast Land":"is%3Afastland", 
         "Fetchable Tri Land":"t%3Aland (t:forest or t:mountain or t:island or t:swamp or t:plains) id>2", 
-        "Non-Fetchable Tri Land":"is%3Atriland", 
         "Pain Land":"is%3Apainland", 
-        "City of Brass / Mana Confluence":"mana confluence or city of brass",
         "Canopy Land":"is%3Acanopyland", 
         "Two Color Bounce Land":"is%3Abounceland id>1",
-        "Mono Color Bounce Land":"is%3Abounceland id<2",  
-        "Check Land":"is%3Acheckland", 
         "Hybrid Filter Land":"is%3Afilterland o:\"or+\"", 
-        "Odyssey Filter Land":"is%3Afilterland o:/add {.}{.}\\./", 
-        "Dual Land":"is%3Adual", 
         "Scry Land":"is%3Ascryland", 
-        "Tango Land":"is%3Atangoland",
         "Surveil Land":"oracletag%3Acycle-dual-surveil-land",
-        "Gate Land":"t%3Agate t%3Aland",
+        // Extra Lands
+        "Urza Tron Land":"urzas tower or urzas power plant or urzas mine",
         "Cave Land":"t%3Acave t%3Aland",
-        "Urza Tron Land":"urzas tower or urzas power plant or urzas mine"
-
+        "Gate Land":"t%3Agate t%3Aland",
+        "Tango Land":"is%3Atangoland",
+        "Odyssey Filter Land":"is%3Afilterland o:/add {.}{.}\\./", 
+        "Non-Fetchable Tri Land":"is%3Atriland", 
+        "Fast Land":"is%3Afastland", 
+        "Check Land":"is%3Acheckland", 
+        "Mono Color Bounce Land":"is%3Abounceland id<2",   
+        "Dual Land":"is%3Adual", 
     }
 
 
@@ -227,8 +246,14 @@ export const LandTagsWrapper = () => {
     }
 
     const addAllClick = (tagName) => () => {
-        console.log(colorFilter);
-        addToLandBaseFromQuery(landTags[tagName] + " f%3Acommander");
+        if(tagsAdded.includes(tagName)) {
+            removeFromDeckWithQuery(landTags[tagName] + " f%3Acommander");
+            setTagsAdded((prev)=>prev.filter((name)=>name!==tagName));
+        }
+        else {
+            setTagsAdded((prev)=>[...prev, tagName]);
+            addToLandBaseFromQuery(landTags[tagName] + " f%3Acommander");
+        }
     }
 
     const filterTags = (search) => (
@@ -241,6 +266,25 @@ export const LandTagsWrapper = () => {
 
     const tagSearch = () => filterTags(tagSearchRef.current.value);
 
+    const colorSum = () => { 
+        const value = 1 +
+        (colorFilter.includes("W") ? 1 : 0) +
+        (colorFilter.includes("U") ? 1 : 0) +
+        (colorFilter.includes("B") ? 1 : 0) +
+        (colorFilter.includes("R") ? 1 : 0) +
+        (colorFilter.includes("G") ? 1 : 0)
+
+        return value < 5 
+            ? value+1
+            : value
+    }
+
+    const splitTags = {
+        "Utility Lands":filteredLandTags.slice(0, colorSum()),
+        "Popular Lands":filteredLandTags.slice(7, 20),
+        "Extra Lands":filteredLandTags.slice(20)
+    }
+
     return <>
         <ListWrap>
             <Row $width={"100%"}>
@@ -252,12 +296,18 @@ export const LandTagsWrapper = () => {
                 </Form>
                 <ListBlock>
                     {
-                        filteredLandTags.sort(([name1, querey1], [name2, querey2]) => name1.localeCompare(name2)).map(([name, query], i) => (
-                            <TagWrap key={`tag${i}`}>
-                                <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
-                                <Tooltip id={`AddAll${i}`} place="top" content="Add All" style={{fontSize: "1rem"}} opacity={1}/>
-                                <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
-                            </TagWrap>
+                        Object.entries(splitTags).map(([groupName, tags], i) => (
+                            <SubList key={`sublist${i}`} name={groupName} startOpen={i===1} searchRef={tagSearchRef}
+                                buttons={
+                                    tags.map(([name, query], i) => (
+                                        <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                                            <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                            <Tooltip id={`AddAll${i}`} place="top" content="Add All" style={{fontSize: "1rem"}} opacity={1}/>
+                                            <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
+                                        </TagWrap>
+                                    ))
+                                }
+                            />
                         ))
                     }
                 </ListBlock>
@@ -265,6 +315,8 @@ export const LandTagsWrapper = () => {
         </ListWrap>
     </>
 }
+
+
 
 /*
     <TagSideTextWrap onMouseEnter={()=>{setHoveredTag(name)}}>

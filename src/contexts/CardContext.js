@@ -249,6 +249,27 @@ export const CardProvider = ({ children }) => {
         return false;
     }
 
+    const removeFromDeckWithQuery = async(query) => {
+        try {
+            const uri = `https://api.scryfall.com/cards/search?q=${query} ${colorFilter}`;
+            const res = await fetch(uri);
+            if(res.ok) {
+                const resJson = await res.json();
+                const data = await resJson.data;
+                setLoading(false);
+                setLandBaseList((prev)=>prev.filter(
+                    ({quantity, card})=> !data.map((dataCard)=>dataCard.name).includes(card.name)
+                ))
+            }
+            else { 
+                throw new Error("Responce not 2xx");
+            }
+        } catch (e) {
+            console.log(`Card Not Found (Search: ${query})`);
+        }
+        return false;
+    }
+
     const removeCardFromDeck = (card) => {
         setDeckList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
     }
@@ -348,6 +369,7 @@ export const CardProvider = ({ children }) => {
         addToDeckFromQuery, setLandBuilder,
         setDBSearch, resetLandBaseList,
         removeCardLandBaseList, addToLandBaseFromQuery,
+        removeFromDeckWithQuery,
 
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 
