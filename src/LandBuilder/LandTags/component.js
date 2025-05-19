@@ -10,6 +10,7 @@ import { landTags } from "../global/landTagData";
 
 const ListWrap = styled.div`
     position: fixed;
+    border-radius: 5px;
     background-color: #121010;
     top: 20px;
     left: 20px;
