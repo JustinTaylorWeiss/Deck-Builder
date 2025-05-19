@@ -138,21 +138,12 @@ export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
     const oracleSubmit = () => setOracleTextSearch(`o:\"${oracleRef.current.value}\"+`);
     const debouncedOracle = debounce(oracleSubmit, 1000);
 
-    return <>
-        <ScrollRow>
-            {
-                tagList.map((tag, i) => (
-                    <ActiveTags onClick={() => removeFromTagList(tag.name)} key={`ActiveTag-${i}`}>{((tag.not) ? "Non-" : "") + tag.name}</ActiveTags>
-                ))
-            }
-        </ScrollRow>
-        <Row>
-            <SmallLabel>{(db?.total_cards ?? 0) + " / " + (landTags?.[activeLBTag]?.totalNumber ?? 0)}</SmallLabel>
-            <Form onSubmit={(e) => {e.preventDefault()}}> 
-                <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
-                <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
-            </Form>
-            {!lands && <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>}
-        </Row>
-    </>
+    return <Row>
+        <SmallLabel>{(db?.total_cards ?? 0) + " / " + (landTags?.[activeLBTag]?.totalNumber ?? 0)}</SmallLabel>
+        <Form onSubmit={(e) => {e.preventDefault()}}> 
+            <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
+            <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
+        </Form>
+        {!lands && <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>}
+    </Row>
 }

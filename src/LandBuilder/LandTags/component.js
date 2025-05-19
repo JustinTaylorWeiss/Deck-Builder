@@ -10,6 +10,7 @@ import { landTags } from "../global/landTagData";
 
 const ListWrap = styled.div`
     position: fixed;
+    background-color: #121010;
     top: 20px;
     left: 20px;
     display: flex;
@@ -66,7 +67,6 @@ const MyTooltip = styled(Tooltip)`
 `;
 
 const ListBlock = styled.pre`
-    background-color: #121010;
     display: flex;
     overflow-x: hidden;
     flex-direction: column;
@@ -169,7 +169,7 @@ const AddAllButton = styled(LibraryAddIcon)`
         padding: 2px 3px 5px 5px;
         display: block; 
         height: initial;
-        width: initial;
+        width: 50px;
     }
 `;
 
@@ -178,7 +178,7 @@ const RemoveAllButton = styled(PlaylistRemoveIcon)`
         padding: 2px 3px 5px 5px;
         display: block; 
         height: initial;
-        width: initial;
+        width: 50px;
     }
 `;
 
@@ -278,45 +278,43 @@ export const LandTagsWrapper = () => {
             <Row $width={"100%"}>
                 <TitleButton onClick={()=>{}} $isActive={true}>Land Tags</TitleButton>
             </Row>
+            <Form onSubmit={(e) => {e.preventDefault()}}> 
+                <Search onChange={tagSearch} placeholder="Search Land Tags" ref={tagSearchRef}/>
+            </Form>
             <ListBlock>
-                <Form onSubmit={(e) => {e.preventDefault()}}> 
-                    <Search onChange={tagSearch} placeholder="Search Land Tags" ref={tagSearchRef}/>
-                </Form>
-                <ListBlock>
-                    {
-                        (tagSearchRef?.current?.value ?? "") !== ""
-                            ? filteredLandTags.map(([name, _], i)=>(
-                                <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
-                                    {
-                                        tagsAdded.includes(name)
-                                            ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
-                                            : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
-                                    }
-                                    <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
-                                    <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
-                                </TagWrap>
-                            ))
-                            : Object.entries(splitTags).map(([groupName, tags], i) => (
-                                <SubList key={`sublist${i}`} name={groupName} startOpen={i===1} searchRef={tagSearchRef}
-                                    buttons={
-                                        tags.map(([name, query], i) => (
-                                            <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
-                                                {
-                                                    groupName !== "Land Catagories" && (
-                                                        tagsAdded.includes(name)
-                                                            ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
-                                                            : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
-                                                    )
-                                                }
-                                                <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
-                                                <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
-                                            </TagWrap>
-                                        ))
-                                    }
-                                />
+                {
+                    (tagSearchRef?.current?.value ?? "") !== ""
+                        ? filteredLandTags.map(([name, _], i)=>(
+                            <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                                {
+                                    tagsAdded.includes(name)
+                                        ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
+                                        : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                }
+                                <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
+                            </TagWrap>
                         ))
-                    }
-                </ListBlock>
+                        : Object.entries(splitTags).map(([groupName, tags], i) => (
+                            <SubList key={`sublist${i}`} name={groupName} startOpen={i===1} searchRef={tagSearchRef}
+                                buttons={
+                                    tags.map(([name, query], i) => (
+                                        <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                                            {
+                                                groupName !== "Land Catagories" && (
+                                                    tagsAdded.includes(name)
+                                                        ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
+                                                        : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                                )
+                                            }
+                                            <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                            <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
+                                        </TagWrap>
+                                    ))
+                                }
+                            />
+                    ))
+                }
             </ListBlock>
         </ListWrap>
     </>

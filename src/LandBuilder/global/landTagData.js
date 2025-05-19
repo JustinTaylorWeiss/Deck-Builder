@@ -2,7 +2,7 @@ export const landTags = {
 //  Utility Lands
     "Colorless Land":                {totalNumber: 157,query: "(otag:utility-land or o:\"add {c}{c}\") -o:\"any color\" id=c t:land"},
     "Any Color Land":                {totalNumber: 92, query: "t:land o:\"any color\" t:land"},
-    "Mono Color Land":               {totalNumber: 299,query: "id=1 t:land"},
+    "One Color Land":                {totalNumber: 299,query: "id=1 t:land"},
     "Two Color Mana Fix Land":       {totalNumber: 270,query: "-otag:utility-land id=2 t:land"},
     "Two Color Utlity Land":         {totalNumber: 121,query: "otag:utility-land id=2 t:land"},
     "Three Color Land":              {totalNumber: 48, query: "id=3 t:land"},
