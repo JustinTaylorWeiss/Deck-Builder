@@ -267,8 +267,8 @@ export const LandTagsWrapper = () => {
 
     const splitTags = {
         "Land Catagories":Object.entries(landTags).slice(0, colorSum()),
-        "Popular Tags":Object.entries(landTags).slice(7, 23),
-        "Extra Tags":Object.entries(landTags).slice(23)
+        "Popular Tags":Object.entries(landTags).slice(7, 29),
+        "Extra Tags":Object.entries(landTags).slice(29)
     }
 
     //.sort((name1, name2) => name1.localeCompare(name2))

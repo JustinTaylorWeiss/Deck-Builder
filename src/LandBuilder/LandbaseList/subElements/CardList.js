@@ -73,7 +73,7 @@ export const CardListWrapper = () => {
     }
 
     const trashCanOnClick = (cardWrap) => () => {
-        removeCardLandBaseList(cardWrap)
+        removeCardLandBaseList(cardWrap.card)
     }
 
     const processList = (list) => (
