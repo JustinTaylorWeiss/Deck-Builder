@@ -3,10 +3,10 @@ import { useCards } from "../../../contexts/CardContext";
 import Select from 'react-select';
 import { categoryOptions } from "../categoryOptions";
 import QuestonMark from './icons/questionMark.svg';
-import { numberOfCardsForTag } from "../../global/cardData";
 import { useRef, useState } from "react";
 import { Tooltip } from 'react-tooltip';
 import { debounce } from 'lodash';
+import { landTags } from "../../global/landTagData";
 
 const Form = styled.form`
     display: flex;
@@ -147,7 +147,7 @@ export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
             }
         </ScrollRow>
         <Row>
-            <SmallLabel>{(db?.data?.length ?? 0) + " / " + (numberOfCardsForTag?.[activeLBTag] ?? 0)}</SmallLabel>
+            <SmallLabel>{(db?.total_cards ?? 0) + " / " + (landTags?.[activeLBTag]?.totalNumber ?? 0)}</SmallLabel>
             <Form onSubmit={(e) => {e.preventDefault()}}> 
                 <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
                 <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>

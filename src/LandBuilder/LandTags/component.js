@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useCards } from "../../contexts/CardContext";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { SubList } from "./SubList";
 import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
 import { Tooltip } from "react-tooltip";
-import { add } from "lodash";
+import { landTags } from "../global/landTagData";
 
 const ListWrap = styled.div`
     position: fixed;
@@ -56,9 +57,18 @@ const SubTitleButton = styled(TitleButton)`
     margin-top: 20px;
 `;
 
+const MyTooltip = styled(Tooltip)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    box-shadow: 3px 3px 7px #000000;
+`;
+
 const ListBlock = styled.pre`
     background-color: #121010;
     display: flex;
+    overflow-x: hidden;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -110,7 +120,7 @@ const Search = styled.input`
 `;
 
 const TagWrap = styled.div`
-    background-color: ${props => props.$added ? "#22519c" : "transparent"};
+    background-color: ${props => props.$added ? "#585887" : "transparent"};
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -163,6 +173,15 @@ const AddAllButton = styled(LibraryAddIcon)`
     }
 `;
 
+const RemoveAllButton = styled(PlaylistRemoveIcon)`
+    body & {
+        padding: 2px 3px 5px 5px;
+        display: block; 
+        height: initial;
+        width: initial;
+    }
+`;
+
 
 export const LandTagsWrapper = () => {
 
@@ -179,54 +198,21 @@ export const LandTagsWrapper = () => {
     }
         */
 
-    const landTags = {
-        "Colorless Utlity Lands":    "otag%3Autility-land id=c t:land -o:\"any color\"",
-        "Any Color Utlity Lands":    "otag%3Autility-land id=c t:land o:\"any color\"",
-        "Mono Colored Utlity Lands": "otag%3Autility-land id=1 t:land",
-        "Two Colored Utlity Lands":  "otag%3Autility-land id=2 t:land",
-        "Three Colored Utlity Lands":"otag%3Autility-land id=3 t:land",
-//      "Four Colored Utlity Lands": "otag%3Autility-land id=4 t:land",
-        "Five Colored Utlity Lands": "otag%3Autility-land id=5 t:land",
-        //Popular Lands
-        "Basic Land":"t%3Abasic -t%3Asnow",
-        "Snow Basic Land":"t%3Abasic t%3Asnow",
-        "Fetch Land":"is%3Afetchland",
-        "Shock Land":"is%3Ashockland", 
-        "Bond Land":"is%3Abondland", 
-        "Slow Land":"is%3Aslowland", 
-        "Fetchable Tri Land":"t%3Aland (t:forest or t:mountain or t:island or t:swamp or t:plains) id>2", 
-        "Pain Land":"is%3Apainland", 
-        "Canopy Land":"is%3Acanopyland", 
-        "Two Color Bounce Land":"is%3Abounceland id>1",
-        "Hybrid Filter Land":"is%3Afilterland o:\"or+\"", 
-        "Scry Land":"is%3Ascryland", 
-        "Surveil Land":"oracletag%3Acycle-dual-surveil-land",
-        // Extra Lands
-        "Urza Tron Land":"urzas tower or urzas power plant or urzas mine",
-        "Cave Land":"t%3Acave t%3Aland",
-        "Gate Land":"t%3Agate t%3Aland",
-        "Tango Land":"is%3Atangoland",
-        "Odyssey Filter Land":"is%3Afilterland o:/add {.}{.}\\./", 
-        "Non-Fetchable Tri Land":"is%3Atriland", 
-        "Fast Land":"is%3Afastland", 
-        "Check Land":"is%3Acheckland", 
-        "Mono Color Bounce Land":"is%3Abounceland id<2",   
-        "Dual Land":"is%3Adual", 
-    }
+
 
 
     const [filteredLandTags, setFilteredLandTags] = useState(Object.entries(landTags));
 
     useEffect(()=>{
-        console.log(colorFilter)
-        setDBSearch(landTags[activeLBTag] + " f%3Acommander " + colorFilter)
+        if(activeLBTag !== "")
+            setDBSearch(landTags[activeLBTag].query + " f%3Acommander " + colorFilter)
     }, [activeLBTag, colorFilter])
 
     useEffect(()=>{
         resetDeckList();
         if(tags.length > 0) {
             tags.forEach((tagName)=>{
-                addToLandBaseFromQuery(landTags[tagName] + " f%3Acommander");
+                addToLandBaseFromQuery(landTags[tagName].query + " f%3Acommander");
             })
         }
     }, [tags, colorFilter])
@@ -247,12 +233,12 @@ export const LandTagsWrapper = () => {
 
     const addAllClick = (tagName) => () => {
         if(tagsAdded.includes(tagName)) {
-            removeFromDeckWithQuery(landTags[tagName] + " f%3Acommander");
+            removeFromDeckWithQuery(landTags[tagName].query + " f%3Acommander");
             setTagsAdded((prev)=>prev.filter((name)=>name!==tagName));
         }
         else {
             setTagsAdded((prev)=>[...prev, tagName]);
-            addToLandBaseFromQuery(landTags[tagName] + " f%3Acommander");
+            addToLandBaseFromQuery(landTags[tagName].query + " f%3Acommander");
         }
     }
 
@@ -267,23 +253,25 @@ export const LandTagsWrapper = () => {
     const tagSearch = () => filterTags(tagSearchRef.current.value);
 
     const colorSum = () => { 
-        const value = 1 +
+        const value = 2 +
         (colorFilter.includes("W") ? 1 : 0) +
         (colorFilter.includes("U") ? 1 : 0) +
         (colorFilter.includes("B") ? 1 : 0) +
         (colorFilter.includes("R") ? 1 : 0) +
         (colorFilter.includes("G") ? 1 : 0)
 
-        return value < 5 
-            ? value+1
+        return (value === 4 || value === 5)
+            ? value + 1
             : value
     }
 
     const splitTags = {
-        "Utility Lands":filteredLandTags.slice(0, colorSum()),
-        "Popular Lands":filteredLandTags.slice(7, 20),
-        "Extra Lands":filteredLandTags.slice(20)
+        "Land Catagories":Object.entries(landTags).slice(0, colorSum()),
+        "Popular Tags":Object.entries(landTags).slice(7, 23),
+        "Extra Tags":Object.entries(landTags).slice(23)
     }
+
+    //.sort((name1, name2) => name1.localeCompare(name2))
 
     return <>
         <ListWrap>
@@ -296,18 +284,36 @@ export const LandTagsWrapper = () => {
                 </Form>
                 <ListBlock>
                     {
-                        Object.entries(splitTags).map(([groupName, tags], i) => (
-                            <SubList key={`sublist${i}`} name={groupName} startOpen={i===1} searchRef={tagSearchRef}
-                                buttons={
-                                    tags.map(([name, query], i) => (
-                                        <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
-                                            <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
-                                            <Tooltip id={`AddAll${i}`} place="top" content="Add All" style={{fontSize: "1rem"}} opacity={1}/>
-                                            <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
-                                        </TagWrap>
-                                    ))
-                                }
-                            />
+                        (tagSearchRef?.current?.value ?? "") !== ""
+                            ? filteredLandTags.map(([name, _], i)=>(
+                                <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                                    {
+                                        tagsAdded.includes(name)
+                                            ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
+                                            : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                    }
+                                    <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                    <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
+                                </TagWrap>
+                            ))
+                            : Object.entries(splitTags).map(([groupName, tags], i) => (
+                                <SubList key={`sublist${i}`} name={groupName} startOpen={i===1} searchRef={tagSearchRef}
+                                    buttons={
+                                        tags.map(([name, query], i) => (
+                                            <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                                                {
+                                                    groupName !== "Land Catagories" && (
+                                                        tagsAdded.includes(name)
+                                                            ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
+                                                            : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                                    )
+                                                }
+                                                <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                                <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
+                                            </TagWrap>
+                                        ))
+                                    }
+                                />
                         ))
                     }
                 </ListBlock>

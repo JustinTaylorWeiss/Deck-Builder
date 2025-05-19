@@ -29,6 +29,7 @@ export const CardProvider = ({ children }) => {
     // MAYBE LIST DATA
     const [deckList, setDeckList] = useState([]);
     const [landBaseList, setLandBaseList] = useState([]);
+    const [landBaseTotalCount, setLandBaseTotalCount] = useState(0);
 
     const isBig = useMediaQuery({query: '(min-width: 2000px)'})
     const isMid = useMediaQuery({query: '(min-width: 1500px)'})
@@ -86,7 +87,7 @@ export const CardProvider = ({ children }) => {
     const setDBSearch = async(query) => {
         setLoading(true);
         try {
-            const uri = "https://api.scryfall.com/cards/search?order=cmc&q=" + query;
+            const uri = "https://api.scryfall.com/cards/search?order=released&q=" + query;
             const res = await fetch(uri);
             if(res.ok) {
                 const resJson = await res.json();
@@ -106,6 +107,23 @@ export const CardProvider = ({ children }) => {
     const addCardToDeckList = (cardWrapper) => {
         if(cardWrapper.quantity > 0)
             setDeckList((prev) => [...prev, cardWrapper])
+    };
+
+    const addCardToLandBaseList = (cardWrapper) => {
+        if(cardWrapper.quantity > 0)
+            setLandBaseList((prev) => [...prev, cardWrapper])
+    };
+
+    const incOrDecLandBaseCard = (card, negitive) => {
+        setLandBaseList(
+            (prev) => prev.map((cardWrap) => (
+                cardWrap.card.name === card.name
+                    ? negitive
+                        ? {quantity: Math.max(cardWrap.quantity-1, 0), card: cardWrap.card}
+                        : {quantity: cardWrap.quantity+1, card: cardWrap.card}
+                    : cardWrap
+            ))
+        )
     };
 
     const cardObjArrToListString = (cardObjArr) => (
@@ -143,7 +161,7 @@ export const CardProvider = ({ children }) => {
 
         const URI = (
             rootUri + 
-            "search?order=cmc&q=" +
+            "search?order=released&q=" +
             nameFilter +
             onlyLands + 
             oracleTextSearch +
@@ -275,7 +293,7 @@ export const CardProvider = ({ children }) => {
     }
     
     const removeCardLandBaseList = (card) => {
-        setLandBaseList((prev) => prev.filter((c) => c.card.oracle_id !== card.card.oracle_id))
+        setLandBaseList((prev) => prev.filter((c) => c.card.oracle_id !== card.oracle_id))
     }
 
     const combineDuplicates = (cardList) => {
@@ -369,7 +387,8 @@ export const CardProvider = ({ children }) => {
         addToDeckFromQuery, setLandBuilder,
         setDBSearch, resetLandBaseList,
         removeCardLandBaseList, addToLandBaseFromQuery,
-        removeFromDeckWithQuery,
+        removeFromDeckWithQuery, addCardToLandBaseList,
+        incOrDecLandBaseCard,
 
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 

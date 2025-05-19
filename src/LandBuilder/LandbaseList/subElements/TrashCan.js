@@ -7,6 +7,11 @@ const TrashImg = styled.img`
     padding: 3px;
     margin: 2px 8px;
     border-radius: 3px;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     &:hover {
         background-color: #ff000066;
     }

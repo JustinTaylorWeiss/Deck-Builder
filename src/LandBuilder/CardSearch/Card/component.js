@@ -10,6 +10,9 @@ import addToDeck from "./icons/addToDeck.svg"
 const Img = styled.img`
     width: 100%;
     border-radius: 4.2%;
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const FlipIcon = styled.img``;
@@ -85,7 +88,7 @@ const CardQuantityWrap = styled.div`
 `;
 
 const CardQuantity = styled.div`
-    color: ${props => props.$num === 0 ? "red" : "Black"};
+    color: "Black";
     flex: 1;
     font-size: 2rem;
 `;
@@ -102,6 +105,7 @@ const AddRemoveButton = styled.button`
     flex: 1;
     &:hover {
         background-color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
     }
     &:active {
         background-color: rgba(255, 255, 255, 1);
@@ -127,34 +131,54 @@ const CardName = styled.div`
     z-index: 10;
 `;
 
+const PandPWrap = styled.div`
+    width:30%;
+`;
+const PriceAndPopularity = styled.div`
+    font-size: 0.8rem;
+    margin-left: 10px;
+    text-align: left;
+`;
+
 
 export const CardWrapper = ({card, x, y}) => {
 
-    const { addRemoveList, setAddRemoveList, addCardToDeckList, searchToMaybeBoard } = useCards();
+    const { addRemoveList, setAddRemoveList, addCardToDeckList, searchToMaybeBoard, removeCardLandBaseList, landBaseList, incOrDecLandBaseCard, addCardToLandBaseList } = useCards();
     const [backFace, setBackFace] = useState(false);
+
+    const landOnBack = (card?.image_uris ?? false) && 
+    (card?.card_faces?.[1]?.type_line ?? "").includes("Land") &&
+    (card?.card_faces?.[1]?.type_line ?? "").includes("Land")
 
     const findImage = () => (
         (!card?.image_uris ?? false) 
-        ? card.card_faces[backFace ? 1 : 0].image_uris.normal
-        : card.image_uris.normal
+            ? card.card_faces[backFace ? 1 : 0].image_uris.normal
+            : card.image_uris.normal
     )
-    
-    const cardQuantityClick = (e, change) => {
-        e.preventDefault();
-        setAddRemoveList((prev) => ({
-            ...prev,
-            [card.oracle_id]:(Math.max((prev[card.oracle_id] ?? (searchToMaybeBoard ? 1 : 0)) + change, 0))
-        }))
-    }
 
-    const numOfCard = (addRemoveList[card.oracle_id] ?? 1)
+    const numOfCard = landBaseList.filter((cardObject) => cardObject.card.name === card.name)?.[0]?.quantity ?? 0
+    
+    const cardQuantityClick = (e, isNegitive) => {
+        e.preventDefault();
+        if(numOfCard === 1 && isNegitive){
+            removeCardLandBaseList(card)
+        }
+        else if(numOfCard <= 0 && !isNegitive) {
+            addCardToLandBaseList({quantity: 1, card: card})
+        }
+        else if(numOfCard > 0){
+            incOrDecLandBaseCard(card, isNegitive)
+        }
+    }
+        
     const cardName = (card?.card_faces ?? false)
         ? card.card_faces[0].name + " // " + card.card_faces[1].name
         : card?.name
 
     return <CardWrap>
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
-        <Img onClick={(e) => cardQuantityClick(e, (numOfCard === 0 ? 1 : -1))} src={findImage()} key={`card${x},${y}`}/>
+        {console.log(JSON.stringify(card.card_faces))}
+        <Img onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
         <CardQuantityWrap>
             {(card?.card_faces ?? false)
                     ? <>
@@ -163,11 +187,18 @@ export const CardWrapper = ({card, x, y}) => {
                     </>
                     : <Spacer/>
             }
-            <AddRemoveButton onClick={(e) => cardQuantityClick(e, -1)}><AddRemoveIcon draggable="false" height={36} src={minus} alt="-"/></AddRemoveButton>
-            <CardQuantity $num={numOfCard}>{numOfCard}</CardQuantity>
-            <AddRemoveButton onClick={(e) => cardQuantityClick(e, +1)}><AddRemoveIcon draggable="false" height={36} src={plus} alt="+"/></AddRemoveButton>
-            <AddToDeckButton data-tooltip-id="addToDeckTT" onClick={() => addCardToDeckList({quantity: numOfCard, card: card})}><AddToDeckIcon height={36} src={addToDeck} alt="Add to deck"/></AddToDeckButton>
-            <Tooltip id="addToDeckTT" place="top" content="Add to Deck" style={{fontSize: "1rem"}} opacity={1}/>
+            <AddRemoveButton onClick={(e) => cardQuantityClick(e, true)}><AddRemoveIcon draggable="false" height={36} src={minus} alt="-"/></AddRemoveButton>
+            <CardQuantity>{numOfCard}</CardQuantity>
+            <AddRemoveButton onClick={(e) => cardQuantityClick(e, false)}><AddRemoveIcon draggable="false" height={36} src={plus} alt="+"/></AddRemoveButton>
+            <PandPWrap>
+                <PriceAndPopularity data-tooltip-id="cardPrice">$0 - $100</PriceAndPopularity>
+                <Tooltip id="cardPrice" place="top" content="Price range from tcgplayer.com" style={{fontSize: "1rem"}} opacity={1}/>
+                <PriceAndPopularity data-tooltip-id="cardPopularity">0.25%</PriceAndPopularity>
+                <Tooltip id="cardPopularity" place="bottom" content="Used in 0.25% of eligible decks on edhrec.com" style={{fontSize: "1rem"}} opacity={1}/>
+            </PandPWrap>
         </CardQuantityWrap>
     </CardWrap>
 };
+
+//<AddToDeckButton data-tooltip-id="addToDeckTT" onClick={() => addCardToDeckList({quantity: numOfCard, card: card})}><AddToDeckIcon height={36} src={addToDeck} alt="Add to deck"/></AddToDeckButton>
+//<Tooltip id="addToDeckTT" place="top" content="Add to Deck" style={{fontSize: "1rem"}} opacity={1}/>

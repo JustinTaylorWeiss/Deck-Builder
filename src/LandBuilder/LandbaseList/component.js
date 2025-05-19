@@ -36,6 +36,11 @@ const H3 = styled.h3`
     font-weight: normal;
     font-size: 1.5rem;
     font-weight: bold;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     @media (min-width: 2000px) {
         font-size: 1.5rem;
     }
