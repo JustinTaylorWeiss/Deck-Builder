@@ -205,8 +205,14 @@ export const LandTagsWrapper = () => {
     const [filteredLandTags, setFilteredLandTags] = useState(Object.entries(landTags));
 
     useEffect(()=>{
-        if(activeLBTag !== "")
-            setDBSearch(landTags[activeLBTag].query + " f%3Acommander " + colorFilter)
+        if(activeLBTag !== "") {
+            if(activeLBTag === "Dual Fetch Land") {
+                setDBSearch(handleFetchLands(colorFilter) + " f%3Acommander");
+            }
+            else {
+                setDBSearch(landTags[activeLBTag].query + " f%3Acommander " + colorFilter)
+            }
+        }
     }, [activeLBTag, colorFilter])
 
     useEffect(()=>{
@@ -239,8 +245,50 @@ export const LandTagsWrapper = () => {
         }
         else {
             setTagsAdded((prev)=>[...prev, tagName]);
-            addToLandBaseFromQuery(landTags[tagName].query + " f%3Acommander");
+            if(tagName === "Dual Fetch Land") {
+                addToLandBaseFromQuery(handleFetchLands(colorFilter) + " f%3Acommander");
+            }
+            else {
+                addToLandBaseFromQuery(landTags[tagName].query + " f%3Acommander");
+            }
         }
+    }
+
+    const handleFetchLands = (colorFilter) => {
+        let totalCards = [];
+        if(colorFilter.includes("W")){
+            if(!totalCards.includes("Flooded Strand"))     { totalCards.push("Flooded Strand")    }
+            if(!totalCards.includes("Windswept Heath"))    { totalCards.push("Windswept Heath")   }
+            if(!totalCards.includes("Marsh Flats"))        { totalCards.push("Marsh Flats")       }
+            if(!totalCards.includes("Arid Mesa"))          { totalCards.push("Arid Mesa")         }
+        }
+        if(colorFilter.includes("U")){
+            if(!totalCards.includes("Flooded Strand"))     { totalCards.push("Flooded Strand")    }
+            if(!totalCards.includes("Polluted Delta"))     { totalCards.push("Polluted Delta")    }
+            if(!totalCards.includes("Misty Rainforest"))   { totalCards.push("Misty Rainforest")  }
+            if(!totalCards.includes("Scalding Tarn"))      { totalCards.push("Scalding Tarn")     }
+        }
+        if(colorFilter.includes("B")){
+            if(!totalCards.includes("Polluted Delta"))     { totalCards.push("Polluted Delta")    }
+            if(!totalCards.includes("Bloodstained Mire"))  { totalCards.push("Bloodstained Mire") }
+            if(!totalCards.includes("Marsh Flats"))        { totalCards.push("Marsh Flats")       }
+            if(!totalCards.includes("Verdant Catacombs"))  { totalCards.push("Verdant Catacombs") }
+        }
+        if(colorFilter.includes("R")){
+            if(!totalCards.includes("Bloodstained Mire"))  { totalCards.push("Bloodstained Mire") }
+            if(!totalCards.includes("Wooded Foothills"))   { totalCards.push("Wooded Foothills")  }
+            if(!totalCards.includes("Scalding Tarn"))      { totalCards.push("Scalding Tarn")     }
+            if(!totalCards.includes("Arid Mesa"))          { totalCards.push("Arid Mesa")         }
+        }
+        if(colorFilter.includes("G")){
+            if(!totalCards.includes("Wooded Foothills"))   { totalCards.push("Wooded Foothills")  }
+            if(!totalCards.includes("Windswept Heath"))    { totalCards.push("Windswept Heath")   }
+            if(!totalCards.includes("Verdant Catacombs"))  { totalCards.push("Verdant Catacombs") }
+            if(!totalCards.includes("Misty Rainforest"))   { totalCards.push("Misty Rainforest")  }
+        }
+        return totalCards.reduce((acc, cardName, i) => (
+            acc + cardName + " or "
+        ),"").slice(0,-4)
     }
 
     const filterTags = (search) => (

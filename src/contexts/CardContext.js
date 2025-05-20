@@ -154,10 +154,8 @@ export const CardProvider = ({ children }) => {
     const expandFilter = useCallback((filterArr) => filterArr.reduce((acc, filter) => acc + filter, ""))
 
     const buildUri = useCallback((rootUri, nameFilter, oracleTextSearch, colorFilter, cmcFilter, formatFilter, tagList) => {
-        console.log("Tag List: " + tagList)
 
         const onlyLands = (landBuilder ? "t%3Aland " : "");
-        console.log(onlyLands);
 
         const URI = (
             rootUri + 
@@ -171,7 +169,7 @@ export const CardProvider = ({ children }) => {
             tagList.reduce((acc, tag) => acc + tag.filters.reduce((innderAcc, filter) => innderAcc + filter,""), "")
         ).slice(0,-1) //Remove trailing +
 
-        console.log("URI: " + URI);
+        //console.log("URI: " + URI);
         return URI;
     }, [])
 
@@ -181,7 +179,7 @@ export const CardProvider = ({ children }) => {
                 setLoading(true);
                 try {
                     const uri = buildUri("https://api.scryfall.com/cards/", nameFilter, oracleTextSearch, colorFilter, cmcFilter, formatFilter, tagList);
-                    console.log(uri);
+                    //console.log(uri);
                     setFirstLoad(false);
                     const res = await fetch(uri);
                     if(res.ok) {

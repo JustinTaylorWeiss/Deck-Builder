@@ -177,7 +177,6 @@ export const CardWrapper = ({card, x, y}) => {
 
     return <CardWrap>
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
-        {console.log(JSON.stringify(card.card_faces))}
         <Img onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
         <CardQuantityWrap>
             {(card?.card_faces ?? false)
@@ -190,15 +189,19 @@ export const CardWrapper = ({card, x, y}) => {
             <AddRemoveButton onClick={(e) => cardQuantityClick(e, true)}><AddRemoveIcon draggable="false" height={36} src={minus} alt="-"/></AddRemoveButton>
             <CardQuantity>{numOfCard}</CardQuantity>
             <AddRemoveButton onClick={(e) => cardQuantityClick(e, false)}><AddRemoveIcon draggable="false" height={36} src={plus} alt="+"/></AddRemoveButton>
-            <PandPWrap>
-                <PriceAndPopularity data-tooltip-id="cardPrice">$0 - $100</PriceAndPopularity>
-                <Tooltip id="cardPrice" place="top" content="Price range from tcgplayer.com" style={{fontSize: "1rem"}} opacity={1}/>
-                <PriceAndPopularity data-tooltip-id="cardPopularity">0.25%</PriceAndPopularity>
-                <Tooltip id="cardPopularity" place="bottom" content="Used in 0.25% of eligible decks on edhrec.com" style={{fontSize: "1rem"}} opacity={1}/>
-            </PandPWrap>
+            <Spacer/>
         </CardQuantityWrap>
     </CardWrap>
 };
+
+/*
+<PandPWrap>
+    <PriceAndPopularity data-tooltip-id="cardPrice">$0 - $100</PriceAndPopularity>
+        <Tooltip id="cardPrice" place="top" content="Price range from tcgplayer.com" style={{fontSize: "1rem"}} opacity={1}/>
+        <PriceAndPopularity data-tooltip-id="cardPopularity">0.25%</PriceAndPopularity>
+    <Tooltip id="cardPopularity" place="bottom" content="Used in 0.25% of eligible decks on edhrec.com" style={{fontSize: "1rem"}} opacity={1}/>
+</PandPWrap>
+*/
 
 //<AddToDeckButton data-tooltip-id="addToDeckTT" onClick={() => addCardToDeckList({quantity: numOfCard, card: card})}><AddToDeckIcon height={36} src={addToDeck} alt="Add to deck"/></AddToDeckButton>
 //<Tooltip id="addToDeckTT" place="top" content="Add to Deck" style={{fontSize: "1rem"}} opacity={1}/>
