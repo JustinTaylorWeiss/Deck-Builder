@@ -7,11 +7,13 @@ import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
 import { Tooltip } from "react-tooltip";
 import { landTags } from "../global/landTagData";
+import { ArrowIcon } from "./SubList/assets/Arrow";
 
 const ListWrap = styled.div`
     position: fixed;
     border-radius: 5px;
-    background-color: #121010;
+    background-color: #181a1c;
+    border: 2px solid #d8cc65;
     top: 20px;
     left: 20px;
     display: flex;
@@ -27,23 +29,33 @@ const ListWrap = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
     width: ${props => props.$width};
-    align-items: flex-start;
-    margin: 0 auto;
+    align-items: center;
+`;
+
+const TitleText = styled.h2`
+    display: block;
+    font-size: 1.5rem;
+    color: #d8cc65;
+    font-weight: 600;
 `;
 
 const TitleButton = styled.button`
-    font-size: 1.2rem;
-    height: 40px;
-    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 70%;
     border-radius: 5px;
     z-index: 10;
+    margin-bottom: 5px;
     border: ${props => props.$isActive ? "none" : "2px solid #121010"};
-    color: ${props => props.$isActive ? "white" : "black"};
     background-color: ${props => props.$isActive ? "#121010" : "transparent"};
     &:hover {
-        background-color: ${props => props.$isActive ? "#121010" : "#aaaaaa"};
+        cursor: pointer;
+        background-color: ${props => props.$isActive ? "#404347" : "#aaaaaa"};
     }
     @media (min-width: 2000px) {
         font-size: 1.5rem;
@@ -52,6 +64,16 @@ const TitleButton = styled.button`
         font-size: 1rem;
     }
 `
+const ArrowIconWrap = styled.div`
+    display: flex;
+    color: #d8cc65;
+    padding: 14px 0;
+    justify-content: center;
+    align-items: center;
+    ${props => props.$left ? "transform: rotate(270deg);" : "transform: rotate(90deg);" }
+    ${props => props.$active && "transform: rotate(0deg);"}
+`;
+
 const SubTitleButton = styled(TitleButton)`
     background-color: ${props => props.$isActive ? "red" : "transparent"};
     color: white;
@@ -83,7 +105,8 @@ const ListBlock = styled.pre`
 `;
 
 const TagButton = styled.button`
-    background-color: ${props => props.$isActive ? "#6ecf5b" : "transparent"};
+    background-color: ${props => props.$isActive ? "#4a678f" : "transparent"};
+    transition-duration: 150ms;
     color: white;
     width: 80%;
     margin: 0;
@@ -94,14 +117,13 @@ const TagButton = styled.button`
     margin: 3px 0;
     &:hover {
         cursor: pointer;
-        background-color: white;
-        color: black;
+        background-color: ${props => props.$isActive ? "#4a678f" : "white"};
+        color: ${props => props.$isActive ? "white" : "black"};
     }
 `;
 
 const Form = styled.form`
     width: 100%;
-    margin: 15px 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -109,10 +131,10 @@ const Form = styled.form`
 
 const Search = styled.input`
     margin: 0;
-    width: 90%;
+    width: 80%;
     height: 36px;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding: 0 0.5rem;
+    margin-bottom: 20px;
     font-size: 1.2rem;
     &::placeholder{
         text-align: left;
@@ -121,7 +143,8 @@ const Search = styled.input`
 `;
 
 const TagWrap = styled.div`
-    background-color: ${props => props.$added ? "#585887" : "transparent"};
+    transition-duration: 150ms;
+    background-color: ${props => props.$added ? "#a1952d" : "transparent"};
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -189,6 +212,7 @@ export const LandTagsWrapper = () => {
     const { addToTagList, activeLBTag, setActiveLBTag, removeFromTagList, removeFromDeckWithQuery, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, addToLandBaseFromQuery, allLands, setDBSearch, db} = useCards();
     const [tags, setTags] = useState([]);
     const [tagsAdded, setTagsAdded] = useState([]);
+    const [scroll, setScroll] = useState(0);
     const tagSearchRef = useRef();
 
     /*
@@ -306,10 +330,26 @@ export const LandTagsWrapper = () => {
 
     //.sort((name1, name2) => name1.localeCompare(name2))
 
+    useEffect(() => {
+        setScroll(window.scrollY);
+        console.log(window.scrollY);
+    },[window.scrollY])
+
+    const noAddAll = [
+        "Colorless Land",
+        "Any Color Land",
+        "One Color Land",
+        "Two Color Mana Fix Land",
+        "Two Color Utlity Land",
+        "Three Color Land",
+        "Four Color Land",
+        "Five Color Land",
+    ]
+
     return <>
-        <ListWrap>
+        <ListWrap $scroll={scroll}>
             <Row $width={"100%"}>
-                <TitleButton onClick={()=>{}} $isActive={true}>Land Tags</TitleButton>
+                <TitleText>Land Tags</TitleText>
             </Row>
             <Form onSubmit={(e) => {e.preventDefault()}}> 
                 <Search onChange={tagSearch} placeholder="Search Land Tags" ref={tagSearchRef}/>
@@ -320,10 +360,13 @@ export const LandTagsWrapper = () => {
                         ? filteredLandTags.map(([name, _], i)=>(
                             <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
                                 {
-                                    tagsAdded.includes(name)
-                                        ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
-                                        : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
-                                }
+                                    !noAddAll.includes(name)
+                                        && (
+                                            tagsAdded.includes(name)
+                                                ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
+                                                : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                        )
+                                    }
                                 <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
                                 <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
                             </TagWrap>
@@ -334,11 +377,12 @@ export const LandTagsWrapper = () => {
                                     tags.map(([name, query], i) => (
                                         <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
                                             {
-                                                groupName !== "Land Catagories" && (
-                                                    tagsAdded.includes(name)
-                                                        ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
-                                                        : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
-                                                )
+                                                !noAddAll.includes(name)
+                                                    && (
+                                                        tagsAdded.includes(name)
+                                                            ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
+                                                            : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                                    )
                                             }
                                             <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
                                             <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>

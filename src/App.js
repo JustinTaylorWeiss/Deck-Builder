@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { CardProvider } from "./contexts/CardContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CardQuereyBuilder } from "./CardQuereyBuilder";
 import { LandBuilder } from "./LandBuilder";
 

@@ -10,6 +10,10 @@ import addToDeck from "./icons/addToDeck.svg"
 const Img = styled.img`
     width: 100%;
     border-radius: 4.2%;
+    box-sizing: border-box;
+    border: 3px solid transparent;
+    transition-duration: 250ms;
+    border-color: ${props => props.$inDeck ? "#d8cc65" : "transparent"};
     &:hover {
         cursor: pointer;
     }
@@ -64,6 +68,7 @@ const FlipCardButton = styled.button`
     background-color: transparent;
     border-radius: 10px;
     flex: 3;
+    filter: invert(1); //Change svg to white in a dumb way
     &:hover {
         background-color: rgba(255, 255, 255, 0.6);
     }
@@ -81,9 +86,8 @@ const CardQuantityWrap = styled.div`
     height: 42px;
     text-align: center;
     width: 100%;
-    color: black;
+    color: white;
     font-size: 3rem;
-    background-color: rgba(255, 255, 255, 0.6);
     border-radius: 6px;
 `;
 
@@ -103,12 +107,16 @@ const AddRemoveButton = styled.button`
     background-color: transparent;
     border-radius: 10px;
     flex: 1;
+    filter: invert(1); //Change svg to white in a dumb way
     &:hover {
         background-color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
     }
     &:active {
         background-color: rgba(255, 255, 255, 1);
+    }
+    &.svg {
+        
     }
 `;
 
@@ -176,8 +184,10 @@ export const CardWrapper = ({card, x, y}) => {
         : card?.name
 
     return <CardWrap>
+
+        {console.log(landBaseList)}
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
-        <Img onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
+        <Img $inDeck={landBaseList.map((cardWrap) => cardWrap?.card?.name ?? "").includes(cardName)} onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
         <CardQuantityWrap>
             {(card?.card_faces ?? false)
                     ? <>

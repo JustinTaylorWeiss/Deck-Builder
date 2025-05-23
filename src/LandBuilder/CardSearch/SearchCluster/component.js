@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { Tooltip } from 'react-tooltip';
 import { debounce } from 'lodash';
 import { landTags } from "../../global/landTagData";
+import { ToggleButton } from "./ToggleButton";
 
 const Form = styled.form`
     display: flex;
@@ -64,7 +65,7 @@ const SmallLabel = styled.label`
 
 const Search = styled.input`
     margin: 0 0 0 20px;
-    width: 150px;
+    width: 270px;
     height: 36px;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
@@ -131,6 +132,7 @@ export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
     const { db, setNameFilter, setOracleTextSearch, tagList, removeFromTagList, activeLBTag } = useCards();
     const nameRef = useRef();
     const oracleRef = useRef();
+    const [oracleSearchToggle, setOracleTextSearchToggle] = useState(false);
 
     const nameSubmit = () => setNameFilter(`${nameRef.current.value}+`);
     const debouncedName = debounce(nameSubmit, 1000);
@@ -141,9 +143,13 @@ export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
     return <Row>
         <SmallLabel>{(db?.total_cards ?? 0) + " / " + (landTags?.[activeLBTag]?.totalNumber ?? 0)}</SmallLabel>
         <Form onSubmit={(e) => {e.preventDefault()}}> 
-            <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
-            <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
+            {
+                oracleSearchToggle
+                    ? <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
+                    : <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
+            }
         </Form>
+        <ToggleButton data-tooltip-id={"ToggleButton"} setToggle={setOracleTextSearchToggle}/>
         {!lands && <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>}
     </Row>
 }

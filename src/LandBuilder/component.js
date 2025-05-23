@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { LandbaseList } from "./LandbaseList";
 import { LandTags } from "./LandTags";
 import { useCards } from "../contexts/CardContext";
+import { Navbar } from "./Navbar";
 
 const Spacer = styled.div``;
 
@@ -34,15 +35,18 @@ export const LandBuilderWrapper = ({}) => {
     const tagMenuArr = useState(true);
     const [tagMenu, setTagMenu] = tagMenuArr;
 
-    return <MiniApp $menuOpen={tagMenu}>
-            <Spacer/>
-            <Column>
-                <ColorFilters lands={true}/>
-                <SearchCluster lands={true} tagMenuArr={tagMenuArr}/>
-                <CardStackCluster lands={true}/>
-            </Column>
-            <LandTags/>
-            <SideListProvider><LandbaseList/></SideListProvider>
-    </MiniApp>
+    return <>
+        <Navbar/>
+        <MiniApp $menuOpen={tagMenu}>
+                <Spacer/>
+                <Column>
+                    <ColorFilters lands={true}/>
+                    <SearchCluster lands={true} tagMenuArr={tagMenuArr}/>
+                    <CardStackCluster lands={true}/>
+                </Column>
+                <LandTags/>
+                <SideListProvider><LandbaseList/></SideListProvider>
+        </MiniApp>
+    </>
 
 };

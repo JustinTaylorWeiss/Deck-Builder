@@ -8,6 +8,9 @@ import { useSideList } from "../../contexts/SideListContext";
 
 const ListWrap = styled.div`
     position: fixed;
+    background-color: #181a1c;
+    border-radius: 5px;
+    border: 2px solid #d8cc65;
     top: 20px;
     right: 20px;
     display: flex;
@@ -23,9 +26,9 @@ const ListWrap = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
     width: ${props => props.$width};
-    align-items: flex-start;
+    align-items: center;
     margin: 0 auto;
 `;
 
@@ -53,7 +56,6 @@ const H3 = styled.h3`
 `;
 
 const ListBlock = styled.pre`
-    background-color: #121010;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -85,13 +87,14 @@ const CardImg = styled.img`
 `;
 
 const TitleButton = styled.button`
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     height: 40px;
     width: 100%;
     border-radius: 5px;
     z-index: 10;
     border: ${props => props.$isActive ? "none" : "2px solid #121010"};
-    color: ${props => props.$isActive ? "white" : "black"};
+    margin: 5px 0px;
+    color: #d8cc65;
     background-color: ${props => props.$isActive ? "#121010" : "transparent"};
     &:hover {
         background-color: ${props => props.$isActive ? "#121010" : "#aaaaaa"};
@@ -126,6 +129,13 @@ const Button = styled.button`
     @media (max-width: 1000px) {
         font-size: 1rem;
     }
+`;
+
+const TitleText = styled.h2`
+    display: block;
+    font-size: 1.5rem;
+    color: #d8cc65;
+    font-weight: 600;
 `;
 
 export const LandbaseWrapper = () => {
@@ -172,7 +182,7 @@ export const LandbaseWrapper = () => {
         <ListWrap>
             { hoverCard && <CardImg src={findImage(hoverCard.card)}/> }
             <Row $width={"100%"}>
-                <TitleButton onClick={()=>{}} $isActive={true}>Landbase</TitleButton>
+                <TitleText>Landbase</TitleText>
             </Row>    
                 <ListBlock>
                     <Row $width={"90%"}>

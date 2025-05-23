@@ -7,7 +7,7 @@ export const landTags = {
     "Two Color Utlity Land":         {totalNumber: 121,query: "otag:utility-land id=2 t:land"},
     "Three Color Land":              {totalNumber: 48, query: "id=3 t:land"},
 //  "Four Colored Utlity Land":      {totalNumber: 0,  query: "otag:utility-land id=4 t:land"},
-    "Five Color Utlity Land":        {totalNumber: 1,  query: "otag:utility-land id=5 t:land"},
+    "Five Color Land":               {totalNumber: 3,  query: "(id=5 or o:\"five mana\") t:land"},
 //  Popular Lands
     "Basic Land":                    {totalNumber: 6,  query: "t:basic -t:snow"},
     "Snow Basic Land":               {totalNumber: 6,  query: "t:basic t:snow"},
