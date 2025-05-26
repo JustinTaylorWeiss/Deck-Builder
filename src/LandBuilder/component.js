@@ -13,6 +13,15 @@ import { Navbar } from "./Navbar";
 
 const Spacer = styled.div``;
 
+const Row = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 20px 0;
+`;
+
 const Column = styled.div`
     display: flex;
     flex-direction: column;
@@ -40,8 +49,10 @@ export const LandBuilderWrapper = ({}) => {
         <MiniApp $menuOpen={tagMenu}>
                 <Spacer/>
                 <Column>
-                    <ColorFilters lands={true}/>
-                    <SearchCluster lands={true} tagMenuArr={tagMenuArr}/>
+                    <Row>
+                        <ColorFilters lands={true}/>
+                        <SearchCluster lands={true} tagMenuArr={tagMenuArr}/>
+                    </Row>
                     <CardStackCluster lands={true}/>
                 </Column>
                 <LandTags/>

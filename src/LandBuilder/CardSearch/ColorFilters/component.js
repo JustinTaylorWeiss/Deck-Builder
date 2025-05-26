@@ -1,67 +1,46 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
+import { useEffect, useMemo, useState } from "react";
 import { useCards } from "../../../contexts/CardContext";
+import styled from "styled-components";
 import W from "./colorIcons/W.svg";
 import U from "./colorIcons/U.svg";
 import B from "./colorIcons/B.svg";
 import R from "./colorIcons/R.svg";
 import G from "./colorIcons/G.svg";
-import C from "./colorIcons/C.svg";
+
+const Wrapper = styled.div`
+    font-size: 2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+`;
+
+const ColorFilterText = styled.h3`
+    margin: 0;
+    font-weight: 400;
+    font-size: 1.5rem;
+    padding-bottom: 3px;
+    text-wrap: nowrap;
+`;
 
 const Img = styled.img`
-    margin: 2px;
-`;
-const Option = styled.option``;
-
-const SelectColorType = styled.select`
-    font-size: 1.35rem;
-    padding: 5px 10px;
-    margin: 10px 15px 10px 10px;
-    color: black;
-`;
-
-const Vl = styled.span`
-    border-left: 2px solid lightgray;
-    height: 40px;
-    margin: 0 22px;
-`;
-
-const Label = styled.label`
-    margin-right: 10px;
-    font-size: 1.5rem;
-    @media (max-width: 1500px) {
-        font-size: 1rem;
+    margin: 8px;
+    ${props => !props.$active 
+        ? "filter: grayscale(1) brightness(0.4);"
+        : "filter: drop-shadow(0px 0px 4px #d8cc65);"
+    }
+    &:hover {
+        cursor: pointer;
+        ${props => !props.$active 
+        ? "filter: grayscale(1) brightness(0.4) drop-shadow(0px 0px 4px #000000);"
+        : ""
+    }
     }
 `;
 
-const CheckBox = styled.input`
-    width: 20px;
-    height: 20px;
-    margin: 10px;
-`;
-
-const Wrapper = styled.div`
-    margin-top: 20px;
-    font-size: 2rem;
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Column = styled.div`
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0 5px;
-`;
-
-const Row = styled.div`
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+const Spacer = styled.div`
+    ${props => "width: " + props.$width};
 `;
 
 const colorFilterToUriText = (colorType, colorValues) => (
@@ -104,7 +83,6 @@ export const ColorFiltersWrapper = ({lands=false}) => {
 
     const { setColorFilter } = useCards();
 
-    const [colorType, setColorType] = useState("colorIdentity");
     const [colorValues, setColorValues] = useState({white: true, blue: true, black: true, red: true, green: true, colorless: false});
 
     const toggleOneColor = (color) => () => {
@@ -122,8 +100,8 @@ export const ColorFiltersWrapper = ({lands=false}) => {
     }
 
     useEffect(() => {
-        setColorFilter(colorFilterToUriText(colorType, colorValues))
-    },[setColorFilter, colorType, colorValues])
+        setColorFilter(colorFilterToUriText("colorIdentity", colorValues))
+    },[setColorFilter, colorValues])
 
     useMemo(() => {
         if(
@@ -141,21 +119,29 @@ export const ColorFiltersWrapper = ({lands=false}) => {
     }, [colorValues])
 
     return <Wrapper>
+        <ColorFilterText>Color Identity:</ColorFilterText>
+        <Spacer $width="20px"/>
+            { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G]].map(([name, image], i) => 
+                    <Img width="40" src={image} alt={name} $active={colorValues[name]} onClick={toggleOneColor(name)}/>
+            )}
+    </Wrapper>
+}
+
+/*
         <Label htmlFor="colorFilter"> {lands ? "Colors" : "Color"} </Label>
         {!lands && <SelectColorType name="colorFilter" value={colorType} onChange={(e) => setColorType(e.target.value)}>
             <Option value="colorIdentity"> Color Identity</Option>
             <Option value="color"> Color </Option>
         </SelectColorType>}
-        <Row>
-            { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G], ["colorless", C]].map(([name, image], i) => 
-                <Fragment key={`fragment${i}`}>
-                    { name === "colorless" && <Vl/> }
-                    <Column>
-                        <Img width="40" src={image} alt={name}/>
-                        <CheckBox checked={colorValues[name]} name={name} type="checkbox" onChange={toggleOneColor(name)}/>
-                    </Column>
-                </Fragment >
-            )}
-        </Row>
-    </Wrapper>
-}
+
+        <Fragment key={`fragment${i}`}>
+            { name === "colorless" && <Vl/> }
+            <Column>
+                <Img width="40" src={image} alt={name} $active={colorValues[name]} onClick={toggleOneColor(name)}/>
+            </Column>
+        </Fragment >
+
+        ["colorless", C]
+*/
+
+//<CheckBox checked={colorValues[name]} name={name} type="checkbox" onChange={toggleOneColor(name)}/>

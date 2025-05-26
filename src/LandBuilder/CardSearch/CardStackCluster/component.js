@@ -8,8 +8,8 @@ const Column = styled.div`
     grid-template-columns: repeat(${props => props.$columns} , 5fr);
     grid-template-rows: repeat(1, 7fr);
     grid-gap: 20px;
-    margin-top: 20px;
     margin: 20px;
+    margin-top: 0;
 `;
 
 const Label = styled.label`

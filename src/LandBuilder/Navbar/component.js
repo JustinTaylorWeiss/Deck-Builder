@@ -12,7 +12,6 @@ const NavbarWrap = styled.div`
     background-color: #121010;
     border-bottom: 2px solid #d8cc65;
     padding: 5px 0;
-    margin-bottom: 10px;
 `;
 
 const Duck = styled.img`
