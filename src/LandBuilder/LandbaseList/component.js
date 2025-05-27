@@ -7,17 +7,18 @@ import 'groupby-polyfill/lib/polyfill.js'
 import { useSideList } from "../../contexts/SideListContext";
 
 const ListWrap = styled.div`
-    position: fixed;
+    position: sticky;
     background-color: #181a1c;
     border-radius: 5px;
     border: 2px solid #d8cc65;
     top: 20px;
-    right: 20px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: calc(20% - 20px);
+    box-sizing: border-box;
+    width: calc(100% - 20px);
     align-self: flex-start;
     justify-self: flex-start;
     height: calc(100vh - 40px);
@@ -179,7 +180,7 @@ export const LandbaseWrapper = () => {
     const activeList = db 
 
     return <>
-        <ListWrap>
+        <ListWrap id="land-base-wrap">
             { hoverCard && <CardImg src={findImage(hoverCard.card)}/> }
             <Row $width={"100%"}>
                 <TitleText>Landbase</TitleText>

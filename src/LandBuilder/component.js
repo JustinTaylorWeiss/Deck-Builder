@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { SideList } from "../SideList";
 import { SideListProvider } from "../contexts/SideListContext";
 
@@ -14,12 +14,18 @@ import { Navbar } from "./Navbar";
 const Spacer = styled.div``;
 
 const Row = styled.div`
+    position: sticky;
+    top: 0px;
+    z-index: 10;
+    border-bottom: 2px solid #d8cc65;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin: 20px 0;
+    margin-bottom: 20px;
+    padding: 20px 0;
+    background-color: #282c34;
 `;
 
 const Column = styled.div`
@@ -33,9 +39,7 @@ const MiniApp = styled.div`
     display: grid;
     justify-content: center;
     align-items: flex-start;
-    height: 100vh;
     width: 100vw;
-    grid-gap: 5px;
     grid-template-columns: ${props => props.$menuOpen ? "20vw 60vw 20vw" : "80vw 20vw"};
 `;
 
@@ -43,20 +47,33 @@ export const LandBuilderWrapper = ({}) => {
 
     const tagMenuArr = useState(true);
     const [tagMenu, setTagMenu] = tagMenuArr;
+    const tagListRef = useRef();
+    const landListRef = useRef();
+
+    useEffect(()=>{
+        const callbackFunc = (e) => {
+            const e1 = document.getElementById("land-tag-wrap");
+            const e2 = document.getElementById("land-base-wrap");
+            if(!e1 || !e2) { return; } 
+            e1.style.height = `${window.innerHeight - 112 + Math.min(window.scrollY, 72)}px`
+            e2.style.height = `${window.innerHeight - 112 + Math.min(window.scrollY, 72)}px`
+        }
+        window.addEventListener("scroll", callbackFunc)
+        return () => { window.removeEventListener("scroll", callbackFunc); }
+    }, [])
 
     return <>
         <Navbar/>
         <MiniApp $menuOpen={tagMenu}>
-                <Spacer/>
-                <Column>
-                    <Row>
-                        <ColorFilters lands={true}/>
-                        <SearchCluster lands={true} tagMenuArr={tagMenuArr}/>
-                    </Row>
-                    <CardStackCluster lands={true}/>
-                </Column>
-                <LandTags/>
-                <SideListProvider><LandbaseList/></SideListProvider>
+            <LandTags/>
+            <Column>
+                <Row>
+                    <ColorFilters lands={true}/>
+                    <SearchCluster lands={true} tagMenuArr={tagMenuArr}/>
+                </Row>
+                <CardStackCluster lands={true}/>
+            </Column>
+            <SideListProvider><LandbaseList/></SideListProvider>
         </MiniApp>
     </>
 

@@ -10,20 +10,21 @@ import { landTags } from "../global/landTagData";
 import { ArrowIcon } from "./SubList/assets/Arrow";
 
 const ListWrap = styled.div`
-    position: fixed;
+    position: sticky;
     border-radius: 5px;
     background-color: #181a1c;
     border: 2px solid #d8cc65;
+    margin-top: 20px;
     top: 20px;
-    left: 20px;
     display: flex;
+    box-sizing: border-box;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: calc(20% - 20px);
     align-self: flex-start;
     justify-self: flex-end;
-    height: calc(100vh - 40px);
+    width: calc(100% - 20px);
+    height: calc(100vh - 110px);
 `;
 
 const Row = styled.div`
@@ -207,7 +208,7 @@ const RemoveAllButton = styled(PlaylistRemoveIcon)`
 `;
 
 
-export const LandTagsWrapper = () => {
+export const LandTagsWrapper = ({ref}) => {
 
     const { addToTagList, activeLBTag, setActiveLBTag, removeFromTagList, removeFromDeckWithQuery, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, addToLandBaseFromQuery, allLands, setDBSearch, db} = useCards();
     const [tags, setTags] = useState([]);
@@ -347,7 +348,7 @@ export const LandTagsWrapper = () => {
     ]
 
     return <>
-        <ListWrap $scroll={scroll}>
+        <ListWrap $scroll={scroll} id="land-tag-wrap">
             <Row $width={"100%"}>
                 <TitleText>Land Tags</TitleText>
             </Row>
@@ -363,8 +364,8 @@ export const LandTagsWrapper = () => {
                                     !noAddAll.includes(name)
                                         && (
                                             tagsAdded.includes(name)
-                                                ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
-                                                : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
+                                                ? <RemoveAllButton data-tooltip-id={`RemoveAll${name}`} onClick={addAllClick(name)}/>
+                                                : <AddAllButton data-tooltip-id={`AddAll${name}`} onClick={addAllClick(name)}/>
                                         )
                                     }
                                 <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>

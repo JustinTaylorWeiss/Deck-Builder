@@ -26,16 +26,23 @@ const ColorFilterText = styled.h3`
 
 const Img = styled.img`
     margin: 8px;
+    transition: 250ms;
     ${props => !props.$active 
-        ? "filter: grayscale(1) brightness(0.4);"
-        : "filter: drop-shadow(0px 0px 4px #d8cc65);"
+        ? `
+            filter: grayscale(1) brightness(0.4);
+            opacity: 0.60;
+        `
+        : `
+            filter: drop-shadow(0px 0px 2px #d8cc65);
+            opacity: 1;
+        `
     }
     &:hover {
         cursor: pointer;
         ${props => !props.$active 
-        ? "filter: grayscale(1) brightness(0.4) drop-shadow(0px 0px 4px #000000);"
-        : ""
-    }
+            ? "filter: grayscale(1) brightness(0.4) drop-shadow(0px 0px 4px #000000);"
+            : ""
+        }
     }
 `;
 
@@ -122,7 +129,7 @@ export const ColorFiltersWrapper = ({lands=false}) => {
         <ColorFilterText>Color Identity:</ColorFilterText>
         <Spacer $width="20px"/>
             { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G]].map(([name, image], i) => 
-                    <Img width="40" src={image} alt={name} $active={colorValues[name]} onClick={toggleOneColor(name)}/>
+                    <Img key={name}width="40" src={image} alt={name} $active={colorValues[name]} onClick={toggleOneColor(name)}/>
             )}
     </Wrapper>
 }
