@@ -222,9 +222,8 @@ const RemoveAllButton = styled(PlaylistRemoveIcon)`
 
 export const LandTagsWrapper = ({ref}) => {
 
-    const { addToTagList, activeLBTag, setActiveLBTag, removeFromTagList, removeFromDeckWithQuery, tagList, addCardToDeckList, getCardFromName, colorFilter, resetDeckList, addToDeckFromQuery, addToLandBaseFromQuery, allLands, setDBSearch, db} = useCards();
+    const { activeLBTag, setActiveLBTag, removeFromDeckWithQuery, colorFilter, addToLandBaseFromQuery, setDBSearch, addAllTags, setAddAllTags} = useCards();
     const [tags, setTags] = useState([]);
-    const [tagsAdded, setTagsAdded] = useState([]);
     const [scroll, setScroll] = useState(0);
     const tagSearchRef = useRef();
 
@@ -253,7 +252,6 @@ export const LandTagsWrapper = ({ref}) => {
     }, [activeLBTag, colorFilter])
 
     useEffect(()=>{
-        resetDeckList();
         if(tags.length > 0) {
             tags.forEach((tagName)=>{
                 addToLandBaseFromQuery(landTags[tagName].query + " f%3Acommander");
@@ -276,12 +274,12 @@ export const LandTagsWrapper = ({ref}) => {
     }
 
     const addAllClick = (tagName) => () => {
-        if(tagsAdded.includes(tagName)) {
+        if(addAllTags.includes(tagName)) {
             removeFromDeckWithQuery(landTags[tagName].query + " f%3Acommander");
-            setTagsAdded((prev)=>prev.filter((name)=>name!==tagName));
+            setAddAllTags((prev)=>prev.filter((name)=>name!==tagName));
         }
         else {
-            setTagsAdded((prev)=>[...prev, tagName]);
+            setAddAllTags((prev)=>[...prev, tagName]);
             if(Object.keys(fakeColorIdentities).includes(tagName)) {
                 addToLandBaseFromQuery(handleFakeColorIdentity(colorFilter, tagName) + " f%3Acommander");
             }
@@ -345,7 +343,6 @@ export const LandTagsWrapper = ({ref}) => {
 
     useEffect(() => {
         setScroll(window.scrollY);
-        console.log(window.scrollY);
     },[window.scrollY])
 
     const noAddAll = [
@@ -371,16 +368,16 @@ export const LandTagsWrapper = ({ref}) => {
                 {
                     (tagSearchRef?.current?.value ?? "") !== ""
                         ? filteredLandTags.map(([name, _], i)=>(
-                            <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                            <TagWrap key={`tag${i}`} $added={addAllTags.includes(name)}>
                                 {
                                     !noAddAll.includes(name)
                                         && (
-                                            tagsAdded.includes(name)
+                                            addAllTags.includes(name)
                                                 ? <RemoveAllButton data-tooltip-id={`RemoveAll${name}`} onClick={addAllClick(name)}/>
                                                 : <AddAllButton data-tooltip-id={`AddAll${name}`} onClick={addAllClick(name)}/>
                                         )
                                     }
-                                <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                <MyTooltip id={(addAllTags.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(addAllTags.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
                                 <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
                             </TagWrap>
                         ))
@@ -388,16 +385,16 @@ export const LandTagsWrapper = ({ref}) => {
                             <SubList key={`sublist${i}`} name={groupName} startOpen={i===1} searchRef={tagSearchRef}
                                 buttons={
                                     tags.map(([name, query], i) => (
-                                        <TagWrap key={`tag${i}`} $added={tagsAdded.includes(name)}>
+                                        <TagWrap key={`tag${i}`} $added={addAllTags.includes(name)}>
                                             {
                                                 !noAddAll.includes(name)
                                                     && (
-                                                        tagsAdded.includes(name)
+                                                        addAllTags.includes(name)
                                                             ? <RemoveAllButton data-tooltip-id={`RemoveAll${i}`} onClick={addAllClick(name)}/>
                                                             : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
                                                     )
                                             }
-                                            <MyTooltip id={(tagsAdded.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(tagsAdded.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                            <MyTooltip id={(addAllTags.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(addAllTags.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
                                             <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
                                         </TagWrap>
                                     ))

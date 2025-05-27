@@ -20,16 +20,17 @@ export const CardProvider = ({ children }) => {
     // Filters
     const [nameFilter, setNameFilter] = useState("")
     const [oracleTextSearch, setOracleTextSearch] = useState("");
-    const [colorFilter, setColorFilter] = useState("");
+    const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "[]");
     const [cmcFilter, setCmcFilter] = useState("");
     const [formatFilter, setFormatFilter] = useState("");
-    const [maxLands, setMaxLands] = useState(36);
+    const [maxLands, setMaxLands] = useState(Number(localStorage?.getItem("maxLands") ?? 36));
+    const [addAllTags, setAddAllTags] = useState(JSON.parse(localStorage?.getItem("addAllTags") ?? "[]"));
     // TAG DATA
     const [tagList, setTagList] = useState([]);
 
     // MAYBE LIST DATA
     const [deckList, setDeckList] = useState([]);
-    const [landBaseList, setLandBaseList] = useState([]);
+    const [landBaseList, setLandBaseList] = useState(JSON.parse(localStorage?.getItem("landBaseList") ?? "[]"));
     const [landBaseTotalCount, setLandBaseTotalCount] = useState(0);
 
     const isBig = useMediaQuery({query: '(min-width: 2000px)'})
@@ -65,23 +66,23 @@ export const CardProvider = ({ children }) => {
     }, [])
     */
 
-    // Grab Local Storage
-    useEffect(()=> {
-        if(landBaseList.length === 0)
-            setLandBaseList(JSON.parse(localStorage?.getItem("landBaseList") ?? "[]"))
-        setColorFilter(localStorage?.getItem("colorFilter") ?? "")
-    },[])
     // Set Local Storage
-    useEffect(()=> {
+    useMemo(()=> {
         if(landBaseList.length !== 0) {
             localStorage.setItem("landBaseList", JSON.stringify(landBaseList));
         }
     },[landBaseList])
-    useEffect(()=> {
-        if(colorFilter !== "") {
-            localStorage.setItem("colorFilter", colorFilter);
-        }
+    useMemo(()=> {
+        localStorage.setItem("maxLands", maxLands);
+    },[maxLands])
+    useMemo(()=> {
+        localStorage.setItem("colorFilter", colorFilter);
     },[colorFilter])
+    useMemo(()=> {
+        localStorage.setItem("addAllTags", JSON.stringify(addAllTags));
+    },[addAllTags])
+
+
 
     useEffect(() => {
         const localDeckList = JSON.parse(localStorage.getItem("deckList"));
@@ -406,6 +407,7 @@ export const CardProvider = ({ children }) => {
         removeCardLandBaseList, addToLandBaseFromQuery,
         removeFromDeckWithQuery, addCardToLandBaseList,
         incOrDecLandBaseCard, maxLands, setMaxLands,
+        addAllTags, setAddAllTags,
 
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 

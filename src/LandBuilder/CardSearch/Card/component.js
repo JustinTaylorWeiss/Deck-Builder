@@ -213,7 +213,6 @@ export const CardWrapper = ({card, x, y}) => {
         : card?.name
 
     return <CardWrap>
-        {console.log(landBaseList)}
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
         <Img $inDeck={landBaseList.map((cardWrap) => cardWrap?.card?.name ?? "").includes(cardName)} onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
         <CardQuantityWrap>

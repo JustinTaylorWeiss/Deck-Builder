@@ -69,7 +69,11 @@ export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
             <Search onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
             <Search onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
         </Form>
-        <SmallLabel>{(db?.total_cards ?? 0) + " / " + (landTags?.[activeLBTag]?.totalNumber ?? 0)}</SmallLabel>
+        <SmallLabel>{(db?.total_cards ?? 0) + " / " + (
+            (db?.total_cards ?? false) && (db?.total_cards > (landTags?.[activeLBTag]?.totalNumber ?? 0))
+                ? db?.total_cards
+                : landTags?.[activeLBTag]?.totalNumber ?? 0
+        )}</SmallLabel>
         {!lands && <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>}
     </Row>
 }

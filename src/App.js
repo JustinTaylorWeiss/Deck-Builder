@@ -14,7 +14,6 @@ return <CardProvider>
             ? <LandBuilder/>
             : <CardQuereyBuilder/>
     }
-
 </CardProvider>
 };
 

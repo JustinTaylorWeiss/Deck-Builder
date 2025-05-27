@@ -155,13 +155,11 @@ export const LandbaseWrapper = () => {
     const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setMaxLands, maxLands } = useCards();
     const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setConfirmClear } = useSideList();
 
-
     const findImage = (card) => (
         (!card?.image_uris ?? false) 
         ? card.card_faces[((backFaces[card.oracle_id] ?? false) ? 1 : 0)].image_uris.normal
         : card.image_uris.normal
     )
-
 
     const clearButton = () => {
         if(!confirmClear)
