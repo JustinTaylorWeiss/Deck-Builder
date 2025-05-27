@@ -106,7 +106,7 @@ const ListBlock = styled.pre`
 `;
 
 const TagButton = styled.button`
-    background-color: ${props => props.$isActive ? "#4a678f" : "transparent"};
+    background-color: ${props => props.$isActive ? "#43a047" : "transparent"};
     transition-duration: 150ms;
     color: white;
     width: 80%;
@@ -118,7 +118,7 @@ const TagButton = styled.button`
     margin: 3px 0;
     &:hover {
         cursor: pointer;
-        background-color: ${props => props.$isActive ? "#4a678f" : "white"};
+        background-color: ${props => props.$isActive ? "#43a047" : "white"};
         color: ${props => props.$isActive ? "white" : "black"};
     }
 `;

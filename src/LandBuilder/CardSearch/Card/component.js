@@ -5,7 +5,8 @@ import { Tooltip } from 'react-tooltip'
 import rotate from "./icons/rotate.png";
 import plus from "./icons/plus.svg";
 import minus from "./icons/minus.svg";
-import addToDeck from "./icons/addToDeck.svg"
+import addToDeck from "./icons/addToDeck.svg";
+import fillBucket from "./icons/fillBucket.svg";
 
 const Img = styled.img`
     width: 100%;
@@ -58,6 +59,28 @@ const Spacer = styled.div`
     border-radius: 10px;
     flex: 3;
 `
+
+const FillBucketIcon =styled.img`
+    height: 33px;
+`;
+
+const FillBucketButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 42px;
+    border: none;
+    background-color: transparent;
+    border-radius: 10px;
+    flex: 3;
+    filter: invert(1); //Change svg to white in a dumb way
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+    &:active {
+        background-color: rgba(255, 255, 255, 1);
+    }
+`;
 
 const FlipCardButton = styled.button`
     display: flex;
@@ -151,7 +174,7 @@ const PriceAndPopularity = styled.div`
 
 export const CardWrapper = ({card, x, y}) => {
 
-    const { addRemoveList, setAddRemoveList, addCardToDeckList, searchToMaybeBoard, removeCardLandBaseList, landBaseList, incOrDecLandBaseCard, addCardToLandBaseList } = useCards();
+    const { removeCardLandBaseList, landBaseList, incOrDecLandBaseCard, addCardToLandBaseList, maxLands } = useCards();
     const [backFace, setBackFace] = useState(false);
 
     const landOnBack = (card?.image_uris ?? false) && 
@@ -178,13 +201,18 @@ export const CardWrapper = ({card, x, y}) => {
             incOrDecLandBaseCard(card, isNegitive)
         }
     }
+
+    const fillOnClick = () => (
+        addCardToLandBaseList({quantity: 
+            Math.max(maxLands - (landBaseList ?? []).reduce((acc, {quantity}) => acc + quantity, 0), 0)
+            , card: card})
+    )
         
     const cardName = (card?.card_faces ?? false)
         ? card.card_faces[0].name + " // " + card.card_faces[1].name
         : card?.name
 
     return <CardWrap>
-
         {console.log(landBaseList)}
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
         <Img $inDeck={landBaseList.map((cardWrap) => cardWrap?.card?.name ?? "").includes(cardName)} onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
@@ -199,7 +227,14 @@ export const CardWrapper = ({card, x, y}) => {
             <AddRemoveButton onClick={(e) => cardQuantityClick(e, true)}><AddRemoveIcon draggable="false" height={36} src={minus} alt="-"/></AddRemoveButton>
             <CardQuantity>{numOfCard}</CardQuantity>
             <AddRemoveButton onClick={(e) => cardQuantityClick(e, false)}><AddRemoveIcon draggable="false" height={36} src={plus} alt="+"/></AddRemoveButton>
-            <Spacer/>
+            {
+                (card?.type_line?.includes("Basic") ?? false) 
+                ? <>
+                    <FillBucketButton data-tooltip-id={`fillBucket`} onClick={fillOnClick}><FillBucketIcon src={fillBucket}/></FillBucketButton>
+                    <Tooltip id={`fillBucket`} place="top" content="Fill Remaining Deck" style={{fontSize: "1rem"}} opacity={1}/>
+                </>
+                : <Spacer/>
+            }
         </CardQuantityWrap>
     </CardWrap>
 };

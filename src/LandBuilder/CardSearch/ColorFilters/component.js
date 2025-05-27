@@ -88,7 +88,7 @@ const colorlessValues = {
 
 export const ColorFiltersWrapper = ({lands=false}) => {
 
-    const { setColorFilter } = useCards();
+    const { setColorFilter, colorFilter } = useCards();
 
     const [colorValues, setColorValues] = useState({white: true, blue: true, black: true, red: true, green: true, colorless: false});
 
@@ -109,6 +109,16 @@ export const ColorFiltersWrapper = ({lands=false}) => {
     useEffect(() => {
         setColorFilter(colorFilterToUriText("colorIdentity", colorValues))
     },[setColorFilter, colorValues])
+
+    useMemo(() => {
+        setColorValues({
+            white: colorFilter.includes("W"), 
+            blue:  colorFilter.includes("U"), 
+            black: colorFilter.includes("B"), 
+            red:   colorFilter.includes("R"), 
+            green: colorFilter.includes("G"), 
+            colorless: false})
+    },[colorFilter])
 
     useMemo(() => {
         if(

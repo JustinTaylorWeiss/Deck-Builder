@@ -23,6 +23,7 @@ export const CardProvider = ({ children }) => {
     const [colorFilter, setColorFilter] = useState("");
     const [cmcFilter, setCmcFilter] = useState("");
     const [formatFilter, setFormatFilter] = useState("");
+    const [maxLands, setMaxLands] = useState(36);
     // TAG DATA
     const [tagList, setTagList] = useState([]);
 
@@ -63,6 +64,24 @@ export const CardProvider = ({ children }) => {
         }
     }, [])
     */
+
+    // Grab Local Storage
+    useEffect(()=> {
+        if(landBaseList.length === 0)
+            setLandBaseList(JSON.parse(localStorage?.getItem("landBaseList") ?? "[]"))
+        setColorFilter(localStorage?.getItem("colorFilter") ?? "")
+    },[])
+    // Set Local Storage
+    useEffect(()=> {
+        if(landBaseList.length !== 0) {
+            localStorage.setItem("landBaseList", JSON.stringify(landBaseList));
+        }
+    },[landBaseList])
+    useEffect(()=> {
+        if(colorFilter !== "") {
+            localStorage.setItem("colorFilter", colorFilter);
+        }
+    },[colorFilter])
 
     useEffect(() => {
         const localDeckList = JSON.parse(localStorage.getItem("deckList"));
@@ -386,7 +405,7 @@ export const CardProvider = ({ children }) => {
         setDBSearch, resetLandBaseList,
         removeCardLandBaseList, addToLandBaseFromQuery,
         removeFromDeckWithQuery, addCardToLandBaseList,
-        incOrDecLandBaseCard,
+        incOrDecLandBaseCard, maxLands, setMaxLands,
 
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 

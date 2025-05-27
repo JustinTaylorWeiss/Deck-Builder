@@ -5,6 +5,7 @@ import { Donate, Trash, CardList } from "./subElements";
 import checkmark from "./assets/checkmark.svg";
 import 'groupby-polyfill/lib/polyfill.js'
 import { useSideList } from "../../contexts/SideListContext";
+import Slider from '@mui/material/Slider';
 
 const ListWrap = styled.div`
     position: sticky;
@@ -33,6 +34,21 @@ const Column = styled.div`
     margin: 0 auto;
 `;
 
+const SliderWrap = styled.div`
+    padding: 15px 0 0 0;
+    width: 75%;
+`;
+
+const MaxLandSlider = styled(Slider)`
+    & .MuiSlider-thumb{
+        background-color: #6b631d;
+    }
+    & .MuiSlider-track{
+        background-color: #d8cc65;
+        border-color: black;
+    }
+`;
+
 const Row = styled.div`
     display: flex;
     flex-direction: row;
@@ -44,11 +60,17 @@ const Row = styled.div`
 
 const H3 = styled.h3`
     padding: 0;
-    color: #d8cc65;
-    margin: 5px auto 5px auto;
+    color: ${props => 
+        props.$overflow[0] > props.$overflow[1] 
+            ? "#FF000066" 
+            : props.$overflow[0] === props.$overflow[1] 
+            ? "#43a047"
+            : "#d8cc65"
+    };
+    margin: 0 auto 5px auto;
     text-align: center;
     font-weight: normal;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -97,27 +119,6 @@ const CardImg = styled.img`
     margin: 20px 0 0 20px;
 `;
 
-const TitleButton = styled.button`
-    font-size: 1.5rem;
-    height: 40px;
-    width: 100%;
-    border-radius: 5px;
-    z-index: 10;
-    border: ${props => props.$isActive ? "none" : "2px solid #121010"};
-    margin: 5px 0px;
-    color: #d8cc65;
-    background-color: ${props => props.$isActive ? "#121010" : "transparent"};
-    &:hover {
-        background-color: ${props => props.$isActive ? "#121010" : "#aaaaaa"};
-    }
-    @media (min-width: 2000px) {
-        font-size: 1.5rem;
-    }
-    @media (max-width: 1000px) {
-        font-size: 1rem;
-    }
-`
-
 const Button = styled.button`
     font-size: 1.2rem;
     padding: 3px;
@@ -151,11 +152,9 @@ const TitleText = styled.h2`
 
 export const LandbaseWrapper = () => {
 
-    const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard, landBaseList, setLandBaseList, resetLandBaseList } = useCards();
-    const {
-        clipboarded, activeTab, confirmClear, hoverCard, backFaces,
-        setClipboarded, setActiveTab, setConfirmClear, setHoverCard, setBackFaces
-    } = useSideList();
+    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setMaxLands, maxLands } = useCards();
+    const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setConfirmClear } = useSideList();
+
 
     const findImage = (card) => (
         (!card?.image_uris ?? false) 
@@ -182,12 +181,18 @@ export const LandbaseWrapper = () => {
         setTimeout(() => {setClipboarded(false)}, 1000)
     }
 
+    const sliderOnChange = (e) => {
+        if(e?.target ?? false) {
+            setMaxLands(e.target.value);
+        }
+    }
+
     useEffect(() => {
         setClipboarded(false);
         setConfirmClear(false);
     }, [cardSearch, activeTab, setClipboarded, setConfirmClear])
 
-    const activeList = db 
+    const cardTotal = (landBaseList ?? []).reduce((acc, {quantity}) => acc + quantity, 0)
 
     return <>
         <ListWrap id="land-base-wrap">
@@ -212,11 +217,12 @@ export const LandbaseWrapper = () => {
                             }
                         </Button>
                     </Row>
-                    <H3>{`Total Cards: ${
-                        (landBaseList.length > 0)
-                            ? landBaseList.reduce((acc, {quantity}) => acc + quantity, 0)
-                            : 0
-                    }`}</H3>
+                    <SliderWrap>
+                        <MaxLandSlider key={"Land Slider"} color="#d8cc65" value={maxLands} onChange={sliderOnChange} min={1} max={100}/>
+                    </SliderWrap>
+                    <H3 $overflow={[cardTotal, maxLands]}>
+                        {`Total: ${cardTotal} / ${maxLands}`}
+                    </H3>
             </Column>    
                 <ListBlock>
                     {  
