@@ -58,11 +58,11 @@ export const LandBuilderWrapper = ({}) => {
             e1.style.height = `${window.innerHeight - 112 + Math.min(window.scrollY, 72)}px`
             e2.style.height = `${window.innerHeight - 112 + Math.min(window.scrollY, 72)}px`
         }
-        const intervalResize = setInterval(() => { callbackFunc() }, 2*1000);
         window.addEventListener("scroll", callbackFunc)
+        window.addEventListener("resize", callbackFunc)
         return () => { 
             window.removeEventListener("scroll", callbackFunc); 
-            clearInterval(intervalResize);
+            window.removeEventListener("resize", callbackFunc); 
         }
     }, [])
 
