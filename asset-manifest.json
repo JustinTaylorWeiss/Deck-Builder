@@ -1,8 +1,9 @@
 {
   "files": {
     "main.css": "/Deck-Builder/static/css/main.d6a4abaa.css",
-    "main.js": "/Deck-Builder/static/js/main.95c59c13.js",
+    "main.js": "/Deck-Builder/static/js/main.22f363f6.js",
     "static/media/donateScribble.gif": "/Deck-Builder/static/media/donateScribble.e3c6df6abc276dcc95e7.gif",
+    "static/media/duck.png": "/Deck-Builder/static/media/duck.b83a9f5975fc3cb504fc.png",
     "static/media/donate.png": "/Deck-Builder/static/media/donate.37bbb3d54a74fde53f33.png",
     "static/media/W.svg": "/Deck-Builder/static/media/W.99c7fe1b9600148fbeed55dc7729eb2e.svg",
     "static/media/R.svg": "/Deck-Builder/static/media/R.b8e69eab9136b4e4a401c7295bdc8f4f.svg",
@@ -18,10 +19,10 @@
     "static/media/checkmark.svg": "/Deck-Builder/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
     "static/media/minus.svg": "/Deck-Builder/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
     "main.d6a4abaa.css.map": "/Deck-Builder/static/css/main.d6a4abaa.css.map",
-    "main.95c59c13.js.map": "/Deck-Builder/static/js/main.95c59c13.js.map"
+    "main.22f363f6.js.map": "/Deck-Builder/static/js/main.22f363f6.js.map"
   },
   "entrypoints": [
     "static/css/main.d6a4abaa.css",
-    "static/js/main.95c59c13.js"
+    "static/js/main.22f363f6.js"
   ]
 }
