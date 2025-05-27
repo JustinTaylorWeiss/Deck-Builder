@@ -190,20 +190,32 @@ const GroupText = styled.div`
 `;
 
 const AddAllButton = styled(LibraryAddIcon)`
+    margin: 3px;
     body & {
         padding: 2px 3px 5px 5px;
         display: block; 
         height: initial;
         width: 50px;
     }
+    &:hover{
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        cursor: pointer;
+    }
 `;
 
 const RemoveAllButton = styled(PlaylistRemoveIcon)`
+    margin: 2px;
     body & {
         padding: 2px 3px 5px 5px;
         display: block; 
         height: initial;
         width: 50px;
+    }
+    &:hover{
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+        cursor: pointer;
     }
 `;
 
@@ -324,7 +336,7 @@ export const LandTagsWrapper = ({ref}) => {
     }
 
     const splitTags = {
-        "Land Catagories":Object.entries(landTags).slice(0, colorSum()),
+        "Land Categories":Object.entries(landTags).slice(0, colorSum()),
         "Popular Tags":Object.entries(landTags).slice(7, 29),
         "Extra Tags":Object.entries(landTags).slice(29)
     }

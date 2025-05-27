@@ -24,6 +24,15 @@ const ListWrap = styled.div`
     height: calc(100vh - 40px);
 `;
 
+const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: ${props => props.$width};
+    align-items: center;
+    margin: 0 auto;
+`;
+
 const Row = styled.div`
     display: flex;
     flex-direction: row;
@@ -35,7 +44,8 @@ const Row = styled.div`
 
 const H3 = styled.h3`
     padding: 0;
-    margin: 0px auto 0px auto;
+    color: #d8cc65;
+    margin: 5px auto 5px auto;
     text-align: center;
     font-weight: normal;
     font-size: 1.5rem;
@@ -115,17 +125,17 @@ const Button = styled.button`
     width: 80%;
     z-index: 5;
     margin: 0 auto;
-    color: white;
+    color: #d8cc65;
     border-radius: 5px;
-    border: 2px solid white;
+    border: 2px solid #d8cc65;
     background-color: transparent;
     &:hover {
-        background-color: #aaaaaa;
+        background-color:  rgba(0, 0, 0, 1);
     }
     &:active {
         color: black;
         border-color: black;
-        background-color: white;
+        background-color: #d8cc65;
     }
     @media (max-width: 1000px) {
         font-size: 1rem;
@@ -182,11 +192,9 @@ export const LandbaseWrapper = () => {
     return <>
         <ListWrap id="land-base-wrap">
             { hoverCard && <CardImg src={findImage(hoverCard.card)}/> }
-            <Row $width={"100%"}>
+            <Column $width={"100%"}>
                 <TitleText>Landbase</TitleText>
-            </Row>    
-                <ListBlock>
-                    <Row $width={"90%"}>
+                <Row $width={"90%"}>
                         {activeTab === "maybe" 
                             ?<Button onClick={pushSeachListToDeck}>{"Add All"}</Button>
                             :<Button onClick={clearButton}>
@@ -209,6 +217,8 @@ export const LandbaseWrapper = () => {
                             ? landBaseList.reduce((acc, {quantity}) => acc + quantity, 0)
                             : 0
                     }`}</H3>
+            </Column>    
+                <ListBlock>
                     {  
                         <CardList/>
                     }

@@ -1,13 +1,13 @@
 import { useCards } from "../../../contexts/CardContext";
 import { useSideList } from "../../../contexts/SideListContext"
 import { Fragment, useEffect, useState } from "react";
-import { Trash } from "./TrashCan";
+import { DeleteIcon } from "./Delete";
 import styled from "styled-components";
 import { LandbaseList } from "..";
 
 const LIWrap = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 80%;
     margin-left: 5%;
@@ -16,20 +16,15 @@ const LIWrap = styled.div`
     
     border: solid white 1px;
     border-radius: 2px;
-`
+`;
 
-const TypeText = styled.h3`
+
+const ListNumber = styled.span`
+    display: block;
     text-align: center;
-    width: 100%;
-    @media (min-width: 2000px) {
-        font-size: 1.5rem;
-    }
-    @media (max-width: 1500px) {
-        font-size: 0.7rem;
-    }
-    @media (max-width: 1000px) {
-        font-size: 0.5rem;
-    }
+    padding: 0 10px;
+    font-size: 1.2rem;
+    font-weight: 1000;
 `;
 
 const ListItem = styled.span`
@@ -38,14 +33,10 @@ const ListItem = styled.span`
     flex-direction: column;
     justify-content: flex-start;
     font-size: 1rem;
-    align-items: center;
     width: 100%;
-    margin: 0 0 0 5%;
+    align-items: center;
     white-space: normal;
-    overflow-wrap: anywhere;
     padding: 5px 0;
-    padding-left: 1.4em;
-    text-indent: -1.6em;
     color: "white";
     &:hover {
         color: green;
@@ -72,7 +63,7 @@ export const CardListWrapper = () => {
             setBackFaces((prev) => ({ ...prev, [cardWrap.card.oracle_id]: (!prev[cardWrap.card.oracle_id] ?? false)}))
     }
 
-    const trashCanOnClick = (cardWrap) => () => {
+    const deleteOnClick = (cardWrap) => () => {
         removeCardLandBaseList(cardWrap.card)
     }
 
@@ -109,13 +100,14 @@ export const CardListWrapper = () => {
             {
                 typeGroup.map((cardWrap, i) => (
                     <LIWrap key={`listFrag${i}`}>
+                        <ListNumber>{`${cardWrap.quantity}x`}</ListNumber>
                         <ListItem
                             $dfc={(cardWrap?.card?.card_faces ?? false)}
                             onClick={() => onListCardClick(cardWrap)}
                             onMouseOver={() => setHoverCard(cardWrap)}
                             onMouseOut={() => setHoverCard("")}
-                        >{`${cardWrap.quantity}x ${getNameFromCard(cardWrap.card)}`}</ListItem>
-                        <Trash trashCanOnClick={trashCanOnClick(cardWrap)}/>
+                        >{getNameFromCard(cardWrap.card)}</ListItem>
+                        <DeleteIcon deleteOnClick={deleteOnClick(cardWrap)}/>
                     </LIWrap>
                 ))
             }
