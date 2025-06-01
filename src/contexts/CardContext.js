@@ -25,7 +25,6 @@ export const CardProvider = ({ children }) => {
     const [oracleTextSearch, setOracleTextSearch] = useState("");
     const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "[]");
     const [cmcFilter, setCmcFilter] = useState("");
-    const [hardCodedColorMatch, setHardCodedColorMatch] = useState(hardCodedTagNames);
     const [formatFilter, setFormatFilter] = useState("");
     const [prevLandBaseListLength, setPrevLandBaseListLength] = useState(-1);
     const [maxLands, setMaxLands] = useState(Number(localStorage?.getItem("maxLands") ?? 36));
@@ -255,8 +254,8 @@ export const CardProvider = ({ children }) => {
     }, [nameFilter, oracleTextSearch, colorFilter, cmcFilter, tagList, setDb, buildUri]);
     
 
-    useEffect(() => {
-        setHardCodedColorMatch(Object.fromEntries(
+    const hardCodedColorMatch = useMemo(() => (
+        Object.fromEntries(
             Object.entries(hardCodedTagNames).map((tagWrap) => (
                 [tagWrap[0], tagWrap[1].filter((cardWrap) => (
                     cardWrap.cId.length === cardWrap.cId.filter((color) => (
@@ -264,11 +263,11 @@ export const CardProvider = ({ children }) => {
                     )).length
                 ))]
             ))
-        ))
-    },[colorFilter]);
+        )
+    ),[colorFilter]);
     
     useEffect(() => {
-        if(prevLandBaseListLength > landBaseList.length || (prevLandBaseListLength === -1)) {
+        //if(prevLandBaseListLength > landBaseList.length || (prevLandBaseListLength === -1)) {
             addAllTags.forEach((tag) => { //Removed Add All Tags
                 const filteredTagListRemove = hardCodedColorMatch[tag].filter((innerTag)=>(
                     landBaseList.map((cardWrap) => cardWrap.card.name).includes(innerTag.name)
@@ -276,8 +275,8 @@ export const CardProvider = ({ children }) => {
                 if(filteredTagListRemove.length <= 0)
                     setAddAllTags((prev) => prev.filter((prevTag) => prevTag !== tag))
             })
-        }
-        else if (prevLandBaseListLength < landBaseList.length || (prevLandBaseListLength === -1)) {
+        //}
+        //else if (prevLandBaseListLength < landBaseList.length || (prevLandBaseListLength === -1)) {
             Object.entries(hardCodedColorMatch).forEach(([tagName, tags])=>{
                 if(!addAllTags.includes(tagName)) { //Added Add All Tags
                     const filteredTagListAdd = tags.filter((innerTag)=>(
@@ -287,7 +286,7 @@ export const CardProvider = ({ children }) => {
                         setAddAllTags((prev) => [...prev, tagName]);
                 }
             })
-        }
+        //}
         setPrevLandBaseListLength(landBaseList.length);
     },[landBaseList])
 
@@ -468,7 +467,6 @@ export const CardProvider = ({ children }) => {
     
     const value = {
         page, db, isBig, isMid, isSmall, isMidToSmallest, firstLoad, loading, setLoading, 
-        colorFilter,
 
         selected, setSelected, 
         deckList, setDeckList,
