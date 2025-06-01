@@ -25,6 +25,7 @@ export const CardProvider = ({ children }) => {
     const [oracleTextSearch, setOracleTextSearch] = useState("");
     const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "[]");
     const [cmcFilter, setCmcFilter] = useState("");
+    const [hardCodedColorMatch, setHardCodedColorMatch] = useState(hardCodedTagNames);
     const [formatFilter, setFormatFilter] = useState("");
     const [prevLandBaseListLength, setPrevLandBaseListLength] = useState(-1);
     const [maxLands, setMaxLands] = useState(Number(localStorage?.getItem("maxLands") ?? 36));
@@ -255,7 +256,7 @@ export const CardProvider = ({ children }) => {
     
 
     useEffect(() => {
-        const hardCodedColorMatch = Object.fromEntries(
+        setHardCodedColorMatch(Object.fromEntries(
             Object.entries(hardCodedTagNames).map((tagWrap) => (
                 [tagWrap[0], tagWrap[1].filter((cardWrap) => (
                     cardWrap.cId.length === cardWrap.cId.filter((color) => (
@@ -263,7 +264,10 @@ export const CardProvider = ({ children }) => {
                     )).length
                 ))]
             ))
-        )
+        ))
+    },[colorFilter]);
+    
+    useEffect(() => {
         if(prevLandBaseListLength > landBaseList.length || (prevLandBaseListLength === -1)) {
             addAllTags.forEach((tag) => { //Removed Add All Tags
                 const filteredTagListRemove = hardCodedColorMatch[tag].filter((innerTag)=>(
