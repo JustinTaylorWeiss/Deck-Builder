@@ -10,7 +10,7 @@ import fillBucket from "./icons/fillBucket.svg";
 
 const Img = styled.img`
     width: 100%;
-    border-radius: 4.2%;
+    border-radius: 15px;
     box-sizing: border-box;
     border: 3px solid transparent;
     transition-duration: 250ms;
@@ -18,6 +18,26 @@ const Img = styled.img`
     &:hover {
         cursor: pointer;
     }
+`;
+
+const Row = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% - 6px);
+    margin-top: -23px;
+    padding-top: 24px;
+    padding-bottom: 4px;
+    z-index: -1;
+    background-color:rgb(14, 15, 16);
+    border-radius: 10px;
+    color: #a1952d;
+`;
+
+const Price = styled.span`
+    font-size: 1rem;
+    text-align: center;
 `;
 
 const FlipIcon = styled.img``;
@@ -215,6 +235,11 @@ export const CardWrapper = ({card, x, y}) => {
     return <CardWrap>
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
         <Img $inDeck={landBaseList.map((cardWrap) => cardWrap?.card?.name ?? "").includes(cardName)} onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
+        <Row data-tooltip-id={`price row`} >
+            { card.prices.usd ? <Price>{`$${card.prices.usd}`}</Price> : <Price>{"No prices found"}</Price>}
+            { card.prices.usd_foil && <Price style={{width:"30px"}}>/</Price>}
+            { card.prices.usd_foil && <Price>{`$${card.prices.usd_foil}`}</Price> }
+        </Row>
         <CardQuantityWrap>
             {(card?.card_faces ?? false)
                     ? <>
