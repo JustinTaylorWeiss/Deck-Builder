@@ -12,6 +12,8 @@ const Img = styled.img`
     width: 100%;
     border-radius: 15px;
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     border: 3px solid transparent;
     transition-duration: 250ms;
     border-color: ${props => props.$inDeck ? "#d8cc65" : "transparent"};
@@ -76,6 +78,7 @@ const AddToDeckIcon = styled.img`
 const Spacer = styled.div`
     display: inline-block;
     height: 42px;
+    width: 100%;
     border-radius: 10px;
     flex: 3;
 `
@@ -90,6 +93,8 @@ const FillBucketButton = styled.button`
     align-items: center;
     height: 42px;
     border: none;
+    width: 100%;
+    padding: 0;
     background-color: transparent;
     border-radius: 10px;
     flex: 3;
@@ -107,7 +112,9 @@ const FlipCardButton = styled.button`
     justify-content: center;
     align-items: center;
     height: 42px;
+    width: 100%;
     border: none;
+    padding: 0;
     background-color: transparent;
     border-radius: 10px;
     flex: 3;
@@ -128,7 +135,7 @@ const CardQuantityWrap = styled.div`
     position: relative;
     height: 42px;
     text-align: center;
-    width: 100%;
+    width: calc(100% - 6px);
     color: white;
     font-size: 3rem;
     border-radius: 6px;
