@@ -1,6 +1,6 @@
 export const landTags = {
 //  Utility Lands
-    "Colorless Land":                {totalNumber: 157,query: "(otag:utility-land or o:\"add {c}{c}\") -o:\"any color\" id=c t:land"},
+    "Colorless Land":                {totalNumber: 157,query: "-o:\"any color\" id=c t:land"},
     "Any Color Land":                {totalNumber: 92, query: "t:land o:\"any color\" t:land"},
     "One Color Land":                {totalNumber: 299,query: "id=1 t:land"},
     "Two Color Mana Fix Land":       {totalNumber: 270,query: "-otag:utility-land id=2 t:land"},
@@ -74,7 +74,6 @@ export const landTags = {
     "Dual Reveal Land":              {totalNumber: 10, query: "otag:cycle-reveal-land"}, 
     "Dual Refuge Land":              {totalNumber: 5,  query: "otag:cycle-zen-refugeland"}, 
     "Dual Sac Draw Land":            {totalNumber: 5,  query: "s:SNC t:land o:draw"}, 
-    "Dual Sac Fetch Land":           {totalNumber: 5,  query: "o:\"When ~ enters, sacrifice it.\""},
     "Dual Slow Fetch Land":          {totalNumber: 5,  query: "s:MIR t:land o:search"}, 
     "Dual Storage Land":             {totalNumber: 5,  query: "otag:cycle-tsp-storage-land"},
     "Dual Tainted Land":             {totalNumber: 4,  query: "otag:cycle-tainted-land"},

@@ -1,7 +1,10 @@
 import React, { useContext, createContext, useEffect, useState, useMemo, useCallback } from 'react';
+import { landTags } from '../LandBuilder/global/landTagData';
 import { useMediaQuery } from 'react-responsive'
 import { decode } from '../global';
 import 'groupby-polyfill/lib/polyfill.js'
+import { hardCodedTagNames } from '../LandBuilder/global/hardCodedNames';
+
 const CardContext = createContext();
 
 export const useCards = () => useContext(CardContext);
@@ -23,6 +26,7 @@ export const CardProvider = ({ children }) => {
     const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "[]");
     const [cmcFilter, setCmcFilter] = useState("");
     const [formatFilter, setFormatFilter] = useState("");
+    const [prevLandBaseListLength, setPrevLandBaseListLength] = useState(-1);
     const [maxLands, setMaxLands] = useState(Number(localStorage?.getItem("maxLands") ?? 36));
     const [addAllTags, setAddAllTags] = useState(JSON.parse(localStorage?.getItem("addAllTags") ?? "[]"));
     // TAG DATA
@@ -68,9 +72,8 @@ export const CardProvider = ({ children }) => {
 
     // Set Local Storage
     useMemo(()=> {
-        if(landBaseList.length !== 0) {
+        if(landBaseList.length !== 0) 
             localStorage.setItem("landBaseList", JSON.stringify(landBaseList));
-        }
     },[landBaseList])
     useMemo(()=> {
         localStorage.setItem("maxLands", maxLands);
@@ -193,6 +196,36 @@ export const CardProvider = ({ children }) => {
         return URI;
     }, [])
 
+
+    /* GENERATE HARD CODED IDS 
+    const [hardCodedIds, setHardCodedIds] = useState([])
+
+    useEffect(()=>{
+            JSON.stringify(Object.entries(landTags).slice(7).map(async([key, value])=>{
+                const uri = "https://api.scryfall.com/cards/search?q=" + value.query;
+                //console.log(uri);
+                const res = await fetch(uri);
+                if(res.ok) {
+                    const resJson = await res.json();
+                    setHardCodedIds((prev) => ({
+                        ...prev, 
+                        [key]:resJson.data.map((card)=>({
+                            name: card.name,
+                            cId: card.color_identity,
+                        })),
+                    }))
+                }
+                return false
+            }))
+    },[])
+
+    useEffect(()=>{
+        console.log(JSON.stringify(hardCodedIds))
+    },[hardCodedIds])
+
+*/
+    
+
     useEffect(() => {
         if(nameFilter !== "" || oracleTextSearch !== "" || (tagList.length > 0 && !landBuilder))
             (async () => {
@@ -220,6 +253,47 @@ export const CardProvider = ({ children }) => {
             setDb(false);
     }, [nameFilter, oracleTextSearch, colorFilter, cmcFilter, tagList, setDb, buildUri]);
     
+
+    useEffect(() => {
+        const hardCodedColorMatch = Object.fromEntries(
+            Object.entries(hardCodedTagNames).map((tagWrap) => (
+                [tagWrap[0], tagWrap[1].filter((cardWrap) => (
+                    cardWrap.cId.length === cardWrap.cId.filter((color) => (
+                        colorFilter.includes(color)
+                    )).length
+                ))]
+            ))
+        )
+        if(prevLandBaseListLength > landBaseList.length || (prevLandBaseListLength === -1)) {
+            addAllTags.forEach((tag) => { //Removed Add All Tags
+                const filteredTagListRemove = hardCodedColorMatch[tag].filter((innerTag)=>(
+                    landBaseList.map((cardWrap) => cardWrap.card.name).includes(innerTag.name)
+                ))
+                if(filteredTagListRemove.length <= 0)
+                    setAddAllTags((prev) => prev.filter((prevTag) => prevTag !== tag))
+            })
+        }
+        else if (prevLandBaseListLength < landBaseList.length || (prevLandBaseListLength === -1)) {
+            Object.entries(hardCodedColorMatch).forEach(([tagName, tags])=>{
+                if(!addAllTags.includes(tagName)) { //Added Add All Tags
+                    const filteredTagListAdd = tags.filter((innerTag)=>(
+                        landBaseList.map((cardWrap) => cardWrap.card.name).includes(innerTag.name)
+                    ))
+                    if(filteredTagListAdd.length >= hardCodedColorMatch[tagName].length && hardCodedColorMatch[tagName].length > 0)
+                        setAddAllTags((prev) => [...prev, tagName]);
+                }
+            })
+        }
+        setPrevLandBaseListLength(landBaseList.length);
+    },[landBaseList])
+
+/*
+(acc, name, i)=>(
+                acc 
+                || (landBaseList?.length ?? 0) < 1 
+                || !landBaseList.map((cardWrap) => cardWrap.card.name).includes(name)
+            ), false
+*/
 
     const getCardFromName = async(name) => {
         try {
@@ -250,7 +324,9 @@ export const CardProvider = ({ children }) => {
                 setLoading(false);
                 setLandBaseList((prev) => [
                     ...prev,
-                    ...cardsWithQuantities,
+                    ...cardsWithQuantities.filter((cardWrap)=>( //Dont add duplicates
+                        !prev.map((prevCardWrap)=>prevCardWrap.card.oracle_id).includes(cardWrap.card.oracle_id)
+                    )),
                 ])
             }
             else { 

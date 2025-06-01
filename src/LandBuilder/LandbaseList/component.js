@@ -152,7 +152,7 @@ const TitleText = styled.h2`
 
 export const LandbaseWrapper = () => {
 
-    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setMaxLands, maxLands } = useCards();
+    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setAddAllTags, setMaxLands, maxLands } = useCards();
     const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setConfirmClear } = useSideList();
 
     const findImage = (card) => (
@@ -166,6 +166,7 @@ export const LandbaseWrapper = () => {
             setConfirmClear(true);
         else {
             resetLandBaseList();
+            setAddAllTags([]);
             setConfirmClear(false);
         }
         setTimeout(() => {setConfirmClear(false)}, 2000)
