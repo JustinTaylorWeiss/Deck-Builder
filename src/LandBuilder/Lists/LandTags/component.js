@@ -207,6 +207,7 @@ const RemoveAllButton = styled(PlaylistRemoveIcon)`
 export const LandTagsWrapper = ({}) => {
 
     const bigDesktop = useMediaQuery({query: '(min-width: 1860px)'});
+    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
 
     const { activeLBTag, setActiveLBTag, removeFromDeckWithQuery, colorFilter, addToLandBaseFromQuery, setDBSearch, addAllTags, setAddAllTags, mobileMenu} = useCards();
     const [tags, setTags] = useState([]);
@@ -379,7 +380,7 @@ export const LandTagsWrapper = ({}) => {
                                                 : <AddAllButton data-tooltip-id={`AddAll${name}`} onClick={addAllClick(name)}/>
                                         )
                                     }
-                                <MyTooltip id={(addAllTags.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(addAllTags.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                { !mobileView && <MyTooltip id={(addAllTags.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="top" content={(addAllTags.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/> }
                                 <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
                             </TagWrap>
                         ))
@@ -396,7 +397,7 @@ export const LandTagsWrapper = ({}) => {
                                                             : <AddAllButton data-tooltip-id={`AddAll${i}`} onClick={addAllClick(name)}/>
                                                     )
                                             }
-                                            <MyTooltip id={(addAllTags.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(addAllTags.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/>
+                                            { !mobileView && <MyTooltip id={(addAllTags.includes(name) ? `RemoveAll${i}` : `AddAll${i}`)} place="left" content={(addAllTags.includes(name) ? "Remove All" : "Add All")} style={{fontSize: "1rem"}} opacity={1}/> }
                                             <TagButton key={`Lands-SubButton-${i}`} $isActive={activeLBTag === name} onClick={()=>{setActiveLBTag(name)}}>{name}</TagButton>
                                         </TagWrap>
                                     ))

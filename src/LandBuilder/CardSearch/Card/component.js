@@ -224,6 +224,7 @@ export const CardWrapper = ({card, x, y}) => {
 
     const { removeCardLandBaseList, landBaseList, incOrDecLandBaseCard, addCardToLandBaseList, maxLands } = useCards();
     const [backFace, setBackFace] = useState(false);
+    
 
     const landOnBack = (card?.image_uris ?? false) && 
     (card?.card_faces?.[1]?.type_line ?? "").includes("Land") &&
@@ -263,7 +264,7 @@ export const CardWrapper = ({card, x, y}) => {
     return <CardWrap>
         <CardNameWrap><CardName>{cardName}</CardName></CardNameWrap>
         <Img $inDeck={landBaseList.map((cardWrap) => cardWrap?.card?.name ?? "").includes(cardName)} onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
-        <Row data-tooltip-id={`price row`} >
+        <Row>
             { card.prices.usd ? <Price>{`$${card.prices.usd}`}</Price> : <Price>{"No prices found"}</Price>}
             { card.prices.usd_foil && <Price style={{width:"20px"}}>/</Price>}
             { card.prices.usd_foil && <Price $foil={true}>{`$${card.prices.usd_foil}`}</Price> }
