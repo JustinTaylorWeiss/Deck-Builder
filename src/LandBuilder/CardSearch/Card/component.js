@@ -40,6 +40,27 @@ const Row = styled.div`
 const Price = styled.span`
     font-size: 1rem;
     text-align: center;
+    border-radius: 2px;
+    padding: 0 3px;
+    ${
+        props => props.$foil
+            ? `
+            background: linear-gradient(
+                45deg,
+                rgba(255, 0, 0, 0.3) 0%,
+                rgba(255, 154, 0, 0.3) 10%,
+                rgba(208, 222, 33, 0.3) 20%,
+                rgba(79,  220, 74, 0.3) 30%,
+                rgba(63, 218, 216, 0.3) 40%,
+                rgba(47, 201, 226, 0.3) 50%,
+                rgba(28, 127, 238, 0.3) 60%,
+                rgba(95, 21, 242, 0.3) 70%,
+                rgba(186, 12, 248, 0.3) 80%,
+                rgba(251, 7, 217, 0.3) 90%,
+                rgba(255, 0, 0, 0.3) 100%
+            );`
+            : ""
+    }
 `;
 
 const FlipIcon = styled.img``;
@@ -244,8 +265,8 @@ export const CardWrapper = ({card, x, y}) => {
         <Img $inDeck={landBaseList.map((cardWrap) => cardWrap?.card?.name ?? "").includes(cardName)} onClick={(e) => cardQuantityClick(e, numOfCard > 0)} src={findImage()} key={`card${x},${y}`}/>
         <Row data-tooltip-id={`price row`} >
             { card.prices.usd ? <Price>{`$${card.prices.usd}`}</Price> : <Price>{"No prices found"}</Price>}
-            { card.prices.usd_foil && <Price style={{width:"30px"}}>/</Price>}
-            { card.prices.usd_foil && <Price>{`$${card.prices.usd_foil}`}</Price> }
+            { card.prices.usd_foil && <Price style={{width:"20px"}}>/</Price>}
+            { card.prices.usd_foil && <Price $foil={true}>{`$${card.prices.usd_foil}`}</Price> }
         </Row>
         <CardQuantityWrap>
             {(card?.card_faces ?? false)

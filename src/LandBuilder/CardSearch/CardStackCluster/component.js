@@ -36,7 +36,7 @@ const Spacer = styled.div`
 
 export const CardStackClusterWrapper = ({lands=false}) => {
 
-    const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall, firstLoad } = useCards();
+    const { db, loading, resetAddRemoveList, loadMoreCards, cardSearch, isBig, isMid, isSmall, isMobile, firstLoad } = useCards();
     const [numOfColumns, setNumOfColumns] = useState(3);
     useEffect(() => { resetAddRemoveList() },[cardSearch, resetAddRemoveList])
 
@@ -48,9 +48,11 @@ export const CardStackClusterWrapper = ({lands=false}) => {
                     ? 4
                     : isSmall
                         ? 3
-                        : 2
+                        : isMobile
+                            ? 2
+                            : 1
         )
-    },[isBig, isMid, isSmall, setNumOfColumns])
+    },[isBig, isMid, isSmall, isMobile, setNumOfColumns])
 
 
     return <>

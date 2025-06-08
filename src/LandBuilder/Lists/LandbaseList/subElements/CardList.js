@@ -1,9 +1,10 @@
-import { useCards } from "../../../contexts/CardContext";
-import { useSideList } from "../../../contexts/SideListContext"
+import { useCards } from "../../../../contexts/CardContext";
+import { useSideList } from "../../../../contexts/SideListContext"
 import { Fragment, useEffect, useState } from "react";
 import { DeleteIcon } from "./Delete";
 import styled from "styled-components";
 import { LandbaseList } from "..";
+import { useMediaQuery } from "react-responsive";
 
 const LIWrap = styled.div`
     display: flex;
@@ -57,10 +58,12 @@ export const CardListWrapper = () => {
 
     const { db, cardSearch, combineDuplicates, setAddRemoveList, removeCardFromDeck, getNameFromCard, cardObjArrToListString, pushSeachListToDeck, resetDeckList, deckList, isMidToSmallest, adjustDbToAddRemovedCard, landBaseList, removeCardLandBaseList } = useCards();
     const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setActiveTab, setConfirmClear, setHoverCard, setBackFaces } = useSideList();
+    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
 
     const onListCardClick = (cardWrap) => {
         if(cardWrap?.card?.card_faces ?? false)
             setBackFaces((prev) => ({ ...prev, [cardWrap.card.oracle_id]: (!prev[cardWrap.card.oracle_id] ?? false)}))
+        if(mobileView){setHoverCard(cardWrap)}
     }
 
     const deleteOnClick = (cardWrap) => () => {
@@ -104,8 +107,12 @@ export const CardListWrapper = () => {
                         <ListItem
                             $dfc={(cardWrap?.card?.card_faces ?? false)}
                             onClick={() => onListCardClick(cardWrap)}
-                            onMouseOver={() => setHoverCard(cardWrap)}
-                            onMouseOut={() => setHoverCard("")}
+                            onMouseOver={() => {
+                                if(!mobileView){setHoverCard(cardWrap)}
+                            }}
+                            onMouseOut={() => {
+                                if(!mobileView){setHoverCard("")}
+                            }}
                         >{getNameFromCard(cardWrap.card)}</ListItem>
                         <DeleteIcon deleteOnClick={deleteOnClick(cardWrap)}/>
                     </LIWrap>

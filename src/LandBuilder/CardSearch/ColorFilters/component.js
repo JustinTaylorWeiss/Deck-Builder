@@ -6,10 +6,21 @@ import U from "./colorIcons/U.svg";
 import B from "./colorIcons/B.svg";
 import R from "./colorIcons/R.svg";
 import G from "./colorIcons/G.svg";
+import { useMediaQuery } from "react-responsive";
 
 const Wrapper = styled.div`
     font-size: 2rem;
     width: 100%;
+    ${props => props.$stackStuff 
+        ? `flex-direction: row;`
+        : `flex-direction: column;`
+    }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const ColorRow = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -88,6 +99,8 @@ const colorlessValues = {
 
 export const ColorFiltersWrapper = ({lands=false}) => {
 
+    const stackStuff = useMediaQuery({query: '(min-width: 1400px)'});
+
     const { setColorFilter, colorFilter } = useCards();
 
     const [colorValues, setColorValues] = useState({white: true, blue: true, black: true, red: true, green: true, colorless: false});
@@ -135,12 +148,16 @@ export const ColorFiltersWrapper = ({lands=false}) => {
         }
     }, [colorValues])
 
-    return <Wrapper>
+    
+
+    return <Wrapper $stackStuff={stackStuff}>
         <ColorFilterText>Color Identity:</ColorFilterText>
-        <Spacer $width="20px"/>
+        { !stackStuff && <Spacer $width="20px"/> }
+        <ColorRow>
             { [["white", W], ["blue", U], ["black", B], ["red", R], ["green", G]].map(([name, image], i) => 
-                    <Img key={name}width="40" src={image} alt={name} $active={colorValues[name]} onClick={toggleOneColor(name)}/>
+                    <Img key={name} width="40" src={image} alt={name} $active={colorValues[name]} onClick={toggleOneColor(name)}/>
             )}
+        </ColorRow>
     </Wrapper>
 }
 

@@ -22,9 +22,11 @@ export const CardProvider = ({ children }) => {
 
     // Filters
     const [nameFilter, setNameFilter] = useState("")
+    const [searchExpanded, setSearchExpanded] = useState(true);
     const [oracleTextSearch, setOracleTextSearch] = useState("");
     const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "[]");
     const [cmcFilter, setCmcFilter] = useState("");
+    const [mobileMenu, setMobileMenu] = useState(false);
     const [formatFilter, setFormatFilter] = useState("");
     const [prevLandBaseListLength, setPrevLandBaseListLength] = useState(-1);
     const [maxLands, setMaxLands] = useState(Number(localStorage?.getItem("maxLands") ?? 36));
@@ -40,6 +42,7 @@ export const CardProvider = ({ children }) => {
     const isBig = useMediaQuery({query: '(min-width: 2000px)'})
     const isMid = useMediaQuery({query: '(min-width: 1500px)'})
     const isSmall = useMediaQuery({query: '(min-width: 1000px)'})
+    const isMobile = useMediaQuery({query: '(min-width: 600px)'})
     const isMidToSmallest = useMediaQuery({query: '(max-width: 1500px)'})
     
     const [page, setPage] = useState(0);
@@ -466,7 +469,7 @@ export const CardProvider = ({ children }) => {
     };
     
     const value = {
-        page, db, isBig, isMid, isSmall, isMidToSmallest, firstLoad, loading, setLoading, 
+        page, db, isBig, isMid, isSmall, isMobile, isMidToSmallest, firstLoad, loading, setLoading, 
 
         selected, setSelected, 
         deckList, setDeckList,
@@ -485,6 +488,8 @@ export const CardProvider = ({ children }) => {
         removeCardLandBaseList, addToLandBaseFromQuery,
         removeFromDeckWithQuery, addCardToLandBaseList,
         incOrDecLandBaseCard, maxLands, setMaxLands,
+        searchExpanded, setSearchExpanded,
+        mobileMenu, setMobileMenu,
         addAllTags, setAddAllTags,
 
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,

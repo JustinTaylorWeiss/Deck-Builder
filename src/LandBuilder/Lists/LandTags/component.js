@@ -1,30 +1,41 @@
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { useCards } from "../../contexts/CardContext";
+import { useCards } from "../../../contexts/CardContext";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { SubList } from "./SubList";
 import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
 import { Tooltip } from "react-tooltip";
-import { landTags } from "../global/landTagData";
+import { landTags } from "../../global/landTagData";
 import { ArrowIcon } from "./SubList/assets/Arrow";
+import { useMediaQuery } from "react-responsive";
+import { LandbaseList } from "../LandbaseList";
+import { MiniLandbase } from "../LandbaseList/component";
 
-const ListWrap = styled.div`
+export const ListWrap = styled.div`
     position: sticky;
-    border-radius: 5px;
-    background-color: #181a1c;
-    border: 2px solid #d8cc65;
-    margin-top: 20px;
-    top: 20px;
     display: flex;
-    box-sizing: border-box;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     align-self: flex-start;
     justify-self: flex-end;
+    box-sizing: border-box;
+    background-color: #181a1c;
+    border: 2px solid #d8cc65;
+    border-radius: 5px;
+    margin-top: 20px;
+    top: 20px;
     width: calc(100% - 20px);
     height: calc(100vh - 110px);
+    ${props => props.$mobileMenu
+        ? `
+            justify-self: center;
+            margin-top: 10px;
+            height: calc(100vh - 80px);
+        `
+        : ""
+    }
 `;
 
 const Row = styled.div`
@@ -35,51 +46,50 @@ const Row = styled.div`
     align-items: center;
 `;
 
+const SmallRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+`;
+
+const Line = styled.hr`
+    width: 30%;
+    height: 3px;
+    margin: 0;
+    margin-bottom: 15px;
+    border-radius: 2px;
+    border-width: 0px;
+    background-color: transparent;
+    transition: 750ms;
+    ${props => props.$active 
+        ? `background-color: #d8cc65`
+        : ""
+    }
+`;
+
 const TitleText = styled.h2`
     display: block;
     font-size: 1.5rem;
     color: #d8cc65;
     font-weight: 600;
-`;
-
-const TitleButton = styled.button`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    width: 70%;
+    padding: 10px 10px;
+    width: 50%;
+    text-align: center;
+    margin: 5px 5px 0 5px;
     border-radius: 5px;
-    z-index: 10;
-    margin-bottom: 5px;
-    border: ${props => props.$isActive ? "none" : "2px solid #121010"};
-    background-color: ${props => props.$isActive ? "#121010" : "transparent"};
-    &:hover {
-        cursor: pointer;
-        background-color: ${props => props.$isActive ? "#404347" : "#aaaaaa"};
+    box-sizing: border-box;
+    background-color: transparent;
+    ${props => (!props.$active || props.$bigDesktop) && `color: black;`}
+    ${props => props.$bigDesktop && `color: #d8cc65;`}
+    &:hover{
+        ${props => (props.bigDesktop || props.$active) ? "" : `
+            background-color: #a1952d;
+            color: black;
+            cursor: pointer;
+        `}
     }
-    @media (min-width: 2000px) {
-        font-size: 1.5rem;
-    }
-    @media (max-width: 1000px) {
-        font-size: 1rem;
-    }
-`
-const ArrowIconWrap = styled.div`
-    display: flex;
-    color: #d8cc65;
-    padding: 14px 0;
-    justify-content: center;
-    align-items: center;
-    ${props => props.$left ? "transform: rotate(270deg);" : "transform: rotate(90deg);" }
-    ${props => props.$active && "transform: rotate(0deg);"}
-`;
-
-const SubTitleButton = styled(TitleButton)`
-    background-color: ${props => props.$isActive ? "red" : "transparent"};
-    color: white;
-    border-color: white;
-    margin-top: 20px;
 `;
 
 const MyTooltip = styled(Tooltip)`
@@ -121,6 +131,15 @@ const TagButton = styled.button`
         background-color: ${props => props.$isActive ? "#43a047" : "white"};
         color: ${props => props.$isActive ? "white" : "black"};
     }
+    @media (min-width: 2000px) {
+        font-size: 1.5rem;
+    }
+    @media (max-width: 1500px) {
+        font-size: 0.7rem;
+    }
+    @media (max-width: 1000px) {
+        font-size: 0.5rem;
+    }
 `;
 
 const Form = styled.form`
@@ -154,41 +173,6 @@ const TagWrap = styled.div`
     justify-content: center;
 `;
 
-const TagSideTextWrap = styled.div`
-    margin-left: 5px;
-    width: 15%;
-    font-size: 15px;
-    &:hover{
-        cursor: pointer;
-    }
-`;
-
-const TagSideText = styled.div`
-    text-align: center;
-`;
-
-/*
-    background-color: #292029;
-    color: white;
-    text-align: center;
-    width: 20%;
-    margin: 0 0 auto 0;
-    border: 2px solid white;
-    border-radius: 5px;
-    padding: 10px 0px;
-    margin-bottom: 5px;
-    &:hover {
-        cursor: pointer;
-        background-color: white;
-        color: black;
-    }
-`;
-*/
-
-const GroupText = styled.div`
-
-`;
-
 const AddAllButton = styled(LibraryAddIcon)`
     margin: 3px;
     body & {
@@ -220,12 +204,15 @@ const RemoveAllButton = styled(PlaylistRemoveIcon)`
 `;
 
 
-export const LandTagsWrapper = ({ref}) => {
+export const LandTagsWrapper = ({}) => {
 
-    const { activeLBTag, setActiveLBTag, removeFromDeckWithQuery, colorFilter, addToLandBaseFromQuery, setDBSearch, addAllTags, setAddAllTags} = useCards();
+    const bigDesktop = useMediaQuery({query: '(min-width: 1860px)'});
+
+    const { activeLBTag, setActiveLBTag, removeFromDeckWithQuery, colorFilter, addToLandBaseFromQuery, setDBSearch, addAllTags, setAddAllTags, mobileMenu} = useCards();
     const [tags, setTags] = useState([]);
     const [scroll, setScroll] = useState(0);
     const tagSearchRef = useRef();
+    const [toggleList, setToggleList] = useState(false);
 
     /*
     const utilityLandTags = {
@@ -356,11 +343,26 @@ export const LandTagsWrapper = ({ref}) => {
         "Five Color Land",
     ]
 
-    return <>
-        <ListWrap $scroll={scroll} id="land-tag-wrap">
-            <Row $width={"100%"}>
-                <TitleText>Land Tags</TitleText>
-            </Row>
+    useEffect(()=>{
+        const callbackFunc = (e) => { if(bigDesktop) {setToggleList(false);}}
+        window.addEventListener("resize", callbackFunc)
+        return () => { window.removeEventListener("resize", callbackFunc); }
+    }, [])
+
+    return <ListWrap $mobileMenu={mobileMenu} $scroll={scroll} id="land-tag-wrap">
+        <Row $width={"100%"}>
+            <TitleText onClick={()=>{setToggleList(false)}} $bigDesktop={bigDesktop} $active={!toggleList}>Land Tags</TitleText>
+            { !bigDesktop && <>
+                <TitleText onClick={()=>{setToggleList(true)}} $bigDesktop={bigDesktop} $active={toggleList}>Land Base</TitleText>
+            </>} 
+        </Row>
+        { !bigDesktop && <SmallRow>
+            <Line $active={!toggleList}/>
+            <Line $active={toggleList}/>
+        </SmallRow>}
+        { toggleList && !bigDesktop
+            ? <MiniLandbase/>
+            :<>
             <Form onSubmit={(e) => {e.preventDefault()}}> 
                 <Search onChange={tagSearch} placeholder="Search Land Tags" ref={tagSearchRef}/>
             </Form>
@@ -403,8 +405,8 @@ export const LandTagsWrapper = ({ref}) => {
                     ))
                 }
             </ListBlock>
-        </ListWrap>
-    </>
+        </>}
+    </ListWrap>
 }
 
 
