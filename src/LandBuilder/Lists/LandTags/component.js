@@ -27,7 +27,7 @@ export const ListWrap = styled.div`
     margin-top: 20px;
     top: 20px;
     width: calc(100% - 20px);
-    height: calc(100vh - 110px);
+    height: calc(100svh - 110px);
     ${props => props.$mobileMenu
         ? `
             justify-self: center;
