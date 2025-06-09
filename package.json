@@ -1,7 +1,7 @@
 {
-  "name": "deck-builder",
+  "name": "floatmana",
   "version": "0.1.0",
-  "homepage": "https://justintaylorweiss.github.io/Deck-Builder",
+  "homepage": "Floatmana.app",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",

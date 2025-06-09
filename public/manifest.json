@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Floatmana.app",
+  "name": "Land base builder for Magic the Gathering",
   "icons": [
     {
       "src": "favicon.ico",
