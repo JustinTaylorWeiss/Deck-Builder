@@ -1,30 +1,30 @@
 {
   "files": {
-    "main.css": "/Deck-Builder/static/css/main.d6a4abaa.css",
-    "main.js": "/Deck-Builder/static/js/main.723aa993.js",
-    "static/media/donateScribble.gif": "/Deck-Builder/static/media/donateScribble.e3c6df6abc276dcc95e7.gif",
-    "static/media/duck.png": "/Deck-Builder/static/media/duck.b83a9f5975fc3cb504fc.png",
-    "static/media/donate.png": "/Deck-Builder/static/media/donate.37bbb3d54a74fde53f33.png",
-    "static/media/W.svg": "/Deck-Builder/static/media/W.99c7fe1b9600148fbeed55dc7729eb2e.svg",
-    "static/media/R.svg": "/Deck-Builder/static/media/R.b8e69eab9136b4e4a401c7295bdc8f4f.svg",
-    "static/media/G.svg": "/Deck-Builder/static/media/G.1e9be629cc98068fb2681d6bcfa716b7.svg",
-    "static/media/B.svg": "/Deck-Builder/static/media/B.7f78a23faaceb72cf1d01f86dedabf9e.svg",
-    "static/media/addToDeck.svg": "/Deck-Builder/static/media/addToDeck.815eee77473174f72499fe77aa1cd89e.svg",
-    "static/media/questionMark.svg": "/Deck-Builder/static/media/questionMark.035176329029083349ef35b215a934b8.svg",
-    "static/media/trash.svg": "/Deck-Builder/static/media/trash.96ee9b8f478ec61dcc30473f2c32e867.svg",
-    "static/media/fillBucket.svg": "/Deck-Builder/static/media/fillBucket.d4ed66c3b5e0f4162fd35877547fef97.svg",
-    "static/media/plus.svg": "/Deck-Builder/static/media/plus.8d908611fa76c4e3fe7a51135c792f75.svg",
-    "static/media/U.svg": "/Deck-Builder/static/media/U.8fcc549bb705b8de6da416da518b604f.svg",
-    "index.html": "/Deck-Builder/index.html",
-    "static/media/delete.svg": "/Deck-Builder/static/media/delete.644a53c01eda60a6a5b90d738d20339e.svg",
-    "static/media/C.svg": "/Deck-Builder/static/media/C.4af949b50d04a437b836705f24f1039f.svg",
-    "static/media/checkmark.svg": "/Deck-Builder/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
-    "static/media/minus.svg": "/Deck-Builder/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
-    "main.d6a4abaa.css.map": "/Deck-Builder/static/css/main.d6a4abaa.css.map",
-    "main.723aa993.js.map": "/Deck-Builder/static/js/main.723aa993.js.map"
+    "main.css": "/Floatmana.app/static/css/main.d6a4abaa.css",
+    "main.js": "/Floatmana.app/static/js/main.8a4fdedb.js",
+    "static/media/donateScribble.gif": "/Floatmana.app/static/media/donateScribble.e3c6df6abc276dcc95e7.gif",
+    "static/media/duck.png": "/Floatmana.app/static/media/duck.b83a9f5975fc3cb504fc.png",
+    "static/media/donate.png": "/Floatmana.app/static/media/donate.37bbb3d54a74fde53f33.png",
+    "static/media/W.svg": "/Floatmana.app/static/media/W.99c7fe1b9600148fbeed55dc7729eb2e.svg",
+    "static/media/R.svg": "/Floatmana.app/static/media/R.b8e69eab9136b4e4a401c7295bdc8f4f.svg",
+    "static/media/G.svg": "/Floatmana.app/static/media/G.1e9be629cc98068fb2681d6bcfa716b7.svg",
+    "static/media/B.svg": "/Floatmana.app/static/media/B.7f78a23faaceb72cf1d01f86dedabf9e.svg",
+    "static/media/addToDeck.svg": "/Floatmana.app/static/media/addToDeck.815eee77473174f72499fe77aa1cd89e.svg",
+    "static/media/questionMark.svg": "/Floatmana.app/static/media/questionMark.035176329029083349ef35b215a934b8.svg",
+    "static/media/trash.svg": "/Floatmana.app/static/media/trash.96ee9b8f478ec61dcc30473f2c32e867.svg",
+    "static/media/fillBucket.svg": "/Floatmana.app/static/media/fillBucket.d4ed66c3b5e0f4162fd35877547fef97.svg",
+    "static/media/plus.svg": "/Floatmana.app/static/media/plus.8d908611fa76c4e3fe7a51135c792f75.svg",
+    "static/media/U.svg": "/Floatmana.app/static/media/U.8fcc549bb705b8de6da416da518b604f.svg",
+    "index.html": "/Floatmana.app/index.html",
+    "static/media/delete.svg": "/Floatmana.app/static/media/delete.644a53c01eda60a6a5b90d738d20339e.svg",
+    "static/media/C.svg": "/Floatmana.app/static/media/C.4af949b50d04a437b836705f24f1039f.svg",
+    "static/media/checkmark.svg": "/Floatmana.app/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
+    "static/media/minus.svg": "/Floatmana.app/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
+    "main.d6a4abaa.css.map": "/Floatmana.app/static/css/main.d6a4abaa.css.map",
+    "main.8a4fdedb.js.map": "/Floatmana.app/static/js/main.8a4fdedb.js.map"
   },
   "entrypoints": [
     "static/css/main.d6a4abaa.css",
-    "static/js/main.723aa993.js"
+    "static/js/main.8a4fdedb.js"
   ]
 }
