@@ -1,7 +1,7 @@
 {
   "name": "floatmana",
   "version": "0.1.0",
-  "homepage": "Floatmana.app",
+  "homepage": "https://justintaylorweiss.github.io.",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
