@@ -20,11 +20,16 @@ export const CardProvider = ({ children }) => {
     const [activeLBTag, setActiveLBTag] = useState("");
     const [landBuilder, setLandBuilder] = useState(true); //Set up this toggle to have both work
 
+
+    const bigDesktop = useMediaQuery({query: '(min-width: 1500px)'});
+    const stackStuff = useMediaQuery({query: '(min-width: 1400px)'});
+    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
+
     // Filters
     const [nameFilter, setNameFilter] = useState("")
     const [searchExpanded, setSearchExpanded] = useState(true);
     const [oracleTextSearch, setOracleTextSearch] = useState("");
-    const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "[]");
+    const [colorFilter, setColorFilter] = useState(localStorage?.getItem("colorFilter") ?? "id<%3DWUBRG+");
     const [cmcFilter, setCmcFilter] = useState("");
     const [mobileMenu, setMobileMenu] = useState(false);
     const [formatFilter, setFormatFilter] = useState("");
@@ -495,6 +500,8 @@ export const CardProvider = ({ children }) => {
         setNameFilter, setOracleTextSearch, setCmcFilter, formatFilter, setFormatFilter,
 
         tagList, addToTagList, removeFromTagList,
+
+        mobileView, bigDesktop, stackStuff,
     };
 
     return <CardContext.Provider value={value}>{children}</CardContext.Provider>

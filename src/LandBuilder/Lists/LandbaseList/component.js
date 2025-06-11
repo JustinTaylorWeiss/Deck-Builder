@@ -6,7 +6,6 @@ import checkmark from "./assets/checkmark.svg";
 import 'groupby-polyfill/lib/polyfill.js'
 import { useSideList } from "../../../contexts/SideListContext";
 import Slider from '@mui/material/Slider';
-import { useMediaQuery } from "react-responsive";
 
 export const ListWrap = styled.div`
     position: sticky;
@@ -24,6 +23,7 @@ export const ListWrap = styled.div`
     top: 20px;
     width: calc(100% - 20px);
     height: calc(100svh - 110px);
+    min-height:500px;
 `;
 
 const Column = styled.div`
@@ -184,10 +184,7 @@ const Backdrop = styled.div`
 
 export const LandbaseWrapper = () => {
 
-    const bigDesktop = useMediaQuery({query: '(min-width: 1860px)'});
-    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
-
-    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setAddAllTags, setMaxLands, maxLands } = useCards();
+    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setAddAllTags, setMaxLands, maxLands, bigDesktop, mobileView } = useCards();
     const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setConfirmClear, setHoverCard } = useSideList();
 
     const findImage = (card) => (
@@ -274,10 +271,8 @@ export const LandbaseWrapper = () => {
 
 export const MiniLandbase = () => {
 
-    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setAddAllTags, setMaxLands, maxLands } = useCards();
+    const { db, cardSearch, combineDuplicates, getNameFromCard, pushSeachListToDeck, landBaseList, resetLandBaseList, setAddAllTags, setMaxLands, maxLands, bigDesktop, mobileView } = useCards();
     const { clipboarded, activeTab, confirmClear, hoverCard, backFaces, setClipboarded, setConfirmClear, setHoverCard } = useSideList();
-    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
-    const bigDesktop = useMediaQuery({query: '(min-width: 1860px)'});
 
     const findImage = (card) => (
         (!card?.image_uris ?? false) 

@@ -7,9 +7,6 @@ import styled from "styled-components";
 import 'groupby-polyfill/lib/polyfill.js'
 import { Tooltip } from "react-tooltip";
 import { landTags } from "../../global/landTagData";
-import { ArrowIcon } from "./SubList/assets/Arrow";
-import { useMediaQuery } from "react-responsive";
-import { LandbaseList } from "../LandbaseList";
 import { MiniLandbase } from "../LandbaseList/component";
 
 export const ListWrap = styled.div`
@@ -27,7 +24,8 @@ export const ListWrap = styled.div`
     margin-top: 20px;
     top: 20px;
     width: calc(100% - 20px);
-    height: calc(100svh - 110px);
+    height: calc(100svh - 40px);
+    min-height: 500px;
     ${props => props.$mobileMenu
         ? `
             justify-self: center;
@@ -206,10 +204,7 @@ const RemoveAllButton = styled(PlaylistRemoveIcon)`
 
 export const LandTagsWrapper = ({}) => {
 
-    const bigDesktop = useMediaQuery({query: '(min-width: 1860px)'});
-    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
-
-    const { activeLBTag, setActiveLBTag, removeFromDeckWithQuery, colorFilter, addToLandBaseFromQuery, setDBSearch, addAllTags, setAddAllTags, mobileMenu} = useCards();
+    const { activeLBTag, setActiveLBTag, removeFromDeckWithQuery, colorFilter, addToLandBaseFromQuery, setDBSearch, addAllTags, setAddAllTags, mobileMenu, mobileView, bigDesktop } = useCards();
     const [tags, setTags] = useState([]);
     const [scroll, setScroll] = useState(0);
     const tagSearchRef = useRef();

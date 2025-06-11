@@ -6,14 +6,14 @@ import { landTags } from "../../global/landTagData";
 import { useMediaQuery } from "react-responsive";
 
 const Form = styled.form`
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     ${props => (props.$stackStuff && !props.$mobileView)
         ? "flex-direction: row;"
         : `
             flex-direction: column;
-            justify-content: flex-start;
         `
     }
 `;
@@ -29,24 +29,33 @@ const Row = styled.div`
         ? `flex-direction: row;`
         : ``
     }
+    ${props => props.$mobileView
+        ? `flex-direction: column;`
+        : ``
+    }
 `;
 
 const SmallLabel = styled.label`
-    font-size: 1.5rem;
-     ${props => props.$mobileView
-        ? "padding: 0 20px;"
-        : "padding: 0 20px 0 0;"
-    }
+    font-size: 1.25rem;
+    padding: 0 20px;
     text-wrap: nowrap;
     @media (max-width: 1500px) {
         font-size: 1rem;
     }
+    ${props => props.$stackStuff
+        ? ""
+        : "padding: 0 20px 0 0;"
+    }
+    ${props => props.$mobileView
+        ? "padding: 0"
+        : ""
+    }
 `;
 
 const Search = styled.input`
-    margin: 0 20px 0 0;
+    margin: 0;
     height: 36px;
-    width: 40%;
+    width: 43%;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     font-size: 1.2rem;
@@ -57,7 +66,8 @@ const Search = styled.input`
     ${props => props.$mobileView
         ? `
             margin: 5px 0;
-            width: 100%;
+            width: 80%;
+            max-width: 400px;
         `
         : ""
     }
@@ -82,10 +92,8 @@ const ToggleTags = styled.button`
 
 export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
 
-    const stackStuff = useMediaQuery({query: '(min-width: 1400px)'});
-    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
 
-    const { db, setNameFilter, setOracleTextSearch, activeLBTag } = useCards();
+    const { db, setNameFilter, setOracleTextSearch, activeLBTag, mobileView, stackStuff } = useCards();
     const nameRef = useRef();
     const oracleRef = useRef();
 
@@ -96,17 +104,17 @@ export const SearchClusterWrapper = ({tagMenuArr, lands=false}) => {
     const debouncedOracle = debounce(oracleSubmit, 1000);
 
     return <>
-    <Row>
+    <Row $mobileView={mobileView}>
         <Form $stackStuff={stackStuff} $mobileView={mobileView} onSubmit={(e) => {e.preventDefault()}}> 
             <Search $mobileView={mobileView} $stackStuff={stackStuff} onChange={debouncedName} placeholder="Card Name" ref={nameRef}/>
             <Search $mobileView={mobileView} $stackStuff={stackStuff} onChange={debouncedOracle} placeholder="Card Text" ref={oracleRef}/>
         </Form>
+        <SmallLabel $stackStuff={stackStuff} $mobileView={mobileView}>{(db?.total_cards ?? 0) + " / " + (
+            (db?.total_cards ?? false) && (db?.total_cards > (landTags?.[activeLBTag]?.totalNumber ?? 0))
+                ? db?.total_cards
+                : landTags?.[activeLBTag]?.totalNumber ?? 0
+        )}</SmallLabel>
     </Row>
-    <SmallLabel $mobileView={mobileView}>{(db?.total_cards ?? 0) + " / " + (
-        (db?.total_cards ?? false) && (db?.total_cards > (landTags?.[activeLBTag]?.totalNumber ?? 0))
-            ? db?.total_cards
-            : landTags?.[activeLBTag]?.totalNumber ?? 0
-    )}</SmallLabel>
     {!lands && <ToggleTags $menuOpen={tagMenuArr[0]} onClick={() => {tagMenuArr[1](prev => !prev)}}>Tags</ToggleTags>}
     </>
     }

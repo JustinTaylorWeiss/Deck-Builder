@@ -81,10 +81,8 @@ const TitleText = styled.h1`
 `;
 
 export const Navbar = () => {
-    
-    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
 
-    const { searchExpanded, setSearchExpanded, mobileMenu, setMobileMenu } = useCards();
+    const { searchExpanded, setSearchExpanded, mobileMenu, setMobileMenu, mobileView } = useCards();
     
     return <NavbarWrap $mobileView={mobileView}>
         { mobileView 

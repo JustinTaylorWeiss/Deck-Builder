@@ -30,8 +30,9 @@ const ColorRow = styled.div`
 const ColorFilterText = styled.h3`
     margin: 0;
     font-weight: 400;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     padding-bottom: 3px;
+    padding-right: 10px;
     text-wrap: nowrap;
 `;
 

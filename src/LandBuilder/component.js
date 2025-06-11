@@ -60,11 +60,8 @@ const MiniApp = styled.div`
 
 export const LandBuilderWrapper = ({}) => {
 
-    const bigDesktop = useMediaQuery({query: '(min-width: 1860px)'});
-    const mobileView = useMediaQuery({query: '(max-width: 900px)'});
-
     const tagMenuArr = useState(true);
-    const { searchExpanded, setSearchExpanded, mobileMenu } = useCards();
+    const { searchExpanded, setSearchExpanded, mobileMenu, bigDesktop, mobileView } = useCards();
     const [tagMenu, setTagMenu] = tagMenuArr;
     const tagListRef = useRef();
     const landListRef = useRef();
