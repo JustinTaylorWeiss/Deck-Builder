@@ -9,8 +9,8 @@ export const landTags = {
 //  "Four Colored Utlity Land":      {totalNumber: 0,  query: "otag:utility-land id=4 t:land"},
     "Five Color Land":               {totalNumber: 3,  query: "(id=5 or o:\"five mana\") t:land"},
 //  Popular Lands
-    "Basic Land":                    {totalNumber: 6,  query: "t:basic -t:snow"},
-    "Snow Basic Land":               {totalNumber: 6,  query: "t:basic t:snow"},
+    "Basic Land":                    {totalNumber: 6,  query: "t:basic -t:snow -id=c"},
+    "Snow Basic Land":               {totalNumber: 6,  query: "t:basic t:snow -id=c"},
     "Any Color Color Fix":           {totalNumber: 64, query: `(prismatic vista or fabled passage) or t:land -o:/\\{\\d\\}, \\{t\\}/ o:"any color"`},
     "Mono Castle Land":              {totalNumber: 5,  query: "s:ELD t:land castle id=1"},
     "Mono Lord of the Rings Land":   {totalNumber: 5,  query: "s:LTR t:land o:legendary id=1"},
