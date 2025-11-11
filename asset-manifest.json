@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.d6a4abaa.css",
-    "main.js": "/static/js/main.60a84a2b.js",
+    "main.js": "/static/js/main.2743b5de.js",
     "static/media/donateScribble.gif": "/static/media/donateScribble.e3c6df6abc276dcc95e7.gif",
     "static/media/duck.png": "/static/media/duck.b83a9f5975fc3cb504fc.png",
     "static/media/donate.png": "/static/media/donate.37bbb3d54a74fde53f33.png",
@@ -16,15 +16,15 @@
     "index.html": "/index.html",
     "static/media/plus.svg": "/static/media/plus.8d908611fa76c4e3fe7a51135c792f75.svg",
     "static/media/U.svg": "/static/media/U.8fcc549bb705b8de6da416da518b604f.svg",
-    "static/media/delete.svg": "/static/media/delete.644a53c01eda60a6a5b90d738d20339e.svg",
+    "static/media/delete.svg": "/static/media/delete.8ce4fbe398c000b11c5c995b7c1c24da.svg",
     "static/media/C.svg": "/static/media/C.4af949b50d04a437b836705f24f1039f.svg",
     "static/media/checkmark.svg": "/static/media/checkmark.f41d8c2c59b26d167f12888866849d84.svg",
     "static/media/minus.svg": "/static/media/minus.b69f18bc767f40af2f33658d6ec50824.svg",
     "main.d6a4abaa.css.map": "/static/css/main.d6a4abaa.css.map",
-    "main.60a84a2b.js.map": "/static/js/main.60a84a2b.js.map"
+    "main.2743b5de.js.map": "/static/js/main.2743b5de.js.map"
   },
   "entrypoints": [
     "static/css/main.d6a4abaa.css",
-    "static/js/main.60a84a2b.js"
+    "static/js/main.2743b5de.js"
   ]
 }
